@@ -2,6 +2,7 @@
 #SingleInstance Force
 #IfWinActive ahk_exe Diablo III64.exe
 
+
 INI_ERROR_MSG := "ERROR"
 
 DEFAULT_INI_FILENAME := "settings.ini"
@@ -9,6 +10,10 @@ DEFAULT_INITIAL_KEYS := "Q"
 DEFAULT_REPEATED_KEYS := "WE"
 DEFAULT_MAX_RADIUS := 1000
 DEFAULT_TOGGLE_RADIAL_CLICKS := 1
+DEFAULT_TOGGLE_Q_WHEN_INACTIVE := 0
+DEFAULT_TOGGLE_W_WHEN_INACTIVE := 0
+DEFAULT_TOGGLE_E_WHEN_INACTIVE := 0
+DEFAULT_TOGGLE_R_WHEN_INACTIVE := 1
 
 ; Defines x and y coordinates for the center point of the character.
 ; Currently set for a 1440p monitor.
@@ -22,6 +27,10 @@ COUNTER := 0
 
 INITIAL_KEYS := DEFAULT_INITIAL_KEYS
 REPEATED_KEYS := DEFAULT_REPEATED_KEYS
+TOGGLE_Q_WHEN_INACTIVE := DEFAULT_TOGGLE_Q_WHEN_INACTIVE
+TOGGLE_W_WHEN_INACTIVE := DEFAULT_TOGGLE_W_WHEN_INACTIVE
+TOGGLE_E_WHEN_INACTIVE := DEFAULT_TOGGLE_E_WHEN_INACTIVE
+TOGGLE_R_WHEN_INACTIVE := DEFAULT_TOGGLE_R_WHEN_INACTIVE
 
 MOUSE_LOCK := False
 
@@ -35,20 +44,18 @@ Gui, Add, Text, x10 y10 w130 Center, Initial key presses:
 Gui, Add, Edit, x10 y25 w130 h20 vINITIAL_KEYS Center, %INITIAL_KEYS%
 Gui, Add, Text, x10 y50 w130 Center, Keys to repeat:
 Gui, Add, Edit, x10 y65 w130 h20 vREPEATED_KEYS Center, %REPEATED_KEYS%
-
 ; Right
 Gui, Add, Text, x160 y10 w100 Left, Enable radial clicks:
-Gui, Add, Checkbox, x260 y10 Checked vToggleRadialClicks,
+Gui, Add, Checkbox, x260 y10 Checked vTOGGLE_RADIAL_CLICKS,
 
 Gui, Add, Text, x160 y25 w100 Left, Max radius:
 Gui, Add, Edit, x215 y25 w75 h15 vMAX_RADIUS Center, %MAX_RADIUS%
 
-
 Gui, Add, Text, x160 y45 w100 Left, Toggle when inactive:
-Gui, Add, CheckBox, x160 y60 vToggleQ, Q
-Gui, Add, CheckBox, x190 y60 vToggleW, W
-Gui, Add, CheckBox, x220 y60 vToggleE, E
-Gui, Add, CheckBox, x250 y60 vToggleR, R
+Gui, Add, CheckBox, x160 y60 Checked%TOGGLE_Q_WHEN_INACTIVE% vTOGGLE_Q_WHEN_INACTIVE, Q
+Gui, Add, CheckBox, x190 y60 Checked%TOGGLE_W_WHEN_INACTIVE% vTOGGLE_W_WHEN_INACTIVE, W
+Gui, Add, CheckBox, x220 y60 Checked%TOGGLE_E_WHEN_INACTIVE% vTOGGLE_E_WHEN_INACTIVE, E
+Gui, Add, CheckBox, x250 y60 Checked%TOGGLE_R_WHEN_INACTIVE% vTOGGLE_R_WHEN_INACTIVE, R
 
 Gui, Add, Button, x10 y90 w130 h100 gSaveSettings, Save
 
@@ -71,10 +78,10 @@ AutoSend:
       Send, {Click}
     }
   }
-  GuiControlGet, toggleQ,, ToggleQ
-  GuiControlGet, toggleW,, ToggleW
-  GuiControlGet, toggleE,, ToggleE
-  GuiControlGet, toggleR,, ToggleR
+  GuiControlGet, toggleQWhenInactive,, TOGGLE_Q_WHEN_INACTIVE
+  GuiControlGet, toggleWWhenInactive,, TOGGLE_W_WHEN_INACTIVE
+  GuiControlGet, toggleEWhenInactive,, TOGGLE_E_WHEN_INACTIVE
+  GuiControlGet, toggleRWhenInactive,, TOGGLE_R_WHEN_INACTIVE
 
   if (toggleQ) {
     PixelGetColor, ActiveColor, 940, 1330
@@ -110,19 +117,29 @@ AutoSend:
 ; If the file does not exist, then settings are set to defaults.
 ReadSettings:
 {
-  IniRead, read_initial_keys, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, INITIAL_KEYS
-  IniRead, read_repeated_keys, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, REPEATED_KEYS
-  IniRead, read_max_radius, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, MAX_RADIUS
-  IniRead, read_toggle_radial_clicks, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, TOGGLE_RADIAL_CLICKS
+  if FileExist(DEFAULT_INI_FILENAME) {
+    IniRead, read_initial_keys, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, INITIAL_KEYS, %DEFAULT_INITIAL_KEYS%
+    IniRead, read_repeated_keys, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, REPEATED_KEYS, %DEFAULT_REPEATED_KEYS%
+    IniRead, read_toggle_q_when_inactive, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_Q_WHEN_INACTIVE, %DEFAULT_TOGGLE_Q_WHEN_INACTIVE%
+    IniRead, read_toggle_w_when_inactive, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_W_WHEN_INACTIVE, %DEFAULT_TOGGLE_W_WHEN_INACTIVE%
+    IniRead, read_toggle_e_when_inactive, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_E_WHEN_INACTIVE, %DEFAULT_TOGGLE_E_WHEN_INACTIVE%
+    IniRead, read_toggle_r_when_inactive, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_R_WHEN_INACTIVE, %DEFAULT_TOGGLE_R_WHEN_INACTIVE%
+    
+    IniRead, read_max_radius, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, MAX_RADIUS, %DEFAULT_MAX_RADIUS%
+    IniRead, read_toggle_radial_clicks, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, TOGGLE_RADIAL_CLICKS, %DEFAULT_TOGGLE_RADIAL_CLICKS%
 
-  if (read_initial_keys == INI_ERROR_MSG || read_repeated_keys == INI_ERROR_MSG || read_max_radius == INI_ERROR_MSG || read_toggle_radial_clicks == INI_ERROR_MSG) {
-    MsgBox,, Information, Couldn't find %DEFAULT_INI_FILENAME%. Resorting to defaults.
-    Gosub, SaveSettings
-  } else {
     INITIAL_KEYS := read_initial_keys
     REPEATED_KEYS := read_repeated_keys
     MAX_RADIUS := read_max_radius
     TOGGLE_RADIAL_CLICKS := read_toggle_radial_clicks
+
+    TOGGLE_Q_WHEN_INACTIVE := read_toggle_q_when_inactive
+    TOGGLE_W_WHEN_INACTIVE := read_toggle_w_when_inactive
+    TOGGLE_E_WHEN_INACTIVE := read_toggle_e_when_inactive
+    TOGGLE_R_WHEN_INACTIVE := read_toggle_r_when_inactive
+  } else {
+    MsgBox,, Information, Couldn't find %DEFAULT_INI_FILENAME%. Resorting to defaults.
+    Gosub, SaveSettings
   }
   return
 }
@@ -130,19 +147,23 @@ ReadSettings:
 ; Save current settings to the DEFAULT_INI_FILENAME.
 SaveSettings:
 {
-  GuiControlGet, toggleRadialClicks,, ToggleRadialClicks
+  GuiControlGet, toggleRadialClicks,, TOGGLE_RADIAL_CLICKS
+  GuiControlGet, toggleQWhenInactive,, TOGGLE_Q_WHEN_INACTIVE
+  GuiControlGet, toggleWWhenInactive,, TOGGLE_W_WHEN_INACTIVE
+  GuiControlGet, toggleEWhenInactive,, TOGGLE_E_WHEN_INACTIVE
+  GuiControlGet, toggleRWhenInactive,, TOGGLE_R_WHEN_INACTIVE
   Gui, Submit, NoHide
   IniWrite, %INITIAL_KEYS%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, INITIAL_KEYS
   IniWrite, %REPEATED_KEYS%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, REPEATED_KEYS
+  IniWrite, %toggleQWhenInactive%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_Q_WHEN_INACTIVE
+  IniWrite, %toggleWWhenInactive%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_W_WHEN_INACTIVE
+  IniWrite, %toggleEWhenInactive%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_E_WHEN_INACTIVE
+  IniWrite, %toggleRWhenInactive%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_R_WHEN_INACTIVE
+
   IniWrite, %MAX_RADIUS%, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, MAX_RADIUS
-  IniWrite, %toggleRadialClicks%, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, toggleRadialClicks
+  IniWrite, %toggleRadialClicks%, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, TOGGLE_RADIAL_CLICKS
   MsgBox,, Saved, Settings Saved!
   return
-}
-
-ToggleCheckbox:
-{
-  TOGGLE_RADIAL_CLICKS := !TOGGLE_RADIAL_CLICKS
 }
 
 ; Does not work well.
@@ -201,18 +222,11 @@ CloseInventory() {
 }
 
 F3::
-Click, 360, 740 Left, Down
-Click, 360, 740 Left, Up
-Sleep, 2000
-Click, 360, 740 Left, Down
-Click, 360, 740 Left, Up
-Sleep, 2000
-Click, 360, 740 Left, Down
-Click, 360, 740 Left, Up
-Sleep, 2000
-Click, 360, 740 Left, Down
-Click, 360, 740 Left, Up
-Sleep, 2000
+Loop, 4 {
+  Click, 360, 740 Left, Down
+  Click, 360, 740 Left, Up
+  Sleep, 2000
+}
 Click, 360, 740 Left, Down
 Click, 360, 740 Left, Up
 Send, "t"
