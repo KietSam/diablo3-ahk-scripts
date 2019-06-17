@@ -8,7 +8,7 @@ INI_ERROR_MSG := "ERROR"
 DEFAULT_INI_FILENAME := "settings.ini"
 DEFAULT_INITIAL_KEYS := "Q"
 DEFAULT_REPEATED_KEYS := "WE"
-DEFAULT_MAX_RADIUS := 1000
+DEFAULT_MAX_RADIUS := 250
 DEFAULT_TOGGLE_RADIAL_CLICKS := 1
 DEFAULT_TOGGLE_Q_WHEN_INACTIVE := 0
 DEFAULT_TOGGLE_W_WHEN_INACTIVE := 0
@@ -65,6 +65,26 @@ w_not_active_color = 0x2D2B2A
 e_not_active_color = 0x2E2D2C
 r_not_active_color = 0x2E2D2C
 
+; Checks if the given x and y coordinates are in a good clickable region.
+; Currently set for a 1440p monitor.
+is_good_click_region(x, y) {
+  ; Character portraits
+  if (x <= 140 && y <= 800) {
+    return false
+  }
+
+  ; Follower portraits
+  if (x <= 260 && y <= 125) {
+    return false
+  }
+
+  ; Skill Bar
+  if (x >= 825 && x <= 1725 && y <= 1440 && y >= 1300) {
+    return false
+  }
+  return true
+}
+
 AutoSend:
 {
   if (GetKeyState("Alt", "P") || GetKeyState("t", "P") || GetKeyState("m", "P") || GetKeyState("Alt", "P")) {
@@ -74,7 +94,7 @@ AutoSend:
   abs_x := Abs(CHARACTER_CENTER_X - X)
   abs_y := Abs(CHARACTER_CENTER_Y - Y)
   if (is_good_click_region(X, Y)) {
-    if (Sqrt(abs_x*abs_x + abs_y*abs_y) <= MAX_RADIUS And TOGGLE_RADIAL_CLICKS) {
+    if (TOGGLE_RADIAL_CLICKS && Sqrt(abs_x*abs_x + abs_y*abs_y) <= MAX_RADIUS) {
       Send, {Click}
     }
   }
@@ -191,26 +211,6 @@ cluster_click(x, y) {
   Send, {Click %x%, %y%}
   MOUSE_LOCK := True
   return
-}
-
-; Checks if the given x and y coordinates are in a good clickable region.
-; Currently set for a 1440p monitor.
-is_good_click_region(x, y) {
-  ; Character portraits
-  if (x <= 140 && y <= 800) {
-    return false
-  }
-
-  ; Follower portraits
-  if (x <= 260 && y <= 125) {
-    return false
-  }
-
-  ; Skill Bar
-  if (x >= 825 && x <= 1725 && y <= 1440 && y >= 1300) {
-    return false
-  }
-  return true
 }
 
 CloseInventory() {
