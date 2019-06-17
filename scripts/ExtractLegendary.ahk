@@ -1,20 +1,6 @@
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
-DisableChat() {
-  active_chat_panel_color = 0x8CCBFF
-  PixelGetColor, ChatOpenColor, 43, 1398
-  if (ChatOpenColor = active_chat_panel_color) {
-    Send, {Enter}
-    Sleep, 500
-  }
-}
-
-SmartEnter() {
-  DisableChat()
-  Send, {Enter}
-  Sleep, 100
-  DisableChat()
-}
+#Include, Helpers.ahk
 
 OpenPanel() {
   active_panel_color = 0x1D3D68
