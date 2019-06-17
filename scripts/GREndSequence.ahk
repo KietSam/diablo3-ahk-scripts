@@ -17,14 +17,14 @@ Loop, 100 {
 }
 Send, "t"
 Click, 1600, 700, 0
-Sleep, 8000
+Sleep, 6800
 CloseInventory()
 Click, 2000, 700 Left, Down
 Click, 2000, 700 Left, Up
-Sleep, 800
+Sleep, 1000
 Click, 1800, 1000 Left, Down
 Click, 1800, 1000 Left, Up
-Sleep, 800
+Sleep, 1000
 Click, 1655, 905 Left, Down
 Click, 1655, 905 Left, Up
 Sleep, 500

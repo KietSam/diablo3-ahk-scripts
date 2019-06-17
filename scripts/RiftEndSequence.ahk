@@ -10,14 +10,14 @@ CloseInventory() {
 
 Send, "t"
 Click, 1600, 700, 0
-Sleep, 8000
+Sleep, 7000
 CloseInventory()
 Click, 2000, 700 Left, Down
 Click, 2000, 700 Left, Up
-Sleep, 900
+Sleep, 1500
 Click, 1800, 1000 Left, Down
 Click, 1800, 1000 Left, Up
-Sleep, 900
+Sleep, 1000
 Click, 1680, 900 Left, Down
 Click, 1680, 900 Left, Up
 Sleep, 500
