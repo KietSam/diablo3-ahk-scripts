@@ -5,9 +5,9 @@ Click, 1196, 181 Left, Down
 Click, 1196, 178 Left, Up
 
 ; Press act
-Click, 990, 820 Left, Down
-Click, 990, 820 Left, Up
+Click, 1940, 485, Left, Down
+Click, 1940, 485, Left, Up
 
 ; Press town
-Click, 1360, 640 Left, Down
-Click, 1360, 640 Left, Up
+Click, 680, 990, Left, Down
+Click, 680, 990, Left, Up

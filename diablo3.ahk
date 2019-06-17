@@ -83,25 +83,25 @@ AutoSend:
   GuiControlGet, toggleEWhenInactive,, TOGGLE_E_WHEN_INACTIVE
   GuiControlGet, toggleRWhenInactive,, TOGGLE_R_WHEN_INACTIVE
 
-  if (toggleQ) {
+  if (toggleQWhenInactive) {
     PixelGetColor, ActiveColor, 940, 1330
     if (ActiveColor = q_not_active_color) {
       Send, "q"
     }
   }
-  if (toggleW) {
+  if (toggleWWhenInactive) {
     PixelGetColor, ActiveColor, 940, 1330
     if (ActiveColor = w_not_active_color) {
       Send, "w"
     }
   }
-  if (toggleE) {
+  if (toggleEWhenInactive) {
     PixelGetColor, ActiveColor, 1030, 1330
     if (ActiveColor = e_not_active_color) {
       Send, "e"
     }
   }
-  if (toggleR) {
+  if (toggleRWhenInactive) {
     PixelGetColor, ActiveColor, 1120, 1330
     if (ActiveColor = r_not_active_color) {
       Send, "r"
@@ -221,37 +221,6 @@ CloseInventory() {
   }
 }
 
-F3::
-Loop, 4 {
-  Click, 360, 740 Left, Down
-  Click, 360, 740 Left, Up
-  Sleep, 2000
-}
-Click, 360, 740 Left, Down
-Click, 360, 740 Left, Up
-Send, "t"
-Click, 2000, 700, 0
-Sleep, 8000
-CloseInventory()
-Click, 2000, 700 Left, Down
-Click, 2000, 700 Left, Up
-Sleep, 1500
-Click, 1800, 1000 Left, Down
-Click, 1800, 1000 Left, Up
-Sleep, 1500
-Click, 1655, 905 Left, Down
-Click, 1655, 905 Left, Up
-Sleep, 1000
-Send, {Space}
-Sleep, 50
-Send, {Space}
-Sleep, 50
-Send, {Space}
-Sleep, 50
-Send, {Space}
-Return
-
-
 
 F4::
 AutoSend := !AutoSend
@@ -270,8 +239,4 @@ if (AutoSend) {
   SetTimer AutoSend, %MAX_INTERVAL%
 }
 Send, m
-Return
-
-Escape::
-ExitApp
 Return

@@ -94,34 +94,19 @@ empty_slot_color1 = 0x080D10
 empty_slot_color2 = 0x080E10
 
 ; Top -> Down
-Loop, 3 {
+Loop, 5 {
   i := A_Index
   ; Left -> Right
   Loop, 8 {
     j := A_Index
     xx := top_left_xx + j * xx_delta
-    yy := top_left_yy + i * yy_delta * 2 - yy_delta
+    yy := top_left_yy + i * yy_delta
     PixelGetColor, SlotColor, %xx%, %yy%
     if (SlotColor != empty_slot_color1 && SlotColor != empty_slot_color2) {
       Run(xx, yy)
     }
   }
 }
-
-; Top -> Down
-; Loop, 3 {
-;   i := A_Index
-;   ; Left -> Right
-;   Loop, 8 {
-;     j := A_Index
-;     xx := top_left_xx + j * xx_delta
-;     yy := top_left_yy + i * yy_delta * 2
-;     PixelGetColor, SlotColor, %xx%, %yy%
-;     if (SlotColor != empty_slot_color1 && SlotColor != empty_slot_color2) {
-;       Run(xx, yy)
-;     }
-;   }
-; }
 
 Escape::
 ExitApp
