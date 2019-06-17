@@ -49,6 +49,8 @@ Loop, 6 {
   }
 }
 
+ExitApp
+
 Escape::
 ExitApp
 Return
