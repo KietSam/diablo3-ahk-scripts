@@ -2,7 +2,7 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 
 #Include, Helpers.ahk
 
-CloseInventory() {
+CloseInventoryIfOpened() {
   active_inventory_color = 0x349ADB
   PixelGetColor, inventoryOpenColor, 2200, 100
   if (inventoryOpenColor = active_inventory_color) {
@@ -10,17 +10,72 @@ CloseInventory() {
   }
 }
 
+SpendBloodShards() {
+  blood_shard_1k_color := 0xFFFFFF
+
+  PixelGetColor, blood_shard_1k_number_color, 2476, 1167
+  if (blood_shard_1k_number_color = blood_shard_1k_color) {
+    Loop, 3 {
+      ; Quiver
+      KadalaClickWeaponTab()
+      Loop, 8 {
+        KadalaClickSlot(3)  
+      }
+
+      ; Feet
+      KadalaClickArmorTab()
+      Loop, 8 {
+        KadalaClickSlot(3)  
+      }
+
+      ; Belt
+      Loop, 8 {
+        KadalaClickSlot(5)  
+      }
+
+      ; Gloves
+      Loop, 8 {
+        KadalaClickSlot(5)  
+      }
+
+      ; kadala -> blacksmith
+      Click, 1550, 320, Left
+      Sleep, 1500
+      BlacksmithSalvageWhiteBlueYellow()
+
+      ; blacksmith -> kadala
+      Click, 970, 810, Left
+      Sleep, 2000
+    }
+  }
+}
+
+UrshiClickSlot(1)
+curr_slot := 1
+While, !UrshiOneUpgradeLeft() {
+  UrshiClickSlot(curr_slot)
+  if (UrshiIsGem100PercentUpgradeChance()) {
+    UrshiClickUpgrade()
+    Sleep, 50
+  } else {
+    curr_slot++
+    if (curr_slot = 16) {
+      UrshiScrollDownOnce()
+      curr_slot := 1
+    }
+  }
+}
+
 Loop, 100 {
   if (A_Index != 1) {
     Sleep, 50
   }
-  Click, 360, 740 Left, Down
-  Click, 360, 740 Left, Up
+  UrshiClickUpgradeIf100PercentUpgradeChance()
 }
 Send, "t"
 Click, 1600, 700, 0
 Sleep, 6800
-CloseInventory()
+CloseInventoryIfOpened()
 Click, 2000, 700 Left, Down
 Click, 2000, 700 Left, Up
 Sleep, 1000
@@ -43,25 +98,20 @@ Click, 1600, 150, Left, Up
 Click, 400, 500, 0
 Sleep, 2000
 
-salvage_icons_xx := [335, 430, 515]
-salvage_icons_yy := [390, 390, 390]
-salvage_icons_inactive_color := [0x12274E, 0x0B0804, 0x272D4A]
-
-Loop % salvage_icons_xx.Length() {
-  xx := salvage_icons_xx[A_Index]
-  yy := salvage_icons_yy[A_Index]
-  inactive_color := salvage_icons_inactive_color[A_Index]
-  PixelGetColor, salvage_icon_color, xx, yy
-  ; MsgBox % "xx: " . xx ", yy: " . yy . ", salvage_icon_color: " . salvage_icon_color
-  if (salvage_icon_color != inactive_color) {
-    Click, %xx%, %yy%, Left, Down
-    Click, %xx%, %yy%, Left, Up
-    SmartEnter()
-  }
-}
+BlacksmithSalvageWhiteBlueYellow()
 
 ; Click Kadala
 Click, 970, 810, Left
+Sleep, 1500
+
+SpendBloodShards()
+
+; Click neph stone
+Click, 1600, 900, Left
+Sleep, 1500
+
+RiftClickGreaterOption()
+RiftClickAccept()
 
 ExitApp
 

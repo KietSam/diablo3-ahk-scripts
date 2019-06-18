@@ -40,22 +40,7 @@ Click, 1600, 150, Left, Down
 Click, 1600, 150, Left, Up
 Sleep, 2000
 
-salvage_icons_xx := [335, 430, 515]
-salvage_icons_yy := [390, 390, 390]
-salvage_icons_inactive_color := [0x12274E, 0x0B0804, 0x272D4A]
-
-Loop % salvage_icons_xx.Length() {
-  xx := salvage_icons_xx[A_Index]
-  yy := salvage_icons_yy[A_Index]
-  inactive_color := salvage_icons_inactive_color[A_Index]
-  PixelGetColor, salvage_icon_color, xx, yy
-  ; MsgBox % "xx: " . xx ", yy: " . yy . ", salvage_icon_color: " . salvage_icon_color
-  if (salvage_icon_color != inactive_color) {
-    Click, %xx%, %yy%, Left, Down
-    Click, %xx%, %yy%, Left, Up
-    SmartEnter()
-  }
-}
+BlacksmithSalvageWhiteBlueYellow()
 
 Sleep, 30000
 
@@ -68,7 +53,7 @@ Sleep, 1000
 RiftClickNephalemOption()
 
 ; Click accept
-RiftClickNephalemAccept()
+RiftClickAccept()
 
 Sleep, 4000
 

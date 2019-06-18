@@ -2,54 +2,64 @@
 
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
-blood_shard_1k_color := 0xFFFFFF
 
-PixelGetColor, blood_shard_1k_number_color, 2476, 1167
-; MsgBox % "blood_shard_1k_number_color: " . blood_shard_1k_number_color
+active_color := 0x54D9F7
+inactive_color := 0x54D9F7
+PixelGetColor, curr_color, 350, 100
+; MsgBox % "curr_color: " . curr_color
 
-; Click, 970, 810, Left, Down
-; Click, 970, 810, Left, Up
+BlacksmithRepairSequence() {
+  if BlacksmithIsPanelOpened() {
+    if !BlacksmithIsRepairTabActive() {
+      BlacksmithClickRepairTab() 
+    }
+    BlacksmithClickRepairButton()
+  }
+}
 
-; KadalaClickWeaponTab()
-; KadalaClickArmorTab()
-; KadalaClickSlot(1)
+BlacksmithRepairSequence()
 
-; ; Quiver
-; KadalaClickWeaponTab()
-; Loop, 8 {
-;   KadalaClickSlot(3)  
+; curr_slot := 1
+; exit_on_next_upgrade := false
+; While, true {  
+;   if (UrshiOneUpgradeLeft()) {
+;     exit_on_next_upgrade := true
+;   }
+;   UrshiClickSlot(curr_slot)
+;   if (UrshiIsGem100PercentUpgradeChance()) {
+;     UrshiClickUpgrade()
+;     if (exit_on_next_upgrade) {
+;       break
+;     }
+;     UrshiClickSlot(curr_slot)
+;     Sleep, 1500
+;   } else {
+;     curr_slot++
+;     if (curr_slot = 16) {
+;       UrshiScrollDownOnce()
+;       curr_slot := 1
+;     }
+;   }
+; }
+; MsgBox, Done!
+
+; Loop, 15 {
+;   UrshiClickSlot(A_Index)
+;   Sleep, 250
+; }
+; UrshiScrollDownOnce()
+; Loop, 15 {
+;   UrshiClickSlot(A_Index)
+;   Sleep, 250
+; }
+; UrshiScrollDownOnce()
+; Loop, 15 {
+;   UrshiClickSlot(A_Index)
+;   Sleep, 250
 ; }
 
-; ; Feet
-; KadalaClickArmorTab()
-; Loop, 8 {
-;   KadalaClickSlot(3)  
-; }
+ExitApp
 
-; ; Belt
-; Loop, 8 {
-;   KadalaClickSlot(5)  
-; }
-
-; ; Gloves
-; Loop, 8 {
-;   KadalaClickSlot(5)  
-; }
-
-; Switch back and forth from Kadla to blacksmith
-; Click, 1550, 320, Left
-; Sleep, 2000
-Click, 970, 810, Left
-Sleep, 2000
-Click, 1550, 320, Left
-Sleep, 2000
-Click, 970, 810, Left
-Sleep, 2000
-Click, 1550, 320, Left
-Sleep, 2000
-Click, 970, 810, Left
-Sleep, 2000
-Click, 1550, 320, Left
-Sleep, 2000
-Click, 970, 810, Left
-Sleep, 2000
+Escape::
+ExitApp
+Return
