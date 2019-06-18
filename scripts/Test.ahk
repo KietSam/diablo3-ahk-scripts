@@ -3,21 +3,42 @@
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
 
-active_color := 0x54D9F7
-inactive_color := 0x54D9F7
-PixelGetColor, curr_color, 350, 100
-; MsgBox % "curr_color: " . curr_color
-
-BlacksmithRepairSequence() {
-  if BlacksmithIsPanelOpened() {
-    if !BlacksmithIsRepairTabActive() {
-      BlacksmithClickRepairTab() 
-    }
-    BlacksmithClickRepairButton()
-  }
+ClickPoint(x, y) {
+  p := Point(x, y)
+  x := p[1]
+  y := p[2]
+  Click, %x%, %y%, Left
 }
 
-BlacksmithRepairSequence()
+; p := Point(222, 400)
+; x := p[1]
+; y := p[2]
+; PrintPoint(p)
+; Click, p[1], p[2], Left
+; Click, %x%, %y%, Left
+
+ClickPoint(222, 400)
+
+; BlacksmithClickRepairTab()
+
+; p := Point(350, 100)
+; active_color := 0x54D9F7
+; inactive_color := 0x54D9F7
+; PixelGetColor, curr_color, p[0], p[1]
+; MsgBox % "curr_color: " . curr_color
+
+; Click, p[0], p[1], Left
+
+; BlacksmithRepairSequence() {
+;   if BlacksmithIsPanelOpened() {
+;     if !BlacksmithIsRepairTabActive() {
+;       BlacksmithClickRepairTab() 
+;     }
+;     BlacksmithClickRepairButton()
+;   }
+; }
+
+; BlacksmithRepairSequence()
 
 ; curr_slot := 1
 ; exit_on_next_upgrade := false

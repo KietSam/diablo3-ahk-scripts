@@ -50,13 +50,20 @@ SpendBloodShards() {
   }
 }
 
-UrshiClickSlot(1)
 curr_slot := 1
-While, !UrshiOneUpgradeLeft() {
+exit_on_next_upgrade := false
+While, true {  
+  if (UrshiOneUpgradeLeft()) {
+    exit_on_next_upgrade := true
+  }
   UrshiClickSlot(curr_slot)
   if (UrshiIsGem100PercentUpgradeChance()) {
     UrshiClickUpgrade()
-    Sleep, 50
+    if (exit_on_next_upgrade) {
+      break
+    }
+    UrshiClickSlot(curr_slot)
+    Sleep, 1500
   } else {
     curr_slot++
     if (curr_slot = 16) {
@@ -66,12 +73,6 @@ While, !UrshiOneUpgradeLeft() {
   }
 }
 
-Loop, 100 {
-  if (A_Index != 1) {
-    Sleep, 50
-  }
-  UrshiClickUpgradeIf100PercentUpgradeChance()
-}
 Send, "t"
 Click, 1600, 700, 0
 Sleep, 6800

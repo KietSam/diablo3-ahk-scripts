@@ -20,7 +20,6 @@ empty_slot_color1 = 0x080D10
 empty_slot_color2 = 0x080E10
 
 ; Top -> Down
-scan =
 Loop, 6 {
   i := A_Index
   ; Left -> Right
