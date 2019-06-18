@@ -20,3 +20,38 @@ SmartEnter() {
     Send, {Enter}
   }
 }
+
+;===============================================================
+; Kadala stone
+;===============================================================
+
+KadalaClickWeaponTab() {
+  Click, 680, 300, Left
+}
+
+KadalaClickArmorTab() {
+  Click, 680, 470, Left
+}
+
+KadalaClickSlot(n) {
+  ; n: The slot number. (index starts at 1)
+  ;    Starts at top-left and goes from left to right, top to bottom.
+  ;    1 | 2
+  ;    3 | 4
+  ;    ...
+  xx := 210 + 290 * Mod(n - 1, 2)
+  yy := 280 + 130 * (Ceil(n / 2) - 1)
+  Click, %xx%, %yy%, Right
+}
+
+;===============================================================
+; Rift stone
+;===============================================================
+
+RiftClickNephalemOption() {
+  Click, 350, 380, Left
+}
+
+RiftClickNephalemAccept() {
+  Click, 350, 1130, Left
+}

@@ -38,6 +38,9 @@ Loop, 5 {
 ; Click blacksmith
 Click, 1600, 150, Left, Down
 Click, 1600, 150, Left, Up
+
+; Move to near the salvage buttons
+Click, 400, 500, 0
 Sleep, 2000
 
 salvage_icons_xx := [335, 430, 515]
@@ -56,6 +59,9 @@ Loop % salvage_icons_xx.Length() {
     SmartEnter()
   }
 }
+
+; Click Kadala
+Click, 970, 810, Left
 
 ExitApp
 

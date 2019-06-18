@@ -65,12 +65,10 @@ Click, 1400, 1000, Left, Up
 Sleep, 1000
 
 ; Click nephalem option
-Click, 350, 380, Left, Down
-Click, 350, 380, Left, Up
+RiftClickNephalemOption()
 
 ; Click accept
-Click, 350, 1130, Left, Down
-Click, 350, 1130, Left, Up
+RiftClickNephalemAccept()
 
 Sleep, 4000
 
