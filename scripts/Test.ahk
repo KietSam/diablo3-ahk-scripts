@@ -2,14 +2,6 @@
 
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
-
-ClickPoint(x, y) {
-  p := Point(x, y)
-  x := p[1]
-  y := p[2]
-  Click, %x%, %y%, Left
-}
-
 ; p := Point(222, 400)
 ; x := p[1]
 ; y := p[2]
@@ -17,7 +9,16 @@ ClickPoint(x, y) {
 ; Click, p[1], p[2], Left
 ; Click, %x%, %y%, Left
 
-ClickPoint(222, 400)
+; ClickPoint(222, 400)
+
+; Print(IsKanaiCubePanelActive())
+
+; Loop, 9 {
+;   KanaiCubeIsSlotEmpty(A_Index)
+; }
+
+KanaiCubeRemoveItem()
+
 
 ; BlacksmithClickRepairTab()
 

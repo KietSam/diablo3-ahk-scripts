@@ -1,22 +1,48 @@
-DEFAULT_RESOLUTION_WIDTH := 2560
-DEFAULT_RESOLUTION_HEIGHT := 1440
+DEFAULT_SCREEN_RESOLUTION_WIDTH := 2560
+DEFAULT_SCREEN_RESOLUTION_HEIGHT := 1440
 
-RESOLUTION_WIDTH := 2560
-RESOLUTION_HEIGHT := 1440
+USER_SCREEN_RESOLUTION_WIDTH := 2560
+USER_SCREEN_RESOLUTION_HEIGHT := 1440
+
 
 WidthRatio() {
-  global RESOLUTION_WIDTH
-  global DEFAULT_RESOLUTION_WIDTH
-  return RESOLUTION_WIDTH / DEFAULT_RESOLUTION_WIDTH
+  global USER_SCREEN_RESOLUTION_WIDTH
+  global DEFAULT_SCREEN_RESOLUTION_WIDTH
+  return USER_SCREEN_RESOLUTION_WIDTH / DEFAULT_SCREEN_RESOLUTION_WIDTH
 }
 
 HeightRatio() {
-  global RESOLUTION_HEIGHT
-  global DEFAULT_RESOLUTION_HEIGHT
-  return RESOLUTION_HEIGHT / DEFAULT_RESOLUTION_HEIGHT
+  global USER_SCREEN_RESOLUTION_HEIGHT
+  global DEFAULT_SCREEN_RESOLUTION_HEIGHT
+  return USER_SCREEN_RESOLUTION_HEIGHT / DEFAULT_SCREEN_RESOLUTION_HEIGHT
+}
+
+IndexOf(arr, val) {
+  ; Returns the index of val if it exists.
+  ; If it does not exist, returns 0.
+  ; Note that AHK is 1-indexed for arrays.
+  Loop % arr.Length() {
+    if (arr[A_Index] == val) {
+      return A_Index
+    }
+  }
+  return 0
+}
+
+Exists(arr, val) {
+  return IndexOf(arr, val)
+}
+
+IsEmptySlotColor(c) {
+  empty_slot_colors := [0x080808, 0x080D10, 0x080E10, 0x080D0D, 0x080E0E]
+  return Exists(empty_slot_colors, c)
 }
 
 Point(x, y) {
+  ; x: x-coordinate in terms of the DEFAULT_SCREEN_RESOLUTION_WIDTH
+  ; y: y-coordinate in terms of the DEFAULT_SCREEN_RESOLUTION_HEIGHT
+  ; Returns: A point that is scaled in terms of the 
+  ;          USER_SCREEN_RESOLUTION_WIDTH and USER_SCREEN_RESOLUTION_HEIGHT.
   xx := Round(x * WidthRatio())
   yy := Round(y * HeightRatio())
   return [xx, yy]
@@ -28,27 +54,56 @@ ClickPoint(p) {
   Click, %x%, %y%, Left
 }
 
-ClickPoint(x, y) {
+RightClickPoint(p) {
+  x := p[1]
+  y := p[2]
+  Click, %x%, %y%, Right
+}
+
+MoveAt(x, y) {
+  p := Point(x, y)
+  x := p[1]
+  y := p[2]
+  Click, %x%, %y%, 0
+}
+
+ClickAt(x, y) {
   p := Point(x, y)
   x := p[1]
   y := p[2]
   Click, %x%, %y%, Left
 }
 
-PrintPoint(p) {
-  MsgBox % "p[1]: " . p[1] . ", p[2]: " . p[2]
+RightClickAt(x, y) {
+  p := Point(x, y)
+  x := p[1]
+  y := p[2]
+  Click, %x%, %y%, Right
 }
 
-DisableChat() {
-  active_color = 0x8CCBFF
-  PixelGetColor, curr_color, 43, 1398
-  if (curr_color = active_color) {
-    Send, {Enter}
-    Sleep, 500
-  }
+ColorAt(x, y) {
+  p := Point(x, y)
+  x := p[1]
+  y := p[2]
+  PixelGetColor, curr_color, %x%, %y%
+  return curr_color
+}
+
+GetMousePoint() {
+  MouseGetPos, xx, yy
+  return [xx, yy]
+}
+
+PrintPoint(p) {
+  MsgBox % "PrintPoint: p[1]: " . p[1] . ", p[2]: " . p[2]
+}
+
+Print(s) {
+  MsgBox % s
 }
 
 SmartEnter() {
+  ; Smartly presses Enter by disabling chat panel if it's open
   DisableChat()
   Send, {Enter}
   Sleep, 100
@@ -56,17 +111,161 @@ SmartEnter() {
 }
 
 ;===============================================================
+; Chat
+;===============================================================
+
+IsChatPanelActive() {
+  active_color := 0x000000
+  return ColorAt(40, 1200) = active_color
+}
+
+IsInChatPanelArea(p) {
+  top_left := Point(0, 635)
+  bot_right := Point(720, 1215)
+  x_good := p[1] >= top_left[1] && p[1] <= bot_right[2]
+  y_good := p[2] >= top_left[2] && p[2] <= bot_right[2]
+  return x_good && y_good 
+}
+
+DisableChat() {
+  if IsChatPanelActive() {
+    ; Move mouse so it's not on that chat panel
+    curr_mouse_p := GetMousePoint()
+    if IsInChatPanelArea(curr_mouse_p) {
+      MoveAt(720, curr_mouse_p[2])
+    }
+    Send, {Enter}
+    Sleep, 400
+  }
+}
+
+;===============================================================
+; Kanai Cube Panel
+;===============================================================
+
+KanaiCubeIsPanelActive() {
+  active_color := 0x26B4EE
+  return ColorAt(350, 75) == active_color
+}
+
+KanaiCubeClickTransmute() {
+  if KanaiCubeIsPanelActive() {
+    ClickAt(470, 1100)
+  }
+}
+
+KanaiCubeClickRecipe() {
+  if KanaiCubeIsPanelActive() && !KanaiCubeIsRecipePanelActive() {
+    ClickAt(575, 1100)
+  }
+}
+
+
+KanaiCubeIsRecipePanelActive() {
+  if KanaiCubeIsPanelActive() {
+    active_color := 0x080D2B
+    return ColorAt(900, 100) == active_color
+  }
+  return 0
+}
+
+KanaiCubeRecipeClickLeft(n) {
+  ; n: number of times to click left
+  if KanaiCubeIsRecipePanelActive() {
+    Loop % n {
+      ClickAt(775, 1120)
+    }
+  }
+}
+
+KanaiCubeRecipeClickRight(n) {
+  ; n: number of times to click right
+  if KanaiCubeIsRecipePanelActive() {
+    Loop % n {
+      ClickAt(1140, 1120)
+    }
+  }
+}
+
+KanaiCubeRecipeClickFill() {
+  ; n: number of times to click right
+  if KanaiCubeIsRecipePanelActive() {
+    ClickAt(900, 1100)
+  }
+}
+
+KanaiCubeRecipeSetPage1() {
+  if KanaiCubeIsRecipePanelActive() {
+    KanaiCubeRecipeClickLeft(9)
+  }
+}
+
+KanaiCubeRecipeSetPage(n) {
+  start := A_TickCount
+  if KanaiCubeIsRecipePanelActive() {
+    KanaiCubeRecipeSetPage1()
+    n := n - 1
+    KanaiCubeRecipeClickRight(n)
+  }
+  end := A_TickCount - start
+  Print(end)
+}
+
+IsEmptySlotColorPoint(p) {
+  search_diameter_width := 6 * WidthRatio()
+  search_diameter_height := 6 * HeightRatio()
+
+  top_left := [p[1] - search_diameter_width / 2, p[2] - search_diameter_height / 2]
+  bot_right := [p[1] + search_diameter_width / 2, p[2] + search_diameter_height / 2]
+
+  PixelSearch, cx, cy, top_left[1], top_left[2], bot_right[1], bot_right[2], 0x080808, 9, Fast
+  if ErrorLevel {
+    return false
+  } else {
+    return true
+  }
+}
+
+IsEmptySlotColorAt(x, y) {
+  p := Point(x, y)
+  IsEmptySlotColorPoint(p)
+}
+
+KanaiCubeSlotPoint(n) {
+  xx := 290 + 70 * Mod(n - 1, 3)
+  yy := 540 + 75 * (Ceil(n / 3) - 1)
+  return Point(xx, yy)
+}
+
+KanaiCubeIsSlotEmpty(n) {
+  ; n: The slot number. (index starts at 1)
+  ;    Starts at top-left and goes from left to right, top to bottom.
+  ;    1 | 2 | 3
+  ;    4 | 5 | 6
+  ;    ...
+  slot_point := KanaiCubeSlotPoint(n)
+  return IsEmptySlotColorPoint(slot_point)
+}
+
+KanaiCubeRemoveItem() {
+  if KanaiCubeIsPanelActive() {
+    ; These are all the spots that a 1 slot or 2 slot item will be in.
+    RightClickPoint(KanaiCubeSlotPoint(1))
+    RightClickPoint(KanaiCubeSlotPoint(3))
+    RightClickPoint(KanaiCubeSlotPoint(9))
+  }
+}
+
+;===============================================================
 ; Kadala stone
 ;===============================================================
 
 KadalaClickWeaponTab() {
-  p := Point(680, 300)
-  ClickPoint(p)
+  ClickAt(680, 300)
 }
 
 KadalaClickArmorTab() {
-  p := Point(680, 470)
-  ClickPoint(p)
+  ClickAt(680, 470)
 }
 
 KadalaClickSlot(n) {
@@ -77,7 +276,7 @@ KadalaClickSlot(n) {
   ;    ...
   xx := 210 + 290 * Mod(n - 1, 2)
   yy := 280 + 130 * (Ceil(n / 2) - 1)
-  Click, %xx%, %yy%, Right
+  RightClickAt(xx, yy)
 }
 
 ;===============================================================
@@ -85,18 +284,15 @@ KadalaClickSlot(n) {
 ;===============================================================
 
 RiftClickNephalemOption() {
-  p := Point(350, 380)
-  ClickPoint(p)
+  ClickAt(350, 380)
 }
 
 RiftClickGreaterOption() {
-  p := Point(350, 600)
-  ClickPoint(p)
+  ClickAt(350, 600)
 }
 
 RiftClickAccept() {
-  p := Point(350, 1130)
-  ClickPoint(p)
+  ClickAt(350, 1130)
 }
 
 ;===============================================================
@@ -110,12 +306,11 @@ InventoryGetSlotCoordinates(x, y) {
   ;    (1, 1) | (2, 1) | (3, 1) | ...
   ;    (1, 2) | (2, 2) | (3, 2) | ...
   ;    ...
-  xx_delta = 67
-  yy_delta = 65
-  top_left_xx = 1837
-  top_left_yy = 717
-  xx := top_left_xx + x * xx_delta
-  yy := top_left_yy + y * yy_delta
+  xx_delta := 67 * WidthRatio()
+  yy_delta := 65 * HeightRatio()
+  top_left := Point(1837, 717)
+  xx := top_left[1] + x * xx_delta
+  yy := top_left[2] + y * yy_delta
   return [xx, yy]
 }
 
@@ -126,27 +321,20 @@ InventoryIsSlotEmpty(x, y) {
   ;    (1, 1) | (2, 1) | (3, 1) | ...
   ;    (1, 2) | (2, 2) | (3, 2) | ...
   ;    ...
-  xx_delta = 67
-  yy_delta = 65
-  top_left_xx = 1837
-  top_left_yy = 717
-  xx := top_left_xx + x * xx_delta
-  yy := top_left_yy + y * yy_delta
-
-  empty_slot_color1 = 0x080D10
-  empty_slot_color2 = 0x080E10
-  PixelGetColor, slot_color, %xx%, %yy%
-  return slot_color == empty_slot_color1 || slot_color == empty_slot_color2
+  slot_point := InventoryGetSlotCoordinates(x, y)
+  empty_slot_colors := [0x080808, 0x080D10, 0x080E10]
+  slot_color := ColorAt(slot_point[1], slot_point[2])
+  return Exists(empty_slot_colors, slot_color)
 }
 
 InventoryClickSlot(x, y) {
-  xx_delta = 67
-  yy_delta = 65
-  top_left_xx = 1837
-  top_left_yy = 717
-  xx := top_left_xx + x * xx_delta
-  yy := top_left_yy + y * yy_delta
-  Click, %xx%, %yy%, Left
+  slot_point := InventoryGetSlotCoordinates(x, y)
+  ClickPoint(slot_point)
+}
+
+InventoryRightClickSlot(x, y) {
+  slot_point := InventoryGetSlotCoordinates(x, y)
+  RightClickPoint(slot_point)
 }
 
 ;===============================================================
@@ -168,8 +356,7 @@ BlacksmithIsSalvageTabActive() {
 }
 
 BlacksmithClickSalvageTab() {
-  p := Point(680, 650)
-  ClickPoint(p)
+  ClickAt(680, 650)
 }
 
 BlacksmithClickSalvageTabIfNotActive() {
@@ -186,13 +373,10 @@ BlacksmithIsSalvageActive() {
 }
 
 BlacksmithClickSalvageButton() {
-  p := Point(222, 400)
-  PrintPoint(p)
-  ClickPoint(p)
+  ClickAt(222, 400)
 }
 
 BlacksmithClickSalvageButtonIfNotActive() {
-  MsgBox % BlacksmithIsSalvageActive()
   if (!BlacksmithIsSalvageActive()) {
     BlacksmithClickSalvageButton()
   }
@@ -206,13 +390,11 @@ BlacksmithIsRepairTabActive() {
 }
 
 BlacksmithClickRepairTab() {
-  p := Point(680, 800)
-  ClickPoint(p)
+  ClickAt(680, 800)
 }
 
 BlacksmithClickRepairButton() {
-  p := Point(350, 780)
-  ClickPoint(p)
+  ClickAt(350, 780)
 }
 
 BlacksmithSalvageWhiteBlueYellow() {
@@ -308,8 +490,7 @@ UrshiClickSlot(n) {
 }
 
 UrshiClickUpgrade() {
-  p := Point(360, 740)
-  ClickPoint(p)
+  ClickAt(360, 740)
 }
 
 UrshiClickUpgradeIf100PercentUpgradeChance() {
