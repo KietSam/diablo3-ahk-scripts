@@ -38,6 +38,39 @@ IsEmptySlotColor(c) {
   return Exists(empty_slot_colors, c)
 }
 
+ColorPointSimilarTo_(p, color, search_width, search_height, variance) {
+  search_diameter_width := search_width * WidthRatio()
+  search_diameter_height := search_height * HeightRatio()
+
+  top_left := [p[1] - search_diameter_width / 2, p[2] - search_diameter_height / 2]
+  bot_right := [p[1] + search_diameter_width / 2, p[2] + search_diameter_height / 2]
+
+  PixelSearch, cx, cy, top_left[1], top_left[2], bot_right[1], bot_right[2], color, 9, Fast
+  if ErrorLevel {
+    return false
+  } else {
+    return true
+  }
+}
+
+ColorPointSimilarTo(p, color) {
+  return ColorPointSimilarTo_(p, color, 6, 6, 9)
+}
+
+ColorAtSimilarTo(x, y, color) {
+  p := Point(x, y)
+  return ColorPointSimilarTo(p, color)
+}
+
+IsEmptySlotColorAt(x, y) {
+  p := Point(x, y)
+  return IsEmptySlotColorPoint(p)
+}
+
+IsEmptySlotColorPoint(p) {
+  return ColorPointSimilarTo(p, 0x080808)
+}
+
 Point(x, y) {
   ; x: x-coordinate in terms of the DEFAULT_SCREEN_RESOLUTION_WIDTH
   ; y: y-coordinate in terms of the DEFAULT_SCREEN_RESOLUTION_HEIGHT
@@ -60,29 +93,33 @@ RightClickPoint(p) {
   Click, %x%, %y%, Right
 }
 
-MoveAt(x, y) {
-  p := Point(x, y)
+MovePoint(p) {
   x := p[1]
   y := p[2]
   Click, %x%, %y%, 0
 }
 
+MoveAt(x, y) {
+  p := Point(x, y)
+  MovePoint(p)
+}
+
 ClickAt(x, y) {
   p := Point(x, y)
-  x := p[1]
-  y := p[2]
-  Click, %x%, %y%, Left
+  ClickPoint(p)
 }
 
 RightClickAt(x, y) {
   p := Point(x, y)
-  x := p[1]
-  y := p[2]
-  Click, %x%, %y%, Right
+  RightClickPoint(p)
 }
 
 ColorAt(x, y) {
   p := Point(x, y)
+  return ColorPoint(p)
+}
+
+ColorPoint(p) {
   x := p[1]
   y := p[2]
   PixelGetColor, curr_color, %x%, %y%
@@ -211,26 +248,6 @@ KanaiCubeRecipeSetPage(n) {
   Print(end)
 }
 
-IsEmptySlotColorPoint(p) {
-  search_diameter_width := 6 * WidthRatio()
-  search_diameter_height := 6 * HeightRatio()
-
-  top_left := [p[1] - search_diameter_width / 2, p[2] - search_diameter_height / 2]
-  bot_right := [p[1] + search_diameter_width / 2, p[2] + search_diameter_height / 2]
-
-  PixelSearch, cx, cy, top_left[1], top_left[2], bot_right[1], bot_right[2], 0x080808, 9, Fast
-  if ErrorLevel {
-    return false
-  } else {
-    return true
-  }
-}
-
-IsEmptySlotColorAt(x, y) {
-  p := Point(x, y)
-  IsEmptySlotColorPoint(p)
-}
-
 KanaiCubeSlotPoint(n) {
   xx := 290 + 70 * Mod(n - 1, 3)
   yy := 540 + 75 * (Ceil(n / 3) - 1)
@@ -297,43 +314,49 @@ RiftClickAccept() {
 
 ;===============================================================
 ; Inventory
+; This is how the coordinates work:
+; x: Column number. (index starts at 1)
+; y: Row number.
+;    Example grid:
+;    (1, 1) | (2, 1) | (3, 1) | ...
+;    (1, 2) | (2, 2) | (3, 2) | ...
+;    ...
 ;===============================================================
 
-InventoryGetSlotCoordinates(x, y) {
-  ; x: Column number. (index starts at 1)
-  ; y: Row number.
-  ;    Example grid:
-  ;    (1, 1) | (2, 1) | (3, 1) | ...
-  ;    (1, 2) | (2, 2) | (3, 2) | ...
-  ;    ...
-  xx_delta := 67 * WidthRatio()
-  yy_delta := 65 * HeightRatio()
-  top_left := Point(1837, 717)
-  xx := top_left[1] + x * xx_delta
-  yy := top_left[2] + y * yy_delta
+InventoryGetSlotPoint_(x, y, xx_shift, yy_shift) {
+  xx_delta := 67.55 * WidthRatio()
+  yy_delta := 67 * HeightRatio()
+  top_left := Point(1910.5 + xx_shift, 770 + yy_shift)
+  xx := top_left[1] + (x - 1) * xx_delta
+  yy := top_left[2] + (y - 1) * yy_delta
   return [xx, yy]
 }
 
+InventoryGetSlotPointForUnidentified(x, y) {
+  return InventoryGetSlotPoint_(x, y, 0, 0)
+}
+
+InventoryGetSlotPoint(x, y) {
+  return InventoryGetSlotPoint_(x, y, -20, -10)
+}
+
 InventoryIsSlotEmpty(x, y) {
-  ; x: Column number. (index starts at 1)
-  ; y: Row number.
-  ;    Example grid:
-  ;    (1, 1) | (2, 1) | (3, 1) | ...
-  ;    (1, 2) | (2, 2) | (3, 2) | ...
-  ;    ...
-  slot_point := InventoryGetSlotCoordinates(x, y)
-  empty_slot_colors := [0x080808, 0x080D10, 0x080E10]
-  slot_color := ColorAt(slot_point[1], slot_point[2])
-  return Exists(empty_slot_colors, slot_color)
+  slot_point := InventoryGetSlotPoint(x, y)
+  return ColorPointSimilarTo(slot_point, 0x080808)
+}
+
+InventoryIsSingleSlotUnidentified(x, y) {
+  slot_point := InventoryGetSlotPointForUnidentified(x, y)
+  return ColorPointSimilarTo(slot_point, 0xFFFFBF7)
 }
 
 InventoryClickSlot(x, y) {
-  slot_point := InventoryGetSlotCoordinates(x, y)
+  slot_point := InventoryGetSlotPoint(x, y)
   ClickPoint(slot_point)
 }
 
 InventoryRightClickSlot(x, y) {
-  slot_point := InventoryGetSlotCoordinates(x, y)
+  slot_point := InventoryGetSlotPoint(x, y)
   RightClickPoint(slot_point)
 }
 
@@ -349,14 +372,13 @@ BlacksmithIsPanelOpened() {
 }
 
 BlacksmithIsSalvageTabActive() {
-  inactive_color := 0x0212A4
-  p := Point(680, 650)
-  PixelGetColor, curr_color, p[1], p[2]
-  return curr_color != inactive_color
+  return ColorAtSimilarTo(740, 645, 0x1F2B38)
 }
 
 BlacksmithClickSalvageTab() {
-  ClickAt(680, 650)
+  if BlacksmithIsPanelOpened() {
+    ClickAt(680, 650)
+  }
 }
 
 BlacksmithClickSalvageTabIfNotActive() {
@@ -366,14 +388,15 @@ BlacksmithClickSalvageTabIfNotActive() {
 }
 
 BlacksmithIsSalvageActive() {
-  inactive_color := 0x315DB4
-  p := Point(222, 400)
-  PixelGetColor, curr_color, p[1], p[2]
-  return curr_color != inactive_color
+  if BlacksmithIsSalvageTabActive() {
+    return ColorAtSimilarTo(220, 400, 0X50ACFF)
+  }
 }
 
 BlacksmithClickSalvageButton() {
-  ClickAt(222, 400)
+  if BlacksmithIsSalvageTabActive() {
+    ClickAt(222, 400)
+  }
 }
 
 BlacksmithClickSalvageButtonIfNotActive() {
@@ -383,18 +406,19 @@ BlacksmithClickSalvageButtonIfNotActive() {
 }
 
 BlacksmithIsRepairTabActive() {
-  inactive_color := 0x00004C
-  p := Point(680, 800)
-  PixelGetColor, curr_color, p[1], p[2]
-  return curr_color != inactive_color
+  return ColorAtSimilarTo(740, 815, 0x1F2E3C)
 }
 
 BlacksmithClickRepairTab() {
-  ClickAt(680, 800)
+  if BlacksmithIsPanelOpened() {
+    ClickAt(680, 800)
+  }
 }
 
 BlacksmithClickRepairButton() {
-  ClickAt(350, 780)
+  if BlacksmithIsPanelOpened() && BlacksmithIsRepairTabActive() {
+    ClickAt(350, 780)
+  }
 }
 
 BlacksmithSalvageWhiteBlueYellow() {
@@ -414,8 +438,32 @@ BlacksmithSalvageWhiteBlueYellow() {
     inactive_color := salvage_icons_inactive_color[A_Index]
     PixelGetColor, salvage_icon_color, xx, yy
     if (salvage_icon_color != inactive_color) {
-      Click, %xx%, %yy%, Left
+      ClickAt(xx, yy)
       SmartEnter()
+    }
+  }
+}
+
+BlacksmithSalvageLegendaries() {
+  if (!BlacksmithIsPanelOpened()) {
+    return
+  }
+  if (!BlacksmithIsSalvageTabActive()) {
+    BlacksmithClickSalvageTab()
+  }
+  ; Top -> Down
+  Loop, 6 {
+    i := A_Index
+    ; Left -> Right
+    Loop, 8 {
+      j := A_Index
+      x := j
+      y := i
+      if !InventoryIsSlotEmpty(x, y) {
+        BlacksmithClickSalvageButtonIfNotActive()
+        InventoryClickSlot(x, y)
+        SmartEnter()
+      }
     }
   }
 }
@@ -423,6 +471,10 @@ BlacksmithSalvageWhiteBlueYellow() {
 ;===============================================================
 ; Urshi (Gem upgrade person)
 ;===============================================================
+
+UrshiIsPanelActive() {
+  return ColorAtSimilarTo(346, 180, 0x00A3FF)
+}
 
 UrshiIsScrolledDownAllTheWay() {
   not_scrolled_all_the_way_down_color := 0x000000
@@ -444,10 +496,11 @@ UrshiIsGem100PercentUpgradeChance() {
 }
 
 UrshiOneUpgradeLeft() {
-  one_upgrade_left_color := 0xFFFFFF
-  p := Point(412, 730)
-  PixelGetColor, curr_color, p[1], p[2]
-  return one_upgrade_left_color = curr_color
+  return ColorAtSimilarTo(412, 730, 0xFFFFFF)
+  ; one_upgrade_left_color := 0xFFFFFF
+  ; p := Point(412, 730)
+  ; PixelGetColor, curr_color, p[1], p[2]
+  ; return one_upgrade_left_color = curr_color
 }
 
 UrshiClickSlot(n) {

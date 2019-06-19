@@ -53,16 +53,12 @@ SpendBloodShards() {
 curr_slot := 1
 exit_on_next_upgrade := false
 While, true {  
-  if (UrshiOneUpgradeLeft()) {
-    exit_on_next_upgrade := true
+  if (!UrshiIsPanelActive()) {
+    break
   }
   UrshiClickSlot(curr_slot)
   if (UrshiIsGem100PercentUpgradeChance()) {
     UrshiClickUpgrade()
-    if (exit_on_next_upgrade) {
-      break
-    }
-    UrshiClickSlot(curr_slot)
     Sleep, 1500
   } else {
     curr_slot++
@@ -77,14 +73,11 @@ Send, "t"
 Click, 1600, 700, 0
 Sleep, 6800
 CloseInventoryIfOpened()
-Click, 2000, 700 Left, Down
-Click, 2000, 700 Left, Up
+Click, 2000, 700 Left
 Sleep, 1000
-Click, 1800, 1000 Left, Down
-Click, 1800, 1000 Left, Up
+Click, 1800, 1000 Left
 Sleep, 1000
-Click, 1655, 905 Left, Down
-Click, 1655, 905 Left, Up
+Click, 1655, 905 Left
 Sleep, 500
 Loop, 5 {
   Send, {Space}
@@ -92,14 +85,19 @@ Loop, 5 {
 }
 
 ; Click blacksmith
-Click, 1600, 150, Left, Down
-Click, 1600, 150, Left, Up
+Click, 1600, 150, Left
 
-; Move to near the salvage buttons
-Click, 400, 500, 0
+; Move to near the salvage tab button
+Click, 680, 650, 0
 Sleep, 2000
 
+BlacksmithClickSalvageTabIfNotActive()
+
 BlacksmithSalvageWhiteBlueYellow()
+
+BlacksmithClickRepairTab()
+
+BlacksmithClickRepairButton()
 
 ; Click Kadala
 Click, 970, 810, Left
@@ -109,7 +107,7 @@ SpendBloodShards()
 
 ; Click neph stone
 Click, 1600, 900, Left
-Sleep, 1500
+Sleep, 1300
 
 RiftClickGreaterOption()
 RiftClickAccept()
