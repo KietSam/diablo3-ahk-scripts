@@ -10,32 +10,38 @@ CloseInventoryIfOpened() {
   }
 }
 
+
 SpendBloodShards() {
+  global at_blacksmith
   blood_shard_1k_color := 0xFFFFFF
 
   PixelGetColor, blood_shard_1k_number_color, 2476, 1167
   if (blood_shard_1k_number_color = blood_shard_1k_color) {
-    Loop, 3 {
+    Loop, 4 {
       ; Quiver
       KadalaClickWeaponTab()
-      Loop, 8 {
-        KadalaClickSlot(3)  
+      Loop, 3 {
+        KadalaClickSlot(3)
+        Sleep, 50
       }
 
       ; Feet
       KadalaClickArmorTab()
-      Loop, 8 {
+      Loop, 3 {
         KadalaClickSlot(3)  
+        Sleep, 50
       }
 
       ; Belt
-      Loop, 8 {
+      Loop, 6 {
         KadalaClickSlot(5)  
+        Sleep, 50
       }
 
       ; Gloves
-      Loop, 8 {
+      Loop, 3 {
         KadalaClickSlot(5)  
+        Sleep, 50
       }
 
       ; kadala -> blacksmith
@@ -47,6 +53,14 @@ SpendBloodShards() {
       Click, 970, 810, Left
       Sleep, 2000
     }
+    ; ; kadala -> blacksmith
+    ; Click, 1550, 320, Left
+    ; Sleep, 1500
+    ; BlacksmithSalvageWhiteBlueYellow()
+
+    ; ; blacksmith -> kadala
+    ; Click, 970, 810, Left
+    ; Sleep, 2000
   }
 }
 
@@ -63,6 +77,7 @@ While, true {
   } else {
     curr_slot++
     if (curr_slot = 16) {
+      UrshiScrollDownOnce()
       UrshiScrollDownOnce()
       curr_slot := 1
     }
@@ -99,9 +114,9 @@ BlacksmithClickRepairTab()
 
 BlacksmithClickRepairButton()
 
-; Click Kadala
+; blacksmith -> kadala
 Click, 970, 810, Left
-Sleep, 1500
+Sleep, 2000
 
 SpendBloodShards()
 
@@ -112,8 +127,13 @@ Sleep, 1300
 RiftClickGreaterOption()
 RiftClickAccept()
 
+Sleep, 2000
+Send, {Esc}
+Sleep, 500
+Send, {Esc}
+
 ExitApp
 
-Escape::
+F1::
 ExitApp
 Return

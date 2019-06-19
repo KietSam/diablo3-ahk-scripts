@@ -3,6 +3,7 @@
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
 
+MoveAt(1600, 900)
 
 ; Top -> Down
 ; Loop, 6 {

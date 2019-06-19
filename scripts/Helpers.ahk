@@ -342,7 +342,7 @@ InventoryGetSlotPoint(x, y) {
 
 InventoryIsSlotEmpty(x, y) {
   slot_point := InventoryGetSlotPoint(x, y)
-  return ColorPointSimilarTo(slot_point, 0x080808)
+  return ColorPointSimilarTo_(slot_point, 0x080808, 1, 1, 1)
 }
 
 InventoryIsSingleSlotUnidentified(x, y) {
@@ -436,7 +436,7 @@ BlacksmithSalvageWhiteBlueYellow() {
     xx := salvage_icons_xx[A_Index]
     yy := salvage_icons_yy[A_Index]
     inactive_color := salvage_icons_inactive_color[A_Index]
-    PixelGetColor, salvage_icon_color, xx, yy
+    salvage_icon_color := ColorAt(xx, yy)
     if (salvage_icon_color != inactive_color) {
       ClickAt(xx, yy)
       SmartEnter()
