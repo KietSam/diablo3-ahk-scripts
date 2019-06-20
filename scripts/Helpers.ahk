@@ -321,6 +321,45 @@ RiftClickAccept() {
 }
 
 ;===============================================================
+; Map
+;===============================================================
+
+MapIsPanelActive() {
+  return ColorAtSimilarTo(1090, 110, 0x5094bb)
+}
+
+MapClickMinus() {
+  ClickAt(1195, 170)
+}
+
+MapClickPlus() {
+  ClickAt(1370, 170)
+}
+
+MapClickAct(n) {
+  ; n: The act number.
+  act_x := [990, 1450, 940, 1940, 770]
+  act_y := [820, 700, 515, 485, 725]
+  ClickAt(act_x[n], act_y[n])
+}
+
+MapClickTown(n) {
+  ; n: The act number for the town
+  town_x := [1360, 1380, 670, 680, 1560]
+  town_y := [640, 1040, 640, 990, 830]
+  ClickAt(town_x[n], town_y[n])
+}
+
+MapOpenTown(n) {
+  if !MapIsPanelActive() {
+    Send, {m}
+  }
+  MapClickMinus()
+  MapClickAct(n)
+  MapClickTown(n)
+}
+
+;===============================================================
 ; Inventory
 ; This is how the coordinates work:
 ; x: Column number. (index starts at 1)
@@ -330,6 +369,10 @@ RiftClickAccept() {
 ;    (1, 2) | (2, 2) | (3, 2) | ...
 ;    ...
 ;===============================================================
+
+InventoryIsPanelActive() {
+  return ColorAtSimilarTo(2200, 230, 0x496C93)
+}
 
 InventoryGetSlotPoint_(x, y, xx_shift, yy_shift) {
   xx_delta := 67.55 * WidthRatio()
