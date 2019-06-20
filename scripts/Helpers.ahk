@@ -321,6 +321,46 @@ RiftClickAccept() {
 }
 
 ;===============================================================
+; Town
+;===============================================================
+
+TownClickKadala(n) {
+  ; Clicks Kadala starting from the town portal.
+  ; n: act number
+  xs := [1990, 520, -1, -1, -1]
+  ys := [575, 460, -1, -1, -1]
+  if (xs[n] == -1) {
+    Print("TownClickKadala: Not supported for act " . n)
+  } else {
+    ClickAt(xs[n], ys[n])
+  }
+}
+
+TownClickBlacksmith(n) {
+  ; Clicks blacksmith starting from the town portal.
+  ; n: act number
+  xs := [1830, -1, 2080, 2080, 1090]
+  ys := [170, -1, 0, 0, 50]
+  if (xs[n] == -1) {
+    Print("TownClickBlacksmith: Not supported for act " . n)
+  } else {
+    ClickAt(xs[n], ys[n])
+  }
+}
+
+TownClickOrek(n) {
+  ; Clicks Orek starting from the town portal.
+  ; n: act number
+  xs := [2220, 435, 15, 15, 550]
+  ys := [940, 915, 1170, 1170, 930]
+  if (xs[n] == -1) {
+    Print("TownClickOrek: Not supported for act " . n)
+  } else {
+    ClickAt(xs[n], ys[n])
+  }
+}
+
+;===============================================================
 ; Map
 ;===============================================================
 
@@ -357,6 +397,7 @@ MapOpenTown(n) {
   MapClickMinus()
   MapClickAct(n)
   MapClickTown(n)
+  Sleep, 2000
 }
 
 ;===============================================================
@@ -487,18 +528,22 @@ BlacksmithSalvageWhiteBlueYellow() {
   }
   salvage_icons_xx := [335, 430, 515]
   salvage_icons_yy := [390, 390, 390]
-  salvage_icons_inactive_color := [0x12274E, 0x0B0804, 0x272D4A]
 
   Loop % salvage_icons_xx.Length() {
     xx := salvage_icons_xx[A_Index]
     yy := salvage_icons_yy[A_Index]
-    inactive_color := salvage_icons_inactive_color[A_Index]
-    salvage_icon_color := ColorAt(xx, yy)
-    if (salvage_icon_color != inactive_color) {
-      ClickAt(xx, yy)
-      SmartEnter()
-    }
+    ClickAt(xx, yy)
+    SmartEnter()
   }
+}
+
+BlacksmithRepairAndSalvage() {
+  if (!BlacksmithIsPanelOpened()) {
+    return
+  }
+  BlacksmithSalvageWhiteBlueYellow()
+  BlacksmithClickRepairTab()
+  BlacksmithClickRepairButton()
 }
 
 BlacksmithSalvageLegendaries() {
