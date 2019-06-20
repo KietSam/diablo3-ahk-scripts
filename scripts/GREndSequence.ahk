@@ -2,15 +2,6 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 
 #Include, Helpers.ahk
 
-CloseInventoryIfOpened() {
-  active_inventory_color = 0x349ADB
-  PixelGetColor, inventoryOpenColor, 2200, 100
-  if (inventoryOpenColor = active_inventory_color) {
-    Send, "i"
-  }
-}
-
-
 SpendBloodShards() {
   global at_blacksmith
   blood_shard_1k_color := 0xFFFFFF
@@ -45,21 +36,21 @@ SpendBloodShards() {
       }
 
       ; kadala -> blacksmith
-      Click, 1550, 320, Left
+      ClickAt(1550, 320)
       Sleep, 1500
       BlacksmithSalvageWhiteBlueYellow()
 
       ; blacksmith -> kadala
-      Click, 970, 810, Left
+      ClickAt(970, 810)
       Sleep, 2000
     }
     ; ; kadala -> blacksmith
-    ; Click, 1550, 320, Left
+    ; ClickAt(1550, 320)
     ; Sleep, 1500
     ; BlacksmithSalvageWhiteBlueYellow()
 
     ; ; blacksmith -> kadala
-    ; Click, 970, 810, Left
+    ; ClickAt(970, 810)
     ; Sleep, 2000
   }
 }
@@ -85,25 +76,31 @@ While, true {
 }
 
 Send, "t"
-Click, 1600, 700, 0
+
+MoveAt(1600, 700)
 Sleep, 6800
-CloseInventoryIfOpened()
-Click, 2000, 700 Left
+
+InventoryCloseIfActive()
+
+ClickAt(2000, 700)
 Sleep, 1000
-Click, 1800, 1000 Left
+
+ClickAt(1800, 1000)
 Sleep, 1000
-Click, 1655, 905 Left
+
+ClickAt(1655, 905)
 Sleep, 500
+
 Loop, 5 {
   Send, {Space}
   Sleep, 50
 }
 
 ; Click blacksmith
-Click, 1600, 150, Left
+ClickAt(1600, 150)
 
 ; Move to near the salvage tab button
-Click, 680, 650, 0
+MoveAt(680, 650)
 Sleep, 2000
 
 BlacksmithClickSalvageTabIfNotActive()
@@ -115,13 +112,13 @@ BlacksmithClickRepairTab()
 BlacksmithClickRepairButton()
 
 ; blacksmith -> kadala
-Click, 970, 810, Left
+ClickAt(970, 810)
 Sleep, 2000
 
 SpendBloodShards()
 
 ; Click neph stone
-Click, 1600, 900, Left
+ClickAt(1600, 900)
 Sleep, 1300
 
 RiftClickGreaterOption()

@@ -374,6 +374,12 @@ InventoryIsPanelActive() {
   return ColorAtSimilarTo(2200, 230, 0x496C93)
 }
 
+InventoryCloseIfActive() {
+  if InventoryIsPanelActive() {
+    Send, "i"
+  }
+}
+
 InventoryGetSlotPoint_(x, y, xx_shift, yy_shift) {
   xx_delta := 67.55 * WidthRatio()
   yy_delta := 67 * HeightRatio()
