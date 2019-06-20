@@ -8,9 +8,38 @@ SmartEnter() {
   DisableChat()
 }
 
+IsInGame() {
+  active := true
+  xs := [545, 545, 620]
+  ys := [1325, 1380, 1325]
+  active_colors := [0X161513, 0X544E4B, 0X0F0F0F]
+
+  Loop, 3 { ; We have 4 points but just check 3 cause it's faster
+    active := active && ColorAtSimilarTo(xs[A_Index], ys[A_Index], active_colors[A_Index], 4, 4, 3)
+    if !active {
+      return false
+    }
+  }
+  return active
+}
+
+WaitTillInGame() {
+  ; Sleeps until in game.
+  while !IsInGame() {
+    Sleep, 50
+  }
+}
+
 ;===============================================================
 ; Game Menu (the menu when you press ESC while in-game)
 ;===============================================================
+
+GameMenuItemPoint(n) {
+  start_x := 465
+  start_y := 425
+  delta_y := 75
+  return Point(start_x, start_y + (n - 1) * delta_y)
+}
 
 GameMenuActive() {
   active := true
@@ -20,12 +49,30 @@ GameMenuActive() {
   active_colors := [0x0B070A, 0X0C0B0C, 0X0D0E0F]
 
   Loop, 3 {
-    active := active && ColorAtSimilarTo(start_x, start_y + (A_Index - 1) * delta_y, active_colors[A_Index])
+    p := GameMenuItemPoint(A_Index)
+    active := active && ColorPointSimilarTo(p, active_colors[A_Index])
     if !active {
       return false
     }
   }
   return active
+}
+
+GameMenuClick(n) {
+  ; n: The left menu item to click. index starts at 1
+  ;    (1) Options      
+  ;    (2) Achievements 
+  ;    (3) Customer Service 
+  ;    (4) Leave Game
+  ;    (5) Exit Diablo 3
+  ClickPoint(GameMenuItemPoint(n))
+}
+
+GameMenuOpen() {
+  while !GameMenuActive() {
+    Send, {Esc}
+    Sleep, 200
+  }
 }
 
 ;===============================================================
@@ -48,6 +95,17 @@ StartScreenActive() {
   return active
 }
 
+StartScreenWaitActive() {
+  while !StartScreenActive() {
+    Sleep, 50
+  }
+  Sleep, 100
+}
+
+StartScreenClickStartGame() {
+  ClickAt(320, 680)
+}
+
 ;===============================================================
 ; Skill bar
 ;===============================================================
@@ -58,7 +116,7 @@ SkillIsInactive(n) {
   inactive_colors := [000000, 000000, 000000, 000000]
   pos_x := [850, 939, 1027, 1117]
   pos_y := [1328, 1328, 1328, 1328]
-  return ColorAtSimilarTo(pos_x[n], pos_y[n], inactive_colors[n], 3, 3, 1)
+  return ColorAtSimilarTo(pos_x[n], pos_y[n], inactive_colors[n], 6, 6, 3)
 }
 
 ;===============================================================
@@ -266,6 +324,18 @@ TownClickOrek(n) {
   }
 }
 
+TownClickNephalemStone(n) {
+  ; Clicks Orek starting from the town portal.
+  ; n: act number
+  xs := [2500, 150, -1, -1, 40]
+  ys := [700, 680, -1, -1, 1100]
+  if (xs[n] == -1) {
+    Print("TownClickNephalemStone: Not supported for act " . n)
+  } else {
+    ClickAt(xs[n], ys[n])
+  }
+}
+
 ;===============================================================
 ; Map
 ;===============================================================
@@ -352,6 +422,20 @@ InventoryIsSlotEmpty(x, y) {
   return empty
 }
 
+InventoryNumEmpty() {
+  num := 0
+  Loop, 6 { ; Top -> Bottom
+    y := A_Index
+    Loop, 8 { ; Left -> Right
+      x := A_Index
+      if InventoryIsSlotEmpty(x, y) {
+        num++
+      }
+    }
+    return num
+  }
+}
+
 ; InventoryIsSingleSlotUnidentified(x, y) {
 ;   ; TODO: REDO THIS
 ;   slot_point := InventoryGetSlotPointForUnidentified(x, y)
@@ -373,10 +457,7 @@ InventoryRightClickSlot(x, y) {
 ;===============================================================
 
 BlacksmithIsPanelOpened() {
-  active_color := 0x54D9F7
-  p := Point(350, 100)
-  PixelGetColor, curr_color, p[1], p[2]
-  return curr_color = active_color
+  return ColorAtSimilarTo(350, 100, 0x54D9F7)
 }
 
 BlacksmithIsSalvageTabActive() {
@@ -564,10 +645,3 @@ UrshiClickUpgradeIf100PercentUpgradeChance() {
   }
 }
 
-Square(x) {
-  return x * x
-}
-
-Distance(x1, y1, x2, y2) {
-  return Sqrt(Square(x1 - x2) + Square(y1 - y2))
-}

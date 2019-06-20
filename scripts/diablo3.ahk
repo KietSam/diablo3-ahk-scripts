@@ -23,7 +23,7 @@ CHARACTER_CENTER_Y := 600
 
 TOGGLE_RADIAL_CLICKS := DEFAULT_TOGGLE_RADIAL_CLICKS
 MAX_RADIUS := DEFAULT_MAX_RADIUS
-MAX_INTERVAL := 150
+MAX_INTERVAL := 100
 COUNTER := 0
 
 INITIAL_KEYS := DEFAULT_INITIAL_KEYS
@@ -62,22 +62,23 @@ Gui, Add, Button, x10 y90 w130 h100 gSaveSettings, Save
 
 
 ; Checks if the given x and y coordinates are in a good clickable region.
-; Currently set for a 1440p monitor.
-is_good_click_region(x, y) {
+IsGoodClickRegion(x, y) {
+  ; x: x position in terms of user's resolution
+  ; y: y position in terms of user's resolution
   ; Character portraits
-  if (x <= 140 && y <= 800) {
+  char_portrait_p := Point(140, 800)
+  if (x <= char_portrait_p[1] && y <= char_portrait_p[2]) {
     return false
   }
-
   ; Follower portraits
-  if (x <= 260 && y <= 125) {
+  follower_portrait_p := Point(260, 125)
+  if (x <= follower_portrait_p[1] && y <= follower_portrait_p[2]) {
     return false
   }
-
   ; Skill Bar
-  skill_bar_top_left := Point(825, 1300)
-  skill_bar_bot_right := Point(1725, 1440)
-  if (x >= 825 && x <= 1725 && y <= 1440 && y >= 1300) {
+  skill_bar_top_left_p := Point(825, 1300)
+  skill_bar_bot_right_p := Point(1725, 1440)
+  if (x >= skill_bar_top_left_p[1] && x <= skill_bar_bot_right_p[1] && y <= skill_bar_bot_right_p[2] && y >= skill_bar_top_left_p[2]) {
     return false
   }
   return true
@@ -89,11 +90,11 @@ AutoSend:
     Return
   }
   GuiControlGet, toggleRadialClicks,, TOGGLE_RADIAL_CLICKS
-  MouseGetPos X, Y
-  abs_x := Abs(CHARACTER_CENTER_X - X)
-  abs_y := Abs(CHARACTER_CENTER_Y - Y)
-  if (is_good_click_region(X, Y)) {
-    if (toggleRadialClicks && Sqrt(abs_x*abs_x + abs_y*abs_y) <= MAX_RADIUS) {
+  GuiControlGet, maxRadius,, MAX_RADIUS
+  MouseGetPos mouse_x, mouse_y
+  char_center_point := Point(CHARACTER_CENTER_X, CHARACTER_CENTER_Y)
+  if (IsGoodClickRegion(mouse_x, mouse_y)) {
+    if (toggleRadialClicks && Distance(mouse_x, mouse_y, char_center_point[1], char_center_point[2]) <= maxRadius) {
       Send, {Click}
     }
   }
@@ -159,6 +160,7 @@ SaveSettings:
   GuiControlGet, toggleWWhenInactive,, TOGGLE_W_WHEN_INACTIVE
   GuiControlGet, toggleEWhenInactive,, TOGGLE_E_WHEN_INACTIVE
   GuiControlGet, toggleRWhenInactive,, TOGGLE_R_WHEN_INACTIVE
+  GuiControlGet, maxRadius,, MAX_RADIUS
   Gui, Submit, NoHide
   IniWrite, %INITIAL_KEYS%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, INITIAL_KEYS
   IniWrite, %REPEATED_KEYS%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, REPEATED_KEYS
@@ -167,7 +169,7 @@ SaveSettings:
   IniWrite, %toggleEWhenInactive%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_E_WHEN_INACTIVE
   IniWrite, %toggleRWhenInactive%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_R_WHEN_INACTIVE
 
-  IniWrite, %MAX_RADIUS%, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, MAX_RADIUS
+  IniWrite, %maxRadius%, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, MAX_RADIUS
   IniWrite, %toggleRadialClicks%, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, TOGGLE_RADIAL_CLICKS
   MsgBox,, Saved, Settings Saved!
   return

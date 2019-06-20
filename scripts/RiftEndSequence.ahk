@@ -3,9 +3,9 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 #Include, Helpers.ahk
 
 MapOpenTown(1)
+Sleep, 6000
 
-; portal -> orek
-ClickAt(2220, 940)
+TownClickOrek(1)
 Sleep, 2000
 Loop, 5 {
   Send, {Space}
@@ -15,59 +15,39 @@ Loop, 5 {
 MapOpenTown(2)
 MapOpenTown(1)
 
-; portal -> blacksmith
-ClickAt(1830, 170)
+TownClickBlacksmith(1)
 Sleep, 2000
 
 BlacksmithRepairAndSalvage()
+Sleep, 1000
 
-; Send, "t"
+GameMenuOpen()
+Sleep, 100
 
-; MoveAt(1600, 700)
-; InventoryCloseIfActive()
-; Sleep, 6900
+; Leave game
+GameMenuClick(4)
+StartScreenWaitActive()
+StartScreenClickStartGame()
+WaitTillInGame()
 
-; ; Location 1
-; ClickAt(2000, 700)
-; Sleep, 1500
+MapOpenTown(2)
+MapOpenTown(1)
+Sleep, 1500
 
-; ; Location 2
-; ClickAt(1800, 1000)
-; Sleep, 1000
+TownClickNephalemStone(1)
+Sleep, 2000
 
-; ; Orek
-; ClickAt(1680, 900)
-; Sleep, 500
-; Loop, 5 {
-;   Send, {Space}
-;   Sleep, 50
-; }
+RiftClickNephalemOption()
 
-; ; Click blacksmith
-; ClickAt(1600, 150)
-; Sleep, 2000
-
-; BlacksmithSalvageWhiteBlueYellow()
-
-; Sleep, 30000
-
-; ; Click neph stone
-; ClickAt(1400, 1000)
-; Sleep, 1000
-
-; ; Click nephalem option
-; RiftClickNephalemOption()
-
-; ; Click accept
-; RiftClickAccept()
-
-; Sleep, 4000
-
-; ; Click rift
-; ClickAt(1300, 700)
+; Click accept
+RiftClickAccept()
+; Wait for it to open
+Sleep, 3000
+; Click portal
+ClickAt(1520, 550)
 
 ExitApp
 
-Escape::
+F1::
 ExitApp
 Return
