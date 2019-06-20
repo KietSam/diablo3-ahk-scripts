@@ -2,8 +2,26 @@
 
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
+inactive_color := 000000
 
-MoveAt(1600, 900)
+; Slot 1
+x := 850
+y := 1328
+
+; Slot 2
+; x := 939
+; y := 1328
+
+; Slot 3
+; x := 1027
+; y := 1328
+
+; Slot 4
+x := 1117
+y := 1328
+
+Print("color_at: " . ColorAt(x, y) . ", similar: " . ColorAtSimilarTo(x, y, inactive_color, 3, 3, 1))
+MoveAt(x, y)
 
 ; Top -> Down
 ; Loop, 6 {

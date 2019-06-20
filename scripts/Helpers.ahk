@@ -38,7 +38,7 @@ IsEmptySlotColor(c) {
   return Exists(empty_slot_colors, c)
 }
 
-ColorPointSimilarTo_(p, color, search_width, search_height, variance) {
+ColorPointSimilarTo(p, color, search_width:=6, search_height:=6, variance:=9) {
   search_diameter_width := search_width * WidthRatio()
   search_diameter_height := search_height * HeightRatio()
 
@@ -53,13 +53,9 @@ ColorPointSimilarTo_(p, color, search_width, search_height, variance) {
   }
 }
 
-ColorPointSimilarTo(p, color) {
-  return ColorPointSimilarTo_(p, color, 6, 6, 9)
-}
-
-ColorAtSimilarTo(x, y, color) {
+ColorAtSimilarTo(x, y, color, search_width:=6, search_height:=6, variance:=9) {
   p := Point(x, y)
-  return ColorPointSimilarTo(p, color)
+  return ColorPointSimilarTo(p, color, search_width, search_height, variance)
 }
 
 IsEmptySlotColorAt(x, y) {
@@ -145,6 +141,18 @@ SmartEnter() {
   Send, {Enter}
   Sleep, 100
   DisableChat()
+}
+;===============================================================
+; Skill bar
+;===============================================================
+
+SkillIsInactive(n) {
+  ; n: The skill slot, index starts at 1.
+  ;    e.g: 1 | 2 | 3 | 4
+  inactive_colors := [000000, 000000, 000000, 000000]
+  pos_x := [850, 939, 1027, 1117]
+  pos_y := [1328, 1328, 1328, 1328]
+  return ColorAtSimilarTo(pos_x[n], pos_y[n], inactive_colors[n], 3, 3, 1)
 }
 
 ;===============================================================
@@ -342,7 +350,7 @@ InventoryGetSlotPoint(x, y) {
 
 InventoryIsSlotEmpty(x, y) {
   slot_point := InventoryGetSlotPoint(x, y)
-  return ColorPointSimilarTo_(slot_point, 0x080808, 1, 1, 1)
+  return ColorPointSimilarTo(slot_point, 0x080808, 1, 1, 1)
 }
 
 InventoryIsSingleSlotUnidentified(x, y) {

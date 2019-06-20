@@ -127,11 +127,6 @@ Sleep, 1300
 RiftClickGreaterOption()
 RiftClickAccept()
 
-Sleep, 2000
-Send, {Esc}
-Sleep, 500
-Send, {Esc}
-
 ExitApp
 
 F1::

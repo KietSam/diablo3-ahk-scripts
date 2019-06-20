@@ -2,6 +2,7 @@
 #SingleInstance Force
 #IfWinActive ahk_exe Diablo III64.exe
 
+#Include, Helpers.ahk
 
 INI_ERROR_MSG := "ERROR"
 
@@ -46,7 +47,7 @@ Gui, Add, Text, x10 y50 w130 Center, Keys to repeat:
 Gui, Add, Edit, x10 y65 w130 h20 vREPEATED_KEYS Center, %REPEATED_KEYS%
 ; Right
 Gui, Add, Text, x160 y10 w100 Left, Enable radial clicks:
-Gui, Add, Checkbox, x260 y10 Checked vTOGGLE_RADIAL_CLICKS,
+Gui, Add, Checkbox, x260 y10 Checked%TOGGLE_RADIAL_CLICKS% vTOGGLE_RADIAL_CLICKS,
 
 Gui, Add, Text, x160 y25 w100 Left, Max radius:
 Gui, Add, Edit, x215 y25 w75 h15 vMAX_RADIUS Center, %MAX_RADIUS%
@@ -59,11 +60,6 @@ Gui, Add, CheckBox, x250 y60 Checked%TOGGLE_R_WHEN_INACTIVE% vTOGGLE_R_WHEN_INAC
 
 Gui, Add, Button, x10 y90 w130 h100 gSaveSettings, Save
 
-
-q_not_active_color = 0x2C2B2A
-w_not_active_color = 0x2D2B2A
-e_not_active_color = 0x2E2D2C
-r_not_active_color = 0x2E2D2C
 
 ; Checks if the given x and y coordinates are in a good clickable region.
 ; Currently set for a 1440p monitor.
@@ -79,6 +75,8 @@ is_good_click_region(x, y) {
   }
 
   ; Skill Bar
+  skill_bar_top_left := Point(825, 1300)
+  skill_bar_bot_right := Point(1725, 1440)
   if (x >= 825 && x <= 1725 && y <= 1440 && y >= 1300) {
     return false
   }
@@ -90,11 +88,12 @@ AutoSend:
   if (GetKeyState("Alt", "P") || GetKeyState("t", "P") || GetKeyState("m", "P") || GetKeyState("Alt", "P")) {
     Return
   }
+  GuiControlGet, toggleRadialClicks,, TOGGLE_RADIAL_CLICKS
   MouseGetPos X, Y
   abs_x := Abs(CHARACTER_CENTER_X - X)
   abs_y := Abs(CHARACTER_CENTER_Y - Y)
   if (is_good_click_region(X, Y)) {
-    if (TOGGLE_RADIAL_CLICKS && Sqrt(abs_x*abs_x + abs_y*abs_y) <= MAX_RADIUS) {
+    if (toggleRadialClicks && Sqrt(abs_x*abs_x + abs_y*abs_y) <= MAX_RADIUS) {
       Send, {Click}
     }
   }
@@ -103,29 +102,17 @@ AutoSend:
   GuiControlGet, toggleEWhenInactive,, TOGGLE_E_WHEN_INACTIVE
   GuiControlGet, toggleRWhenInactive,, TOGGLE_R_WHEN_INACTIVE
 
-  if (toggleQWhenInactive) {
-    PixelGetColor, ActiveColor, 940, 1330
-    if (ActiveColor = q_not_active_color) {
-      Send, "q"
-    }
+  if (toggleQWhenInactive && SkillIsInactive(1)) {
+    Send, "q"
   }
-  if (toggleWWhenInactive) {
-    PixelGetColor, ActiveColor, 940, 1330
-    if (ActiveColor = w_not_active_color) {
-      Send, "w"
-    }
+  if (toggleWWhenInactive && SkillIsInactive(2)) {
+    Send, "w"
   }
-  if (toggleEWhenInactive) {
-    PixelGetColor, ActiveColor, 1030, 1330
-    if (ActiveColor = e_not_active_color) {
-      Send, "e"
-    }
+  if (toggleEWhenInactive && SkillIsInactive(3)) {
+    Send, "e"
   }
-  if (toggleRWhenInactive) {
-    PixelGetColor, ActiveColor, 1120, 1330
-    if (ActiveColor = r_not_active_color) {
-      Send, "r"
-    }
+  if (toggleRWhenInactive && SkillIsInactive(4)) {
+    Send, "r"
   }
 
   Send, %REPEATED_KEYS%
