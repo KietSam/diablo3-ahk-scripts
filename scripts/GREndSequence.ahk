@@ -3,7 +3,6 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 #Include, Helpers.ahk
 
 SpendBloodShards() {
-  global at_blacksmith
   blood_shard_1k_color := 0xFFFFFF
 
   PixelGetColor, blood_shard_1k_number_color, 2476, 1167
@@ -16,10 +15,16 @@ SpendBloodShards() {
         Sleep, 50
       }
 
-      ; Feet
       KadalaClickArmorTab()
+      ; Feet
       Loop, 3 {
         KadalaClickSlot(3)  
+        Sleep, 50
+      }
+
+      ; Gloves
+      Loop, 3 {
+        KadalaClickSlot(2)  
         Sleep, 50
       }
 
@@ -36,22 +41,14 @@ SpendBloodShards() {
       }
 
       ; kadala -> blacksmith
-      ClickAt(1550, 320)
+      ClickAt(1530, 350)
       Sleep, 1500
       BlacksmithSalvageWhiteBlueYellow()
 
       ; blacksmith -> kadala
-      ClickAt(970, 810)
-      Sleep, 2000
+      ClickAt(980, 840)
+      Sleep, 1500
     }
-    ; ; kadala -> blacksmith
-    ; ClickAt(1550, 320)
-    ; Sleep, 1500
-    ; BlacksmithSalvageWhiteBlueYellow()
-
-    ; ; blacksmith -> kadala
-    ; ClickAt(970, 810)
-    ; Sleep, 2000
   }
 }
 
@@ -75,51 +72,31 @@ While, true {
   }
 }
 
-Send, "t"
+MapOpenTown(1)
+Sleep, 6000
 
-MoveAt(1600, 700)
-Sleep, 6800
-
-InventoryCloseIfActive()
-
-ClickAt(2000, 700)
-Sleep, 1000
-
-ClickAt(1800, 1000)
-Sleep, 1000
-
-ClickAt(1655, 905)
-Sleep, 500
-
+TownClickOrek(1)
+Sleep, 1900
 Loop, 5 {
   Send, {Space}
   Sleep, 50
 }
 
-; Click blacksmith
-ClickAt(1600, 150)
-
-; Move to near the salvage tab button
-MoveAt(680, 650)
+; Click blacksmith from Orek pos
+ClickAt(1640, 130)
 Sleep, 2000
 
-BlacksmithClickSalvageTabIfNotActive()
+BlacksmithRepairAndSalvage()
 
-BlacksmithSalvageWhiteBlueYellow()
-
-BlacksmithClickRepairTab()
-
-BlacksmithClickRepairButton()
-
-; blacksmith -> kadala
-ClickAt(970, 810)
-Sleep, 2000
+; Click Kadela from Blacksmith
+ClickAt(980, 840)
+Sleep, 1500
 
 SpendBloodShards()
 
-; Click neph stone
-ClickAt(1600, 900)
-Sleep, 1300
+MapOpenTown(2)
+TownClickNephalemStone(2)
+Sleep, 2000
 
 RiftClickGreaterOption()
 RiftClickAccept()

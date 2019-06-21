@@ -84,7 +84,6 @@ StartScreenClickStartGame()
 WaitTillInGame()
 
 MapOpenTown(2)
-MapOpenTown(1)
 Sleep, 1500
 
 TownClickNephalemStone(1)
