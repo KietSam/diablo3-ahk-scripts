@@ -1,6 +1,6 @@
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
-#Include, Helpers.ahk
+#Include, %A_ScriptDir%\..\modules\Helpers.ahk
 
 MapOpenTown(1)
 Sleep, 5000
