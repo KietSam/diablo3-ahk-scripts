@@ -1,22 +1,14 @@
 DEFAULT_SCREEN_RESOLUTION_WIDTH := 2560
 DEFAULT_SCREEN_RESOLUTION_HEIGHT := 1440
 
-; USER_SCREEN_RESOLUTION_WIDTH := 2560
-; USER_SCREEN_RESOLUTION_HEIGHT := 1440
-
-USER_SCREEN_RESOLUTION_WIDTH := 1920
-USER_SCREEN_RESOLUTION_HEIGHT := 1080
-
 WidthRatio() {
-  global USER_SCREEN_RESOLUTION_WIDTH
   global DEFAULT_SCREEN_RESOLUTION_WIDTH
-  return USER_SCREEN_RESOLUTION_WIDTH / DEFAULT_SCREEN_RESOLUTION_WIDTH
+  return A_ScreenWidth / DEFAULT_SCREEN_RESOLUTION_WIDTH
 }
 
 HeightRatio() {
-  global USER_SCREEN_RESOLUTION_HEIGHT
   global DEFAULT_SCREEN_RESOLUTION_HEIGHT
-  return USER_SCREEN_RESOLUTION_HEIGHT / DEFAULT_SCREEN_RESOLUTION_HEIGHT
+  return A_ScreenHeight / DEFAULT_SCREEN_RESOLUTION_HEIGHT
 }
 
 IndexOf(arr, val) {
@@ -77,7 +69,7 @@ Point(x, y) {
   ; x: x-coordinate in terms of the DEFAULT_SCREEN_RESOLUTION_WIDTH
   ; y: y-coordinate in terms of the DEFAULT_SCREEN_RESOLUTION_HEIGHT
   ; Returns: A point that is scaled in terms of the 
-  ;          USER_SCREEN_RESOLUTION_WIDTH and USER_SCREEN_RESOLUTION_HEIGHT.
+  ;          user's screen height and screen width.
   xx := Round(x * WidthRatio())
   yy := Round(y * HeightRatio())
   return [xx, yy]

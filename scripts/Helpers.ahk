@@ -99,7 +99,7 @@ StartScreenWaitActive() {
   while !StartScreenActive() {
     Sleep, 50
   }
-  Sleep, 100
+  Sleep, 200
 }
 
 StartScreenClickStartGame() {
@@ -412,7 +412,7 @@ InventoryIsSlotEmpty(x, y) {
   y_shifts := [-15, 15, -15]
 
   empty := true
-  Loop % x_shifts.Length() {
+  Loop, 2 {
     slot_point := InventoryGetSlotPoint(x, y, x_shifts[A_Index], y_shifts[A_Index])
     empty := empty && ColorPointSimilarTo(slot_point, 0X080E10, 3, 3, 3)
     if !empty {
@@ -465,9 +465,7 @@ BlacksmithIsSalvageTabActive() {
 }
 
 BlacksmithClickSalvageTab() {
-  if BlacksmithIsPanelOpened() {
-    ClickAt(680, 650)
-  }
+  ClickAt(680, 650)
 }
 
 BlacksmithClickSalvageTabIfNotActive() {
@@ -510,13 +508,12 @@ BlacksmithClickRepairButton() {
   }
 }
 
+; BlacksmithSalvageButton() {
+
+; }
+
 BlacksmithSalvageWhiteBlueYellow() {
-  if (!BlacksmithIsPanelOpened()) {
-    return
-  }
-  if (!BlacksmithIsSalvageTabActive()) {
-    BlacksmithClickSalvageTab()
-  }
+  BlacksmithClickSalvageTab()
   salvage_icons_xx := [335, 430, 515]
   salvage_icons_yy := [390, 390, 390]
 

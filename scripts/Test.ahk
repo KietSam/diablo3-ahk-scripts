@@ -12,7 +12,9 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 ; Print(IsInGame())
 ; Print(SkillIsInactive(4))
 
-BlacksmithSalvageWhiteBlueYellow()
+; Print("height: " . A_ScreenHeight . ", width: " . A_ScreenWidth)
+
+; BlacksmithSalvageWhiteBlueYellow()
 
 ; Top -> Down
 ; Loop, 6 {
