@@ -3,21 +3,30 @@
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
 
-Print("Num unidentifiable: " . InventoryCountNumberUnidentifiable())
+Print(MapWhatActIsActive())
+; InventoryRightClickUnidentifiable()
 
-Loop, 1 { ; Top -> Bottom
-  y := A_Index
-  Loop, 4 { ; Left -> Right
-    x := A_Index
-    ; Print(InventoryIsSingleSlotUnidentifiable(x, y))
-    ; slot_point := InventoryGetSlotPoint(x, y, 1, 14)
-    ; Print("x: " . x . ", y: " . y . ", similar: " . ColorPointSimilarTo(slot_point, 0xFFFFFF, 6, 6, 3))
+; BlacksmithSalvageWhiteBlueYellow()MapIsActActive(n)
 
-    ; slot_point2 := InventoryGetSlotPoint(x, y, 1, 2)
-    ; Print("x: " . x . ", y: " . y . ", similar: " . ColorPointSimilarTo(slot_point2, 0xFFFFFF, 6, 6, 3, true))
-    ; MovePoint(slot_point)
-  }
-}
+; MapOpenTown(2)
+; TownClickNephalemStone(2)
+; Sleep, 2000
+
+; Print("Num unidentifiable: " . InventoryCountNumberUnidentifiable())
+
+; Loop, 1 { ; Top -> Bottom
+;   y := A_Index
+;   Loop, 4 { ; Left -> Right
+;     x := A_Index
+;     ; Print(InventoryIsSingleSlotUnidentifiable(x, y))
+;     ; slot_point := InventoryGetSlotPoint(x, y, 1, 14)
+;     ; Print("x: " . x . ", y: " . y . ", similar: " . ColorPointSimilarTo(slot_point, 0xFFFFFF, 6, 6, 3))
+
+;     ; slot_point2 := InventoryGetSlotPoint(x, y, 1, 2)
+;     ; Print("x: " . x . ", y: " . y . ", similar: " . ColorPointSimilarTo(slot_point2, 0xFFFFFF, 6, 6, 3, true))
+;     ; MovePoint(slot_point)
+;   }
+; }
 
 ; active_color := 0x5094BB
 ; Print(ColorAt(1090, 110))
@@ -43,7 +52,6 @@ Loop, 1 { ; Top -> Bottom
 ;   }
 ; }
 
-GameMenuActive()
 ExitApp
 
 F1::

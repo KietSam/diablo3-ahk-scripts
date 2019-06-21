@@ -96,7 +96,7 @@ SpendBloodShards()
 
 MapOpenTown(2)
 TownClickNephalemStone(2)
-Sleep, 2000
+Sleep, 2500
 
 RiftClickGreaterOption()
 RiftClickAccept()

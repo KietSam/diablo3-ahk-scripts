@@ -1,12 +1,9 @@
-#Include, Utils.ahk
+#Include, %A_ScriptDir%\..\scripts\Blacksmith.ahk
+#Include, %A_ScriptDir%\..\scripts\Chat.ahk
+#Include, %A_ScriptDir%\..\scripts\Map.ahk
+#Include, %A_ScriptDir%\..\scripts\Town.ahk
+#Include, %A_ScriptDir%\..\scripts\Utils.ahk
 
-SmartEnter() {
-  ; Smartly presses Enter by disabling chat panel if it's open
-  DisableChat()
-  Send, {Enter}
-  Sleep, 100
-  DisableChat()
-}
 
 IsInGame() {
   active := true
@@ -117,35 +114,6 @@ SkillIsInactive(n) {
   pos_x := [850, 939, 1027, 1117]
   pos_y := [1328, 1328, 1328, 1328]
   return ColorAtSimilarTo(pos_x[n], pos_y[n], inactive_colors[n], 6, 6, 3)
-}
-
-;===============================================================
-; Chat
-;===============================================================
-
-IsChatPanelActive() {
-  active_color := 0x000000
-  return ColorAt(40, 1200) = active_color
-}
-
-IsInChatPanelArea(p) {
-  top_left := Point(0, 635)
-  bot_right := Point(720, 1215)
-  x_good := p[1] >= top_left[1] && p[1] <= bot_right[2]
-  y_good := p[2] >= top_left[2] && p[2] <= bot_right[2]
-  return x_good && y_good 
-}
-
-DisableChat() {
-  if IsChatPanelActive() {
-    ; Move mouse so it's not on that chat panel
-    curr_mouse_p := GetMousePoint()
-    if IsInChatPanelArea(curr_mouse_p) {
-      MoveAt(720, curr_mouse_p[2])
-    }
-    Send, {Enter}
-    Sleep, 400
-  }
 }
 
 ;===============================================================
@@ -285,98 +253,6 @@ RiftClickAccept() {
 }
 
 ;===============================================================
-; Town
-;===============================================================
-
-TownClickKadala(n) {
-  ; Clicks Kadala starting from the town portal.
-  ; n: act number
-  xs := [1990, 520, -1, -1, -1]
-  ys := [575, 460, -1, -1, -1]
-  if (xs[n] == -1) {
-    Print("TownClickKadala: Not supported for act " . n)
-  } else {
-    ClickAt(xs[n], ys[n])
-  }
-}
-
-TownClickBlacksmith(n) {
-  ; Clicks blacksmith starting from the town portal.
-  ; n: act number
-  xs := [1830, -1, 2080, 2080, 1090]
-  ys := [170, -1, 0, 0, 50]
-  if (xs[n] == -1) {
-    Print("TownClickBlacksmith: Not supported for act " . n)
-  } else {
-    ClickAt(xs[n], ys[n])
-  }
-}
-
-TownClickOrek(n) {
-  ; Clicks Orek starting from the town portal.
-  ; n: act number
-  xs := [2220, 435, 15, 15, 550]
-  ys := [940, 915, 1170, 1170, 930]
-  if (xs[n] == -1) {
-    Print("TownClickOrek: Not supported for act " . n)
-  } else {
-    ClickAt(xs[n], ys[n])
-  }
-}
-
-TownClickNephalemStone(n) {
-  ; Clicks Orek starting from the town portal.
-  ; n: act number
-  xs := [2500, 150, -1, -1, 40]
-  ys := [700, 680, -1, -1, 1100]
-  if (xs[n] == -1) {
-    Print("TownClickNephalemStone: Not supported for act " . n)
-  } else {
-    ClickAt(xs[n], ys[n])
-  }
-}
-
-;===============================================================
-; Map
-;===============================================================
-
-MapIsPanelActive() {
-  return ColorAtSimilarTo(1090, 110, 0x5094bb)
-}
-
-MapClickMinus() {
-  ClickAt(1195, 170)
-}
-
-MapClickPlus() {
-  ClickAt(1370, 170)
-}
-
-MapClickAct(n) {
-  ; n: The act number.
-  act_x := [990, 1450, 940, 1940, 770]
-  act_y := [820, 700, 515, 485, 725]
-  ClickAt(act_x[n], act_y[n])
-}
-
-MapClickTown(n) {
-  ; n: The act number for the town
-  town_x := [1360, 1380, 670, 680, 1560]
-  town_y := [640, 1040, 640, 990, 830]
-  ClickAt(town_x[n], town_y[n])
-}
-
-MapOpenTown(n) {
-  if !MapIsPanelActive() {
-    Send, {m}
-  }
-  MapClickMinus()
-  MapClickAct(n)
-  MapClickTown(n)
-  Sleep, 2000
-}
-
-;===============================================================
 ; Inventory
 ; This is how the coordinates work:
 ; x: Column number. (index starts at 1)
@@ -445,6 +321,23 @@ InventoryCountNumberUnidentifiable() {
   return num
 }
 
+InventoryRightClickUnidentifiable() {
+  num := 0
+  Loop, 6 { ; Top -> Bottom
+    y := A_Index
+    Loop, 8 { ; Left -> Right
+      x := A_Index
+      if (y <= 3 && InventoryIsDoubleSlotUnidentifiable(x, y)) {
+        RightClickPoint(InventoryGetDoubleSlotPoint(x, y))
+      }
+      if InventoryIsSingleSlotUnidentifiable(x, y) {
+        RightClickPoint(InventoryGetSlotPoint(x, y))
+      }
+    }
+  }
+  return num
+}
+
 InventoryIsSlotEmpty(x, y) {
   ; TODO: REDO THIS
   x_shifts := [-15, -15, 15]
@@ -461,7 +354,7 @@ InventoryIsSlotEmpty(x, y) {
   return empty
 }
 
-InventoryNumEmpty() {
+InventoryNumEmptySlots() {
   num := 0
   Loop, 6 { ; Top -> Bottom
     y := A_Index
@@ -483,112 +376,6 @@ InventoryClickSlot(x, y) {
 InventoryRightClickSlot(x, y) {
   slot_point := InventoryGetSlotPoint(x, y)
   RightClickPoint(slot_point)
-}
-
-;===============================================================
-; Blacksmith
-;===============================================================
-
-BlacksmithIsPanelOpened() {
-  return ColorAtSimilarTo(350, 100, 0x54D9F7)
-}
-
-BlacksmithIsSalvageTabActive() {
-  return ColorAtSimilarTo(740, 645, 0x1F2B38)
-}
-
-BlacksmithClickSalvageTab() {
-  ClickAt(680, 650)
-}
-
-BlacksmithClickSalvageTabIfNotActive() {
-  if (!BlacksmithIsSalvageTabActive()) {
-    BlacksmithClickSalvageTab()
-  }
-}
-
-BlacksmithIsSalvageActive() {
-  if BlacksmithIsSalvageTabActive() {
-    return ColorAtSimilarTo(220, 400, 0X50ACFF)
-  }
-}
-
-BlacksmithClickSalvageButton() {
-  if BlacksmithIsSalvageTabActive() {
-    ClickAt(222, 400)
-  }
-}
-
-BlacksmithClickSalvageButtonIfNotActive() {
-  if (!BlacksmithIsSalvageActive()) {
-    BlacksmithClickSalvageButton()
-  }
-}
-
-BlacksmithIsRepairTabActive() {
-  return ColorAtSimilarTo(740, 815, 0x1F2E3C)
-}
-
-BlacksmithClickRepairTab() {
-  if BlacksmithIsPanelOpened() {
-    ClickAt(680, 800)
-  }
-}
-
-BlacksmithClickRepairButton() {
-  if BlacksmithIsPanelOpened() && BlacksmithIsRepairTabActive() {
-    ClickAt(350, 780)
-  }
-}
-
-; BlacksmithSalvageButton() {
-
-; }
-
-BlacksmithSalvageWhiteBlueYellow() {
-  BlacksmithClickSalvageTab()
-  salvage_icons_xx := [335, 430, 515]
-  salvage_icons_yy := [390, 390, 390]
-
-  Loop % salvage_icons_xx.Length() {
-    xx := salvage_icons_xx[A_Index]
-    yy := salvage_icons_yy[A_Index]
-    ClickAt(xx, yy)
-    SmartEnter()
-  }
-}
-
-BlacksmithRepairAndSalvage() {
-  if (!BlacksmithIsPanelOpened()) {
-    return
-  }
-  BlacksmithSalvageWhiteBlueYellow()
-  BlacksmithClickRepairTab()
-  BlacksmithClickRepairButton()
-}
-
-BlacksmithSalvageLegendaries() {
-  if (!BlacksmithIsPanelOpened()) {
-    return
-  }
-  if (!BlacksmithIsSalvageTabActive()) {
-    BlacksmithClickSalvageTab()
-  }
-  ; Top -> Down
-  Loop, 6 {
-    i := A_Index
-    ; Left -> Right
-    Loop, 8 {
-      j := A_Index
-      x := j
-      y := i
-      if !InventoryIsSlotEmpty(x, y) {
-        BlacksmithClickSalvageButtonIfNotActive()
-        InventoryClickSlot(x, y)
-        SmartEnter()
-      }
-    }
-  }
 }
 
 ;===============================================================
