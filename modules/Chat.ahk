@@ -1,4 +1,4 @@
-#Include, %A_ScriptDir%\..\scripts\Utils.ahk
+#Include, %A_ScriptDir%\..\modules\Utils.ahk
 
 IsChatPanelActive() {
   return ColorAtSimilarTo(40, 1200, 0x000000)

@@ -2,8 +2,18 @@
 
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
+Print(StashNumEmptySlots())
 
-Print(MapWhatActIsActive())
+; Loop, 2 { ; Top -> Bottom
+;   y := A_Index
+;   Loop, 2 { ; Left -> Right
+;     x := A_Index
+;     ; StashClickSlot(x, y)
+;     StashIsSlotEmpty(x, y)
+;   }
+; }
+
+; Print(MapWhatActIsActive())
 ; InventoryRightClickUnidentifiable()
 
 ; BlacksmithSalvageWhiteBlueYellow()MapIsActActive(n)

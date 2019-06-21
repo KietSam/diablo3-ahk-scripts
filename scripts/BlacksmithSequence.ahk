@@ -1,7 +1,7 @@
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
-#Include, %A_ScriptDir%\..\scripts\Chat.ahk
-#Include, %A_ScriptDir%\..\scripts\Helpers.ahk
+#Include, %A_ScriptDir%\..\modules\Chat.ahk
+#Include, %A_ScriptDir%\..\modules\Helpers.ahk
 
 
 if (!BlacksmithIsPanelOpened()) {

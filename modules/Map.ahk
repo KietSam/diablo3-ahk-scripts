@@ -1,4 +1,4 @@
-#Include, %A_ScriptDir%\..\scripts\Utils.ahk
+#Include, %A_ScriptDir%\..\modules\Utils.ahk
 
 MapIsPanelActive() {
   return ColorAtSimilarTo(1090, 110, 0x5094bb)
@@ -30,11 +30,6 @@ MapOpenTown(n) {
   if !MapIsPanelActive() {
     Send, {m}
     Sleep, 100
-  }
-  if MapIsActActive(n) {
-    ; Already active
-    Send, {m}
-    return
   }
   MapClickMinus()
   MapClickAct(n)

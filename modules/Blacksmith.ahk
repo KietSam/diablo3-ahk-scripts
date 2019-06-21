@@ -1,4 +1,4 @@
-#Include, %A_ScriptDir%\..\scripts\Utils.ahk
+#Include, %A_ScriptDir%\..\modules\Utils.ahk
 
 BlacksmithIsPanelOpened() {
   return ColorAtSimilarTo(350, 100, 0x54D9F7)
@@ -65,7 +65,6 @@ BlacksmithIsYellowInActive() {
 }
 
 BlacksmithSalvageWhiteBlueYellow() {
-  BlacksmithClickSalvageTab()
   salvage_icons_xx := [335, 430, 515]
   salvage_icons_yy := [390, 390, 390]
   is_inactive := [BlacksmithIsWhiteInActive(), BlacksmithIsBlueInActive(), BlacksmithIsYellowInActive()]
@@ -84,7 +83,7 @@ BlacksmithRepairAndSalvage() {
   if (!BlacksmithIsPanelOpened()) {
     return
   }
-  BlacksmithClickSalvageButtonIfNotActive()
+  BlacksmithClickSalvageTabIfNotActive()
   BlacksmithSalvageWhiteBlueYellow()
   BlacksmithClickRepairTab()
   BlacksmithClickRepairButton()

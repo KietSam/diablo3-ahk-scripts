@@ -1,4 +1,4 @@
-#Include, %A_ScriptDir%\..\scripts\Utils.ahk
+#Include, %A_ScriptDir%\..\modules\Utils.ahk
 
 TownClickKadala(n) {
   ; Clicks Kadala starting from the town portal.
