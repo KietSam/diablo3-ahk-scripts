@@ -17,3 +17,12 @@ SkillIsOnCooldown(n) {
   ;    e.g: 1 | 2 | 3 | 4
   return !ColorPointSimilarTo(SkillPoint(n, -7, -34), 0x52696B, 6, 6, 3)
 }
+
+SkillIsAvailable(n) {
+  ; A skill is considered "available" if:
+  ;  1. Is currently inactive
+  ;  2. Is not on cooldown
+  ; n: The skill slot, index starts at 1.
+  ;    e.g: 1 | 2 | 3 | 4
+  return !SkillIsActive(n) && !SkillIsOnCooldown(n)
+}
