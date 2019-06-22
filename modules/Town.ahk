@@ -39,8 +39,8 @@ TownClickOrek(n) {
 TownClickNephalemStone(n) {
   ; Clicks Orek starting from the town portal.
   ; n: act number
-  xs := [2500, 150, -1, -1, 40]
-  ys := [700, 680, -1, -1, 1100]
+  xs := [2500, 145, -1, -1, 40]
+  ys := [700, 652, -1, -1, 1100]
   if (xs[n] == -1) {
     Print("TownClickNephalemStone: Not supported for act " . n)
   } else {

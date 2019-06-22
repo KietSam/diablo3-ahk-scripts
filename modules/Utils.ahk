@@ -32,7 +32,7 @@ IsEmptySlotColor(c) {
   return Exists(empty_slot_colors, c)
 }
 
-ColorPointSimilarTo(p, color, search_width:=6, search_height:=6, variance:=9, debug:=false) {
+ColorPointSimilarTo(p, color, search_width:=4, search_height:=4, variance:=3, debug:=false) {
   search_diameter_width := search_width * WidthRatio()
   search_diameter_height := search_height * HeightRatio()
   top_left := [p[1] - search_diameter_width / 2, p[2] - search_diameter_height / 2]
@@ -51,7 +51,7 @@ ColorPointSimilarTo(p, color, search_width:=6, search_height:=6, variance:=9, de
   return similar
 }
 
-ColorAtSimilarTo(x, y, color, search_width:=6, search_height:=6, variance:=9, debug:=false) {
+ColorAtSimilarTo(x, y, color, search_width:=4, search_height:=4, variance:=3, debug:=false) {
   p := Point(x, y)
   return ColorPointSimilarTo(p, color, search_width, search_height, variance, debug)
 }
@@ -139,4 +139,16 @@ Square(x) {
 
 Distance(x1, y1, x2, y2) {
   return Sqrt(Square(x1 - x2) + Square(y1 - y2))
+}
+
+ArrayJoin(arr, sep:=", ") {
+  res := ""
+  for i, s in arr {
+    if (i == 1) {
+      res .= s
+    } else {
+      res .= sep . s
+    }
+  }
+  return res
 }

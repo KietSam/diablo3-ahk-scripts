@@ -29,12 +29,14 @@ MapClickTown(n) {
 MapOpenTown(n) {
   if !MapIsPanelActive() {
     Send, {m}
-    Sleep, 100
+    Sleep, 200
   }
   MapClickMinus()
+  Sleep, 200
   MapClickAct(n)
+  Sleep, 200
   MapClickTown(n)
-  Sleep, 2000
+  Sleep, 1000
 }
 
 MapIsActActive(n) {

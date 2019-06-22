@@ -2,6 +2,12 @@ StashIsPanelActive() {
   return ColorAtSimilarTo(363, 102, 0x1C5C9F) && ColorAtSimilarTo(510, 65, 0x080811)
 }
 
+StashWaitTillActive() {
+  while !StashIsPanelActive() {
+    Sleep, 50
+  }
+}
+
 StashClickTab(n) {
   ; n : tab number, index starts at 1.
   ;    e.g: 
@@ -29,9 +35,9 @@ StashClickSlot(x, y) {
 }
 
 StashIsSlotEmpty(x, y) {
-  if ColorPointSimilarTo(StashSlotPoint(x, y, -20, 20), 0x080B10) {
-    return ColorPointSimilarTo(StashSlotPoint(x, y, 20, -20), 0x080D15)
-  }
+  return ColorPointSimilarTo(StashSlotPoint(x, y, 0, 30), 0x080B10)
+      && ColorPointSimilarTo(StashSlotPoint(x, y, 0, -30), 0x080D15)
+      ; && ColorPointSimilarTo(StashSlotPoint(x, y, -15, -15), 0x080D15)
 }
 
 StashNumEmptySlots() {

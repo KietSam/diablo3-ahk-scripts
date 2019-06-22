@@ -2,7 +2,21 @@
 
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
-Print(StashNumEmptySlots())
+; SkillClick(1)
+; SkillClick(2)
+; SkillClick(3)
+; SkillClick(4)
+
+; Print(KadalaIsPanelActive())
+
+KadalaClickTab(1)
+KadalaClickTab(2)
+KadalaClickTab(3)
+
+; Print(SkillIsActive(4))
+; Print(SkillIsOnCooldown(4))
+
+; Print(StashNumEmptySlots())
 
 ; Loop, 2 { ; Top -> Bottom
 ;   y := A_Index

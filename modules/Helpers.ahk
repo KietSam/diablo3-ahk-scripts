@@ -1,9 +1,13 @@
 #Include, %A_ScriptDir%\..\modules\Blacksmith.ahk
 #Include, %A_ScriptDir%\..\modules\Chat.ahk
 #Include, %A_ScriptDir%\..\modules\Inventory.ahk
+#Include, %A_ScriptDir%\..\modules\Kadala.ahk
+#Include, %A_ScriptDir%\..\modules\Kanai.ahk
 #Include, %A_ScriptDir%\..\modules\Map.ahk
+#Include, %A_ScriptDir%\..\modules\Skills.ahk
 #Include, %A_ScriptDir%\..\modules\Stash.ahk
 #Include, %A_ScriptDir%\..\modules\Town.ahk
+#Include, %A_ScriptDir%\..\modules\Urshi.ahk
 #Include, %A_ScriptDir%\..\modules\Utils.ahk
 
 
@@ -106,139 +110,6 @@ StartScreenClickStartGame() {
 }
 
 ;===============================================================
-; Skill bar
-;===============================================================
-
-SkillIsInactive(n) {
-  ; n: The skill slot, index starts at 1.
-  ;    e.g: 1 | 2 | 3 | 4
-  inactive_colors := [000000, 000000, 000000, 000000]
-  pos_x := [850, 939, 1027, 1117]
-  pos_y := [1328, 1328, 1328, 1328]
-  return ColorAtSimilarTo(pos_x[n], pos_y[n], inactive_colors[n], 6, 6, 3)
-}
-
-;===============================================================
-; Kanai Cube Panel
-;===============================================================
-
-KanaiCubeIsPanelActive() {
-  active_color := 0x26B4EE
-  return ColorAt(350, 75) == active_color
-}
-
-KanaiCubeClickTransmute() {
-  if KanaiCubeIsPanelActive() {
-    ClickAt(470, 1100)
-  }
-}
-
-KanaiCubeClickRecipe() {
-  if KanaiCubeIsPanelActive() && !KanaiCubeIsRecipePanelActive() {
-    ClickAt(575, 1100)
-  }
-}
-
-
-KanaiCubeIsRecipePanelActive() {
-  if KanaiCubeIsPanelActive() {
-    active_color := 0x080D2B
-    return ColorAt(900, 100) == active_color
-  }
-  return 0
-}
-
-KanaiCubeRecipeClickLeft(n) {
-  ; n: number of times to click left
-  if KanaiCubeIsRecipePanelActive() {
-    Loop % n {
-      ClickAt(775, 1120)
-    }
-  }
-}
-
-KanaiCubeRecipeClickRight(n) {
-  ; n: number of times to click right
-  if KanaiCubeIsRecipePanelActive() {
-    Loop % n {
-      ClickAt(1140, 1120)
-    }
-  }
-}
-
-KanaiCubeRecipeClickFill() {
-  ; n: number of times to click right
-  if KanaiCubeIsRecipePanelActive() {
-    ClickAt(900, 1100)
-  }
-}
-
-KanaiCubeRecipeSetPage1() {
-  if KanaiCubeIsRecipePanelActive() {
-    KanaiCubeRecipeClickLeft(9)
-  }
-}
-
-KanaiCubeRecipeSetPage(n) {
-  start := A_TickCount
-  if KanaiCubeIsRecipePanelActive() {
-    KanaiCubeRecipeSetPage1()
-    n := n - 1
-    KanaiCubeRecipeClickRight(n)
-  }
-  end := A_TickCount - start
-  Print(end)
-}
-
-KanaiCubeSlotPoint(n) {
-  xx := 290 + 70 * Mod(n - 1, 3)
-  yy := 540 + 75 * (Ceil(n / 3) - 1)
-  return Point(xx, yy)
-}
-
-KanaiCubeIsSlotEmpty(n) {
-  ; n: The slot number. (index starts at 1)
-  ;    Starts at top-left and goes from left to right, top to bottom.
-  ;    1 | 2 | 3
-  ;    4 | 5 | 6
-  ;    ...
-  slot_point := KanaiCubeSlotPoint(n)
-  return IsEmptySlotColorPoint(slot_point)
-}
-
-KanaiCubeRemoveItem() {
-  if KanaiCubeIsPanelActive() {
-    ; These are all the spots that a 1 slot or 2 slot item will be in.
-    RightClickPoint(KanaiCubeSlotPoint(1))
-    RightClickPoint(KanaiCubeSlotPoint(3))
-    RightClickPoint(KanaiCubeSlotPoint(9))
-  }
-}
-
-;===============================================================
-; Kadala stone
-;===============================================================
-
-KadalaClickWeaponTab() {
-  ClickAt(680, 300)
-}
-
-KadalaClickArmorTab() {
-  ClickAt(680, 470)
-}
-
-KadalaClickSlot(n) {
-  ; n: The slot number. (index starts at 1)
-  ;    Starts at top-left and goes from left to right, top to bottom.
-  ;    1 | 2
-  ;    3 | 4
-  ;    ...
-  xx := 210 + 290 * Mod(n - 1, 2)
-  yy := 280 + 130 * (Ceil(n / 2) - 1)
-  RightClickAt(xx, yy)
-}
-
-;===============================================================
 ; Rift stone
 ;===============================================================
 
@@ -252,89 +123,5 @@ RiftClickGreaterOption() {
 
 RiftClickAccept() {
   ClickAt(350, 1130)
-}
-
-;===============================================================
-; Urshi (Gem upgrade person)
-;===============================================================
-
-UrshiIsPanelActive() {
-  return ColorAtSimilarTo(346, 180, 0x00A3FF)
-}
-
-UrshiIsScrolledDownAllTheWay() {
-  not_scrolled_all_the_way_down_color := 0x000000
-  p := Point(605, 1060)
-  PixelGetColor, curr_color, p[1], p[2]
-  return curr_color != not_scrolled_all_the_way_down_color
-}
-
-UrshiScrollDownOnce() {
-  p := Point(400, 1000)
-  Click, p[1], p[2], 0
-  Click, WheelDown
-}
-
-UrshiIsGem100PercentUpgradeChance() {
-  gem_100_color := 0xFFFFFF
-  PixelGetColor, curr_gem_100_color, 495, 680
-  return curr_gem_100_color = gem_100_color
-}
-
-UrshiOneUpgradeLeft() {
-  return ColorAtSimilarTo(412, 730, 0xFFFFFF)
-  ; one_upgrade_left_color := 0xFFFFFF
-  ; p := Point(412, 730)
-  ; PixelGetColor, curr_color, p[1], p[2]
-  ; return one_upgrade_left_color = curr_color
-}
-
-UrshiClickSlot(n) {
-  ; n: The slot number. (index starts at 1)
-  ;    Starts at top-left and goes from left to right, top to bottom.
-  ;    1 | 2 | 3 | 4 | 5
-  ;    6 | 7 | 8 | 9 | 10
-  ;    ...
-  xx := 140 + 95 * Mod(n - 1, 5)
-  yy := 865 + 100 * (Ceil(n / 5) - 1)
-
-  ; Click gem
-  Click, %xx%, %yy%, Left
-
-  xxs_fade := [70, 570, xx, xx]
-  yys_fade := [yy, yy, 780, 1150]
-
-  min_distance := 100000
-  min_xx_fade := 0
-  min_yy_fade := 0
-
-  ; Found then nearest spot where we can move the house 
-  ; so that the popup doesn't appear.
-  Loop % xxs_fade.Length() {
-    xx_fade := xxs_fade[A_Index]
-    yy_fade := yys_fade[A_Index]
-    curr_distance := Distance(xx, yy, xx_fade, yy_fade)
-    if (curr_distance < min_distance) {
-      min_distance := curr_distance
-      min_xx_fade := xx_fade
-      min_yy_fade := yy_fade
-    }
-  }
-
-  ; Move mouse in a position where the popup doesn't appear
-  Click, %min_xx_fade%, %min_yy_fade%, 0
-
-  ; Wait for a bit to give it some time to disappear
-  Sleep, 500
-}
-
-UrshiClickUpgrade() {
-  ClickAt(360, 740)
-}
-
-UrshiClickUpgradeIf100PercentUpgradeChance() {
-  if (UrshiIsGem100PercentUpgradeChance()) {
-    UrshiClickUpgrade()
-  }
 }
 

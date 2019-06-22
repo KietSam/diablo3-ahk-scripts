@@ -103,16 +103,16 @@ AutoSend:
   GuiControlGet, toggleEWhenInactive,, TOGGLE_E_WHEN_INACTIVE
   GuiControlGet, toggleRWhenInactive,, TOGGLE_R_WHEN_INACTIVE
 
-  if (toggleQWhenInactive && SkillIsInactive(1)) {
+  if (toggleQWhenInactive && !SkillIsActive(1)) {
     Send, "q"
   }
-  if (toggleWWhenInactive && SkillIsInactive(2)) {
+  if (toggleWWhenInactive && !SkillIsActive(2)) {
     Send, "w"
   }
-  if (toggleEWhenInactive && SkillIsInactive(3)) {
+  if (toggleEWhenInactive && !SkillIsActive(3)) {
     Send, "e"
   }
-  if (toggleRWhenInactive && SkillIsInactive(4)) {
+  if (toggleRWhenInactive && !SkillIsActive(4)) {
     Send, "r"
   }
 

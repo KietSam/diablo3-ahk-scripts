@@ -7,7 +7,7 @@ SpendBloodShards() {
 
   PixelGetColor, blood_shard_1k_number_color, 2476, 1167
   if (blood_shard_1k_number_color = blood_shard_1k_color) {
-    Loop, 4 {
+    Loop, 3 {
       ; Quiver
       KadalaClickWeaponTab()
       Loop, 3 {
@@ -52,31 +52,58 @@ SpendBloodShards() {
   }
 }
 
-curr_slot := 1
+curr_x := 1
+curr_y := 1
 exit_on_next_upgrade := false
 While, true {  
   if (!UrshiIsPanelActive()) {
     break
   }
-  UrshiClickSlot(curr_slot)
+  UrshiClickSlot(curr_x, curr_y)
   if (UrshiIsGem100PercentUpgradeChance()) {
     UrshiClickUpgrade()
     Sleep, 1500
   } else {
-    curr_slot++
-    if (curr_slot = 16) {
+    if (curr_x == 5 && curr_y == 3) {
+      ; Made it through the first page
+      ; Reset x position but stay at y position
       UrshiScrollDownOnce()
-      UrshiScrollDownOnce()
-      curr_slot := 1
+      curr_x = 1
+    } else if (curr_x == 5) {
+      curr_x = 1
+      curr_y++
+    } else {
+      curr_x++
     }
   }
 }
 
-MapOpenTown(1)
-Sleep, 6000
+MapOpenTown(3)
+Sleep, 5500
+TownClickStash(3)
+StashWaitTillActive()
+StashClickChest(1)
 
+tab := 2
+while (InventoryCountNumberUnidentifiable() != 0) {
+  StashClickTab(tab)
+  while (StashNumEmptySlots() <= 2) {
+    tab++
+    if (tab > 5) {
+      break
+    }
+    StashClickTab(tab)
+  }
+  if (tab > 5) {
+    break
+  }
+  InventoryRightClickUnidentifiable()
+}
+
+MapOpenTown(1)
+Sleep, 1000
 TownClickOrek(1)
-Sleep, 1900
+Sleep, 2000
 Loop, 5 {
   Send, {Space}
   Sleep, 50
@@ -95,8 +122,9 @@ Sleep, 1500
 SpendBloodShards()
 
 MapOpenTown(2)
+Sleep, 1000
 TownClickNephalemStone(2)
-Sleep, 2500
+Sleep, 3000
 
 RiftClickGreaterOption()
 RiftClickAccept()
