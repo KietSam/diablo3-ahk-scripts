@@ -85,7 +85,7 @@ StashWaitTillActive()
 StashClickChest(1)
 
 tab := 2
-while (InventoryCountNumberUnidentifiable() != 0) {
+while (InventoryNumUnidentifiable() != 0) {
   StashClickTab(tab)
   while (StashNumEmptySlots() <= 2) {
     tab++

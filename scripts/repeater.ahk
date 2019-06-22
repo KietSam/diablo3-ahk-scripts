@@ -320,14 +320,6 @@ cluster_click(x, y) {
   return
 }
 
-CloseInventory() {
-  active_inventory_color = 0x349ADB
-  PixelGetColor, inventoryOpenColor, 2200, 100
-  if (inventoryOpenColor = active_inventory_color) {
-    Send, "i"
-  }
-}
-
 
 F4::
 AutoSend := !AutoSend

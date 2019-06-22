@@ -36,23 +36,33 @@ InventoryGetDoubleSlotPoint(x, y, xx_shift:=0, yy_shift:=0) {
 
 InventoryIsSingleSlotUnidentifiable(x, y) {
   slot_point1 := InventoryGetSlotPoint(x, y, 1, 14)
-  if ColorPointSimilarTo(slot_point1, 0xFFFFFF, 4, 4, 2) {
+  if ColorPointSimilarTo(slot_point1, 0xFFFFFF, 5, 5, 2) {
     slot_point2 := InventoryGetSlotPoint(x, y, 1, 2)
-    return ColorPointSimilarTo(slot_point2, 0xFFFFFF, 4, 4, 2)
+    return ColorPointSimilarTo(slot_point2, 0xFFFFFF, 5, 5, 2)
   }
   return false
 }
 
 InventoryIsDoubleSlotUnidentifiable(x, y) {
   slot_point1 := InventoryGetDoubleSlotPoint(x, y, 1, 49)
-  if ColorPointSimilarTo(slot_point1, 0xFFFFFF, 4, 4, 2) {
+  if ColorPointSimilarTo(slot_point1, 0xFFFFFF, 5, 5, 2) {
     slot_point2 := InventoryGetDoubleSlotPoint(x, y, 1, 34)
-    return ColorPointSimilarTo(slot_point2, 0xFFFFFF, 4, 4, 2)
+    return ColorPointSimilarTo(slot_point2, 0xFFFFFF, 5, 5, 2)
   }
   return false
 }
 
-InventoryCountNumberUnidentifiable() {
+InventoryIsDoubleSlotSetItem(x, y) {
+  slot_point1 := InventoryGetDoubleSlotPoint(x, y, 23, 88)
+  return ColorPointSimilarTo(slot_point1, 0x4DF05A)
+}
+
+InventoryIsSingleSlotSetItem(x, y) {
+  slot_point1 := InventoryGetSlotPoint(x, y, 23, 21)
+  return ColorPointSimilarTo(slot_point1, 0x4DF05A)
+}
+
+InventoryNumUnidentifiable() {
   num := 0
   Loop, 6 { ; Top -> Bottom
     y := A_Index
@@ -69,6 +79,23 @@ InventoryCountNumberUnidentifiable() {
   return num
 }
 
+InventoryNumSetItems() {
+  num := 0
+  Loop, 3 { ; Top -> Bottom
+    y := A_Index
+    Loop, 8 { ; Left -> Right
+      x := A_Index
+      if (InventoryIsDoubleSlotSetItem(x, y)) {
+        num++
+      }
+      if InventoryIsSingleSlotSetItem(x, -1 + 2 * y) {
+        num++
+      }
+    }
+  }
+  return num
+}
+
 InventoryRightClickUnidentifiable() {
   Loop, 6 { ; Top -> Bottom
     y := A_Index
@@ -76,9 +103,15 @@ InventoryRightClickUnidentifiable() {
       x := A_Index
       if (y <= 3 && InventoryIsDoubleSlotUnidentifiable(x, y)) {
         RightClickPoint(InventoryGetDoubleSlotPoint(x, y))
+        ; Sleep a bit in case the user is inputting into stash, 
+        ; so the popup will disappear.
+        Sleep, 50
       }
       if InventoryIsSingleSlotUnidentifiable(x, y) {
         RightClickPoint(InventoryGetSlotPoint(x, y))
+        ; Sleep a bit in case the user is inputting into stash, 
+        ; so the popup will disappear.
+        Sleep, 50
       }
     }
   }

@@ -32,7 +32,7 @@ Loop, 3 {
     j := A_Index
     x := j
     y := 1 + 2 * (i - 1)
-    if !InventoryIsSlotEmpty(x, y) {
+    if (!InventoryIsSlotEmpty(x, y) && !InventoryIsDoubleSlotSetItem(x, y)) {
       Run(x, y)
     }
   }

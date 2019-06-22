@@ -1,3 +1,0 @@
-
-salvage_icons_xx := [335, 430, 515]
-salvage_icons_yy := [390, 390, 390]

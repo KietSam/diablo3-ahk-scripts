@@ -14,19 +14,23 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 ; KadalaClickTab(3)
 
 ; Print(SkillIsActive(4))
-Print(SkillIsOnCooldown(3))
+; Print(SkillIsOnCooldown(3))
 ; Print(SkillIsOnCooldown(1))
 
 ; Print(StashNumEmptySlots())
 
-; Loop, 2 { ; Top -> Bottom
+; Loop, 6 { ; Top -> Bottom
 ;   y := A_Index
 ;   Loop, 2 { ; Left -> Right
 ;     x := A_Index
+;     ; InventoryIsSingleSlotSetItem(x, y)
+;     Print("x: " . x . ", y: " . y . ", is_set_item: " . InventoryIsSingleSlotSetItem(x, y))
 ;     ; StashClickSlot(x, y)
-;     StashIsSlotEmpty(x, y)
+;     ; StashIsSlotEmpty(x, y)
 ;   }
 ; }
+
+Print(InventoryNumSetItems())
 
 ; Print(MapWhatActIsActive())
 ; InventoryRightClickUnidentifiable()
@@ -37,7 +41,7 @@ Print(SkillIsOnCooldown(3))
 ; TownClickNephalemStone(2)
 ; Sleep, 2000
 
-; Print("Num unidentifiable: " . InventoryCountNumberUnidentifiable())
+; Print("Num unidentifiable: " . InventoryNumUnidentifiable())
 
 ; Loop, 1 { ; Top -> Bottom
 ;   y := A_Index
