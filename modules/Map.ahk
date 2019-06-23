@@ -43,15 +43,16 @@ MapClickTown(n) {
 MapOpenTown(n) {
   MapOpenPanel()
   MapClickMinus()
-  Sleep, 200
+  Sleep, 50
   MapClickAct(n)
-  Sleep, 200
+  Sleep, 50
   MapClickTown(n)
   Sleep, 1000
 }
 
 MapIsActActive(n) {
-  ; Use 3 points in order to what act we're currently in.
+  ; Each act has it's own set of 3 points/colors that we check to see
+  ; what act we're in.
   points := [[Point(1357, 640), Point(776, 791), Point(1805, 695)]
             ,[Point(1382, 1036), Point(577, 839), Point(1971, 375)]
             ,[Point(679, 637), Point(1879, 299), Point(1736, 1046)]
