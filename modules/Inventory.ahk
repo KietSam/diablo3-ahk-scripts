@@ -50,9 +50,9 @@ InventoryIsSingleSlotUnidentifiable(x, y) {
 }
 
 InventoryIsDoubleSlotUnidentifiable(x, y) {
-  slot_point1 := InventoryGetDoubleSlotPoint(x, y, 1, 49)
+  slot_point1 := InventoryGetDoubleSlotPoint(x, y, 1, -17)
   if ColorPointSimilarTo(slot_point1, 0xFFFFFF, 5, 5, 2) {
-    slot_point2 := InventoryGetDoubleSlotPoint(x, y, 1, 34)
+    slot_point2 := InventoryGetDoubleSlotPoint(x, y, 1, -30)
     return ColorPointSimilarTo(slot_point2, 0xFFFFFF, 5, 5, 2)
   }
   return false
@@ -100,12 +100,16 @@ InventoryIsDoubleSlotPrimal(x, y) {
   return ColorPointSimilarTo(item_strip_point, 0x0B0A72, 6, 6, 10)
 }
 
-InventoryIsDoubleSlotImportant(x, y) {
-  return InventoryIsDoubleSlotAncient(x, y) || InventoryIsDoubleSlotPrimal(x, y)
+InventoryIsSingleSlotImportant(x, y) {
+  return InventoryIsSingleSlotUnidentifiable(x, y) 
+      || InventoryIsSingleSlotAncient(x, y) 
+      || InventoryIsSingleSlotPrimal(x, y)
 }
 
-InventoryIsSingleSlotImportant(x, y) {
-  return InventoryIsSingleSlotAncient(x, y) || InventoryIsSingleSlotPrimal(x, y)
+InventoryIsDoubleSlotImportant(x, y) {
+  return InventoryIsDoubleSlotUnidentifiable(x, y) 
+      ; || InventoryIsDoubleSlotAncient(x, y) 
+      ; || InventoryIsDoubleSlotPrimal(x, y)
 }
 
 InventoryNumAncient() {

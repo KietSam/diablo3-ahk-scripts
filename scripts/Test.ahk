@@ -25,7 +25,9 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 ; InventoryRightClickAncient()
 
 ; Print(InventoryIsSingleSlotPrimal(1, 1))
-Print(InventoryIsDoubleSlotPrimal(2, 1))
+; Print(InventoryIsDoubleSlotPrimal(2, 1))
+
+InventoryIsDoubleSlotUnidentifiable(1, 1)
 
 ; Loop, 1 { ; Top -> Bottom
 ;   y := A_Index

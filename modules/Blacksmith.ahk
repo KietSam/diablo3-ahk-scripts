@@ -1,3 +1,6 @@
+#Include, %A_ScriptDir%\..\modules\Chat.ahk
+#Include, %A_ScriptDir%\..\modules\Inventory.ahk
+#Include, %A_ScriptDir%\..\modules\Stash.ahk
 #Include, %A_ScriptDir%\..\modules\Utils.ahk
 
 BlacksmithIsPanelOpened() {

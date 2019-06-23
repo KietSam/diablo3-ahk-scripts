@@ -1,11 +1,12 @@
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
-#Include, %A_ScriptDir%\..\modules\Kadala.ahk
 #Include, %A_ScriptDir%\..\modules\Blacksmith.ahk
+#Include, %A_ScriptDir%\..\modules\Kadala.ahk
+#Include, %A_ScriptDir%\..\modules\Map.ahk
+#Include, %A_ScriptDir%\..\modules\RiftStone.ahk
+#Include, %A_ScriptDir%\..\modules\Town.ahk
 #Include, %A_ScriptDir%\..\modules\Utils.ahk
 #Include, %A_ScriptDir%\..\modules\Urshi.ahk
-#Include, %A_ScriptDir%\..\modules\Map.ahk
-#Include, %A_ScriptDir%\..\modules\Town.ahk
 
 SpendBloodShards() {
   blood_shard_1k_color := 0xFFFFFF

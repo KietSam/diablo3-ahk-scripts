@@ -17,7 +17,11 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 
 ; Start here
 
-InventoryRightClickAncient()
+if !InventoryIsPanelActive() {
+  ExitApp
+}
+
+InventoryRightClickImportant()
 
 ExitApp
 
