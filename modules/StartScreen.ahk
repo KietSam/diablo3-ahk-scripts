@@ -21,7 +21,7 @@ StartScreenWaitActive() {
   while !StartScreenActive() {
     Sleep, 50
   }
-  Sleep, 200
+  Sleep, 2000
 }
 
 StartScreenClickStartGame() {

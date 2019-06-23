@@ -94,7 +94,7 @@ UrshiUpgradeSequence() {
 
 HomeSequence() {
   MapOpenTown(3)
-  WaitTillPointIsColor(Point(1036, 223), 0x392828, 20, 20, 9)
+  WaitTillPointIsColor(Point(1036, 223), 0x392828, 20, 20, 20)
   Sleep, 500
   TownClickStash(3)
   StashWaitTillActive()
@@ -117,7 +117,7 @@ HomeSequence() {
   }
 
   MapOpenTown(1)
-  WaitTillPointIsColor(Point(2232, 954), 0xF6F52C, 20, 20, 20)
+  WaitTillPointIsColor(Point(2239, 938), 0xE7D64A, 30, 30, 50)
   TownClickOrek(1)
   Sleep, 2000
   Loop, 5 {

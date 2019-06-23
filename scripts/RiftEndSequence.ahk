@@ -6,6 +6,8 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 #Include, %A_ScriptDir%\..\modules\Blacksmith.ahk
 #Include, %A_ScriptDir%\..\modules\GameMenu.ahk
 #Include, %A_ScriptDir%\..\modules\StartScreen.ahk
+#Include, %A_ScriptDir%\..\modules\Misc.ahk
+#Include, %A_ScriptDir%\..\modules\RiftStone.ahk
 
 SpendBloodShards() {
   blood_shard_1k_color := 0xFFFFFF
@@ -14,13 +16,13 @@ SpendBloodShards() {
   if (blood_shard_1k_number_color = blood_shard_1k_color) {
     Loop, 4 {
       ; Quiver
-      KadalaClickWeaponTab()
+      KadalaClickTab(1)
       Loop, 3 {
         KadalaClickSlot(3)
         Sleep, 50
       }
 
-      KadalaClickArmorTab()
+      KadalaClickTab(2)
       ; Feet
       Loop, 3 {
         KadalaClickSlot(3)  
@@ -58,7 +60,7 @@ SpendBloodShards() {
 }
 
 MapOpenTown(1)
-Sleep, 5000
+Sleep, 6000
 
 TownClickOrek(1)
 Sleep, 1900
