@@ -1,7 +1,21 @@
 #Include, %A_ScriptDir%\..\modules\Utils.ahk
 
 MapIsPanelActive() {
-  return ColorAtSimilarTo(1090, 110, 0x5094bb)
+  return ColorAtSimilarTo(1093, 105, 0x3572A0, 9, 9, 3)
+      && ColorAtSimilarTo(1538, 115, 0x3374A7, 9, 9, 3)
+}
+
+MapWaitTillPanelActive() {
+  while (!MapIsPanelActive()) {
+    Sleep, 50
+  }
+}
+
+MapOpenPanel() {
+  if !MapIsPanelActive() {
+    Send, {m}
+    MapWaitTillPanelActive()
+  }
 }
 
 MapClickMinus() {
@@ -27,10 +41,7 @@ MapClickTown(n) {
 }
 
 MapOpenTown(n) {
-  if !MapIsPanelActive() {
-    Send, {m}
-    Sleep, 200
-  }
+  MapOpenPanel()
   MapClickMinus()
   Sleep, 200
   MapClickAct(n)

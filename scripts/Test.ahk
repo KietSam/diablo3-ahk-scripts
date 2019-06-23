@@ -9,6 +9,10 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 
 ; Print(KadalaIsPanelActive())
 
+InventoryDragOutAllKnownInventory()
+
+; Print(MapIsPanelActive())
+
 ; KadalaClickTab(1)
 ; KadalaClickTab(2)
 ; KadalaClickTab(3)
@@ -30,7 +34,7 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 ;   }
 ; }
 
-Print(InventoryNumSetItems())
+; Print(InventoryNumSetItems())
 
 ; Print(MapWhatActIsActive())
 ; InventoryRightClickUnidentifiable()

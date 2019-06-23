@@ -23,6 +23,11 @@ Run(x, y) {
   KanaiCubeRemoveItem()
 }
 
+if (!KanaiCubeIsPanelActive()) {
+  ExitApp
+  Return
+}
+
 ; Top -> Down
 Loop, 6 {
   i := A_Index

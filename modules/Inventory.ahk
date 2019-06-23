@@ -15,6 +15,12 @@ InventoryIsPanelActive() {
   return ColorAtSimilarTo(2200, 230, 0x496C93)
 }
 
+InventoryOpenPanel() {
+  if !InventoryIsPanelActive() {
+    Send, "i"
+  }
+}
+
 InventoryCloseIfActive() {
   if InventoryIsPanelActive() {
     Send, "i"
@@ -118,7 +124,6 @@ InventoryRightClickUnidentifiable() {
 }
 
 InventoryIsSlotEmpty(x, y) {
-  ; TODO: REDO THIS
   x_shifts := [-15, -15, 15]
   y_shifts := [-15, 15, -15]
 
@@ -131,6 +136,10 @@ InventoryIsSlotEmpty(x, y) {
     }
   }
   return empty
+}
+
+InventoryIsDoubleSlotEmpty(x, y) {
+  return InventoryIsSlotEmpty(x,  2 * y)
 }
 
 InventoryNumEmptySlots() {
@@ -155,4 +164,31 @@ InventoryClickSlot(x, y) {
 InventoryRightClickSlot(x, y) {
   slot_point := InventoryGetSlotPoint(x, y)
   RightClickPoint(slot_point)
+}
+
+InventoryDragSlot(x, y, p) {
+  slot_point := InventoryGetSlotPoint(x, y)
+  DragPoint(slot_point, p)
+}
+
+InventoryDragOutAllKnownInventory() {
+  ; Drags out everything from the inventory that isn't unidentified.
+  outside_p := Point(1794, 891)
+  Loop, 3 { ; Top -> Bottom
+    y := A_Index
+    Loop, 8 { ; Left -> Right
+      x := A_Index
+      if InventoryIsDoubleSlotUnidentifiable(x, y) {
+        continue
+      }
+      if (!InventoryIsDoubleSlotUnidentifiable(x, y) && !InventoryIsDoubleSlotEmpty(x, y)) {
+        InventoryDragSlot(x, 2 * y, outside_p)
+        Sleep, 50
+      }
+      if (!InventoryIsSingleSlotUnidentifiable(x, -1 + 2 * y) && !InventoryIsSlotEmpty(x, -1 + 2 * y)) {
+        InventoryDragSlot(x, -1 + 2 * y, outside_p)
+        Sleep, 50
+      }
+    }
+  }
 }

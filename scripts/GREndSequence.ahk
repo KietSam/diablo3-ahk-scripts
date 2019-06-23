@@ -9,13 +9,13 @@ SpendBloodShards() {
   if (blood_shard_1k_number_color = blood_shard_1k_color) {
     Loop, 3 {
       ; Quiver
-      KadalaClickWeaponTab()
+      KadalaClickTab(1)
       Loop, 3 {
         KadalaClickSlot(3)
         Sleep, 50
       }
 
-      KadalaClickArmorTab()
+      KadalaClickTab(2)
       ; Feet
       Loop, 3 {
         KadalaClickSlot(3)  
@@ -79,7 +79,7 @@ While, true {
 }
 
 MapOpenTown(3)
-Sleep, 5500
+WaitTillPointIsColor(Point(1059, 200), 0x20191D)
 TownClickStash(3)
 StashWaitTillActive()
 StashClickChest(1)
@@ -101,7 +101,7 @@ while (InventoryNumUnidentifiable() != 0) {
 }
 
 MapOpenTown(1)
-Sleep, 1000
+WaitTillPointIsColor(Point(2235, 943), 0xEFCD47, 20, 20, 9)
 TownClickOrek(1)
 Sleep, 2000
 Loop, 5 {
@@ -124,8 +124,7 @@ SpendBloodShards()
 MapOpenTown(2)
 Sleep, 1000
 TownClickNephalemStone(2)
-Sleep, 3000
-
+RiftWaitTillActive()
 RiftClickGreaterOption()
 RiftClickAccept()
 

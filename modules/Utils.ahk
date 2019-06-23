@@ -56,6 +56,14 @@ ColorAtSimilarTo(x, y, color, search_width:=4, search_height:=4, variance:=3, de
   return ColorPointSimilarTo(p, color, search_width, search_height, variance, debug)
 }
 
+WaitTillPointIsColor(p, color, search_width:=4, search_height:=4, variance:=3) {
+  while (!ColorPointSimilarTo(p, color, search_width:=4, search_height:=4, variance:=3)) {
+    Sleep, 50
+  }
+  Sleep, 100
+}
+
+
 IsEmptySlotColorAt(x, y) {
   p := Point(x, y)
   return IsEmptySlotColorPoint(p)
@@ -73,6 +81,15 @@ Point(x, y) {
   xx := Round(x * WidthRatio())
   yy := Round(y * HeightRatio())
   return [xx, yy]
+}
+
+DragPoint(p1, p2) {
+  x1 := p1[1]
+  y1 := p1[2]
+  Click, %x1%, %y1%, Down
+  x2 := p2[1]
+  y2 := p2[2]
+  Click, %x2%, %y2%, Up
 }
 
 ClickPoint(p) {
