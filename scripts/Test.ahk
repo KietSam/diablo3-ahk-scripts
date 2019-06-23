@@ -22,9 +22,10 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 ; Print(SkillIsOnCooldown(3))
 ; Print(SkillIsOnCooldown(1))
 
-InventoryRightClickAncient()
+; InventoryRightClickAncient()
 
-; Print(InventoryNumAncient())
+; Print(InventoryIsSingleSlotPrimal(1, 1))
+Print(InventoryIsDoubleSlotPrimal(2, 1))
 
 ; Loop, 1 { ; Top -> Bottom
 ;   y := A_Index
