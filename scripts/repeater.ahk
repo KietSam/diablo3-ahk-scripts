@@ -2,7 +2,7 @@
 #SingleInstance Force
 #IfWinActive ahk_exe Diablo III64.exe
 
-#Include, %A_ScriptDir%\..\modules\Helpers.ahk
+#Include, %A_ScriptDir%\..\modules\Utils.ahk
 
 INI_ERROR_MSG := "ERROR"
 

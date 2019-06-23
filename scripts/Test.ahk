@@ -1,4 +1,4 @@
-#Include, %A_ScriptDir%\..\modules\Helpers.ahk
+#Include, %A_ScriptDir%\..\modules\Inventory.ahk
 
 WinActivate, Diablo III ahk_class D3 Main Window Class
 

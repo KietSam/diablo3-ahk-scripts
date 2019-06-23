@@ -1,6 +1,8 @@
 WinActivate, Diablo III ahk_class D3 Main Window Class
 
-#Include, %A_ScriptDir%\..\modules\Helpers.ahk
+#Include, %A_ScriptDir%\..\modules\Blacksmith.ahk
+#Include, %A_ScriptDir%\..\modules\Map.ahk
+#Include, %A_ScriptDir%\..\modules\Town.ahk
 
 MapOpenTown(1)
 Sleep, 5000

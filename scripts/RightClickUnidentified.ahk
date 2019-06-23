@@ -1,7 +1,7 @@
-#Include, %A_ScriptDir%\..\modules\Helpers.ahk
+#Include, %A_ScriptDir%\..\modules\Inventory.ahk
 
 if !InventoryIsPanelActive() {
-  ExitApp, [ ExitCode]
+  ExitApp
 }
 
 InventoryRightClickUnidentifiable()

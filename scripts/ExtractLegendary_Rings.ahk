@@ -1,5 +1,8 @@
 WinActivate, Diablo III ahk_class D3 Main Window Class
-#Include, %A_ScriptDir%\..\modules\Helpers.ahk
+#Include, %A_ScriptDir%\..\modules\Inventory.ahk
+#Include, %A_ScriptDir%\..\modules\KanaiCube.ahk
+#Include, %A_ScriptDir%\..\modules\Utils.ahk
+#Include, %A_ScriptDir%\..\modules\Chat.ahk
 
 Run(x, y) {
   Sleep, 120
