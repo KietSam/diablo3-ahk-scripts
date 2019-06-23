@@ -6,7 +6,7 @@ Run(x, y) {
 
   KanaiCubeClickRecipe()
 
-  InventoryRightClickSlot(x, y)
+  InventoryRightClickSingleSlot(x, y)
 
   DisableChat()
 
@@ -36,7 +36,7 @@ Loop, 6 {
     j := A_Index
     x := j
     y := i
-    if !InventoryIsSlotEmpty(x, y) {
+    if !InventoryIsSingleSlotEmpty(x, y) {
       Run(x, y)
     }
   }

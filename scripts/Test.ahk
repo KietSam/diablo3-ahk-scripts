@@ -9,7 +9,8 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 
 ; Print(KadalaIsPanelActive())
 
-InventoryDragOutAllKnownInventory()
+; InventoryDragOutAllKnownInventory()
+
 
 ; Print(MapIsPanelActive())
 
@@ -21,14 +22,16 @@ InventoryDragOutAllKnownInventory()
 ; Print(SkillIsOnCooldown(3))
 ; Print(SkillIsOnCooldown(1))
 
-; Print(StashNumEmptySlots())
+InventoryRightClickAncient()
 
-; Loop, 6 { ; Top -> Bottom
+; Print(InventoryNumAncient())
+
+; Loop, 1 { ; Top -> Bottom
 ;   y := A_Index
-;   Loop, 2 { ; Left -> Right
+;   Loop, 1 { ; Left -> Right
 ;     x := A_Index
-;     ; InventoryIsSingleSlotSetItem(x, y)
-;     Print("x: " . x . ", y: " . y . ", is_set_item: " . InventoryIsSingleSlotSetItem(x, y))
+;     ; InventoryIsSingleSlotAncient(x, y)
+;     Print("x: " . x . ", y: " . y . ", is_ancient_item: " . InventoryIsSingleSlotAncient(x, y))
 ;     ; StashClickSlot(x, y)
 ;     ; StashIsSlotEmpty(x, y)
 ;   }
@@ -52,10 +55,10 @@ InventoryDragOutAllKnownInventory()
 ;   Loop, 4 { ; Left -> Right
 ;     x := A_Index
 ;     ; Print(InventoryIsSingleSlotUnidentifiable(x, y))
-;     ; slot_point := InventoryGetSlotPoint(x, y, 1, 14)
+;     ; slot_point := InventoryGetSingleSlotPoint(x, y, 1, 14)
 ;     ; Print("x: " . x . ", y: " . y . ", similar: " . ColorPointSimilarTo(slot_point, 0xFFFFFF, 6, 6, 3))
 
-;     ; slot_point2 := InventoryGetSlotPoint(x, y, 1, 2)
+;     ; slot_point2 := InventoryGetSingleSlotPoint(x, y, 1, 2)
 ;     ; Print("x: " . x . ", y: " . y . ", similar: " . ColorPointSimilarTo(slot_point2, 0xFFFFFF, 6, 6, 3, true))
 ;     ; MovePoint(slot_point)
 ;   }
@@ -81,7 +84,7 @@ InventoryDragOutAllKnownInventory()
 ;   ; Left -> Right
 ;   Loop, 8 {
 ;     x := A_Index
-;     Print("x: " . x . ", y: " . y . ", empty?: " . InventoryIsSlotEmpty(x, y))
+;     Print("x: " . x . ", y: " . y . ", empty?: " . InventoryIsSingleSlotEmpty(x, y))
 ;   }
 ; }
 

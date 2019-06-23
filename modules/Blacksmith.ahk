@@ -104,9 +104,9 @@ BlacksmithSalvageLegendaries() {
       j := A_Index
       x := j
       y := i
-      if !InventoryIsSlotEmpty(x, y) {
+      if !InventoryIsSingleSlotEmpty(x, y) {
         BlacksmithClickSalvageButtonIfNotActive()
-        InventoryClickSlot(x, y)
+        InventoryClickSingleSlot(x, y)
         SmartEnter()
       }
     }
