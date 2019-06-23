@@ -1,33 +1,26 @@
 #Include, %A_ScriptDir%\..\modules\Inventory.ahk
+#Include, %A_ScriptDir%\..\modules\Utils.ahk
 
-WinActivate, Diablo III ahk_class D3 Main Window Class
-
-; SkillClick(1)
-; SkillClick(2)
-; SkillClick(3)
-; SkillClick(4)
-
-; Print(KadalaIsPanelActive())
-
-; InventoryDragOutAllKnownInventory()
+; WinActivate, Diablo III ahk_class D3 Main Window Class
 
 
-; Print(MapIsPanelActive())
+DEFAULT_INI_FILENAME := "settings.ini"
 
-; KadalaClickTab(1)
-; KadalaClickTab(2)
-; KadalaClickTab(3)
+IniRead, settings, %DEFAULT_INI_FILENAME%, SETTINGS
 
-; Print(SkillIsActive(4))
-; Print(SkillIsOnCooldown(3))
-; Print(SkillIsOnCooldown(1))
+Print(settings)
 
-; InventoryRightClickAncient()
+Loop, Parse, settings, `n
+{
+  ; Print(A_LoopField)
+  arr := StrSplit(A_LoopField, "=")
+  Print(arr[1] . " " . arr[2])
+}
 
-; Print(InventoryIsSingleSlotPrimal(1, 1))
-; Print(InventoryIsDoubleSlotPrimal(2, 1))
+; for k in settings?:
+;   Print("k: " . k . ", v: " . v)
 
-InventoryIsDoubleSlotUnidentifiable(1, 1)
+
 
 ; Loop, 1 { ; Top -> Bottom
 ;   y := A_Index

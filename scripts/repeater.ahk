@@ -4,6 +4,7 @@
 
 #Include, %A_ScriptDir%\..\modules\Skills.ahk
 #Include, %A_ScriptDir%\..\modules\Utils.ahk
+#Include, %A_ScriptDir%\..\modules\Misc.ahk
 
 INI_ERROR_MSG := "ERROR"
 
@@ -19,37 +20,37 @@ COUNTER := 0
 
 MOUSE_LOCK := False
 
+CURR_PROFILE := GetDefaultProfile()
+
 ; Read in data from last saved file
 Gosub, ReadSettings
 
-; Checks if the given x and y coordinates are in a good clickable region.
-IsGoodClickRegion(x, y) {
-  ; x: x position in terms of user's resolution
-  ; y: y position in terms of user's resolution
-  ; Character portraits
-  char_portrait_p := Point(140, 800)
-  if (x <= char_portrait_p[1] && y <= char_portrait_p[2]) {
-    return false
-  }
-  ; Follower portraits
-  follower_portrait_p := Point(260, 125)
-  if (x <= follower_portrait_p[1] && y <= follower_portrait_p[2]) {
-    return false
-  }
-  ; Skill Bar
-  skill_bar_top_left_p := Point(825, 1300)
-  skill_bar_bot_right_p := Point(1725, 1440)
-  if (x >= skill_bar_top_left_p[1] && x <= skill_bar_bot_right_p[1] && y <= skill_bar_bot_right_p[2] && y >= skill_bar_top_left_p[2]) {
-    return false
-  }
-  return true
+GetDefaultProfile() {
+  profile := {}
+  profile["initialKeys"] := ""
+  profile["repeatedKeys"] := ""
+  profile["toggleRadialClicks"] := 1
+  profile["maxRadius"] := 350
+
+  profile["skill1Key"] := 1
+  profile["skill2Key"] := 2
+  profile["skill3Key"] := 3
+  profile["skill4Key"] := 4
+
+  profile["toggleSkill1WhenInactive"] := 0
+  profile["toggleSkill2WhenInactive"] := 0
+  profile["toggleSkill3WhenInactive"] := 0
+  profile["toggleSkill4WhenInactive"] := 0
+
+  profile["toggleSkill1WhenAvailable"] := 0
+  profile["toggleSkill2WhenAvailable"] := 0
+  profile["toggleSkill3WhenAvailable"] := 0
+  profile["toggleSkill4WhenAvailable"] := 0
+  return profile
 }
 
-AutoSend:
+GetCurrentProfile: 
 {
-  if (GetKeyState("Alt", "P") || GetKeyState("t", "P") || GetKeyState("m", "P") || GetKeyState("Alt", "P")) {
-    Return
-  }
   GuiControlGet, initialKeys,, INITIAL_KEYS
   GuiControlGet, repeatedKeys,, REPEATED_KEYS
   GuiControlGet, toggleRadialClicks,, TOGGLE_RADIAL_CLICKS
@@ -70,15 +71,54 @@ AutoSend:
   GuiControlGet, toggleSkill3WhenAvailable,, TOGGLE_SKILL_3_WHEN_AVAILABLE
   GuiControlGet, toggleSkill4WhenAvailable,, TOGGLE_SKILL_4_WHEN_AVAILABLE
 
-  skill_keys := [skill1Key, skill2Key, skill3Key, skill4Key]
-  toggle_skills_when_inactive := [toggleSkill1WhenInactive, toggleSkill2WhenInactive, toggleSkill3WhenInactive, toggleSkill4WhenInactive]
-  toggle_skills_when_available := [toggleSkill1WhenAvailable, toggleSkill2WhenAvailable, toggleSkill3WhenAvailable, toggleSkill4WhenAvailable]
+  CURR_PROFILE := {}
+  CURR_PROFILE["initialKeys"] := initialKeys
+  CURR_PROFILE["repeatedKeys"] := repeatedKeys
+  CURR_PROFILE["toggleRadialClicks"] := toggleRadialClicks
+  CURR_PROFILE["maxRadius"] := maxRadius
+
+  CURR_PROFILE["skill1Key"] := skill1Key
+  CURR_PROFILE["skill2Key"] := skill2Key
+  CURR_PROFILE["skill3Key"] := skill3Key
+  CURR_PROFILE["skill4Key"] := skill4Key
+
+  CURR_PROFILE["toggleSkill1WhenInactive"] := toggleSkill1WhenInactive
+  CURR_PROFILE["toggleSkill2WhenInactive"] := toggleSkill2WhenInactive
+  CURR_PROFILE["toggleSkill3WhenInactive"] := toggleSkill3WhenInactive
+  CURR_PROFILE["toggleSkill4WhenInactive"] := toggleSkill4WhenInactive
+
+  CURR_PROFILE["toggleSkill1WhenAvailable"] := toggleSkill1WhenAvailable
+  CURR_PROFILE["toggleSkill2WhenAvailable"] := toggleSkill2WhenAvailable
+  CURR_PROFILE["toggleSkill3WhenAvailable"] := toggleSkill3WhenAvailable
+  CURR_PROFILE["toggleSkill4WhenAvailable"] := toggleSkill4WhenAvailable
+  return
+}
+
+AutoSend:
+{
+  if (GetKeyState("Alt", "P") || GetKeyState("t", "P") || GetKeyState("m", "P") || GetKeyState("Alt", "P")) {
+    Return
+  }
+  Gosub GetCurrentProfile
+
+  skill_keys := [CURR_PROFILE["skill1Key"]
+               , CURR_PROFILE["skill2Key"]
+               , CURR_PROFILE["skill3Key"]
+               , CURR_PROFILE["skill4Key"]]
+  toggle_skills_when_inactive := [CURR_PROFILE["toggleSkill1WhenInactive"]
+                                , CURR_PROFILE["toggleSkill2WhenInactive"]
+                                , CURR_PROFILE["toggleSkill3WhenInactive"]
+                                , CURR_PROFILE["toggleSkill4WhenInactive"]]
+  toggle_skills_when_available := [CURR_PROFILE["toggleSkill1WhenAvailable"]
+                                , CURR_PROFILE["toggleSkill2WhenAvailable"]
+                                , CURR_PROFILE["toggleSkill3WhenAvailable"]
+                                , CURR_PROFILE["toggleSkill4WhenAvailable"]]
 
   MouseGetPos mouse_x, mouse_y
   char_center_point := Point(CHARACTER_CENTER_X, CHARACTER_CENTER_Y)
   if (IsGoodClickRegion(mouse_x, mouse_y)) {
-    if (toggleRadialClicks 
-     && Distance(mouse_x, mouse_y, char_center_point[1], char_center_point[2]) <= maxRadius) {
+    if (CURR_PROFILE["toggleRadialClicks"]
+     && Distance(mouse_x, mouse_y, char_center_point[1], char_center_point[2]) <= CURR_PROFILE["maxRadius"]) {
       Send, {Click}
     }
   }
@@ -93,7 +133,7 @@ AutoSend:
       Send, %key%
     }
   }
-
+  repeatedKeys := CURR_PROFILE["repeatedKeys"]
   Send, %repeatedKeys%
   COUNTER := COUNTER + 1
   Return
@@ -103,63 +143,31 @@ AutoSend:
 ; If the file does not exist, then settings are set to defaults.
 ReadSettings:
 {
-  DEFAULT_INITIAL_KEYS := "Q"
-  DEFAULT_REPEATED_KEYS := "WE"
-  DEFAULT_MAX_RADIUS := 250
-  DEFAULT_TOGGLE_RADIAL_CLICKS := 1
+  CURR_PROFILE := GetDefaultProfile()
+  IniRead, settings, %DEFAULT_INI_FILENAME%, SETTINGS
+  Loop, Parse, settings, `n
+  {
+    arr := StrSplit(A_LoopField, "=")
+    CURR_PROFILE[arr[1]] := arr[2]
+  }
 
-  DEFAULT_SKILL_1_KEY := 1
-  DEFAULT_SKILL_2_KEY := 2
-  DEFAULT_SKILL_3_KEY := 3
-  DEFAULT_SKILL_4_KEY := 4
-
-  DEFAULT_TOGGLE_SKILL_1_WHEN_INACTIVE := 0
-  DEFAULT_TOGGLE_SKILL_2_WHEN_INACTIVE := 0
-  DEFAULT_TOGGLE_SKILL_3_WHEN_INACTIVE := 0
-  DEFAULT_TOGGLE_SKILL_4_WHEN_INACTIVE := 0
-
-  DEFAULT_TOGGLE_SKILL_1_WHEN_AVAILABLE := 0
-  DEFAULT_TOGGLE_SKILL_2_WHEN_AVAILABLE := 0
-  DEFAULT_TOGGLE_SKILL_3_WHEN_AVAILABLE := 0
-  DEFAULT_TOGGLE_SKILL_4_WHEN_AVAILABLE := 0
-
-  IniRead, initialKeys, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, INITIAL_KEYS, %DEFAULT_INITIAL_KEYS%
-  IniRead, repeatedKeys, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, REPEATED_KEYS, %DEFAULT_REPEATED_KEYS%
-
-  IniRead, skill1Key, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, SKILL_1_KEY, %DEFAULT_SKILL_1_KEY%
-  IniRead, skill2Key, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, SKILL_2_KEY, %DEFAULT_SKILL_2_KEY%
-  IniRead, skill3Key, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, SKILL_3_KEY, %DEFAULT_SKILL_3_KEY%
-  IniRead, skill4Key, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, SKILL_4_KEY, %DEFAULT_SKILL_4_KEY%
-
-  IniRead, toggleSkill1WhenInactive, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_1_WHEN_INACTIVE, %DEFAULT_TOGGLE_SKILL_1_WHEN_INACTIVE%
-  IniRead, toggleSkill2WhenInactive, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_2_WHEN_INACTIVE, %DEFAULT_TOGGLE_SKILL_2_WHEN_INACTIVE%
-  IniRead, toggleSkill3WhenInactive, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_3_WHEN_INACTIVE, %DEFAULT_TOGGLE_SKILL_3_WHEN_INACTIVE%
-  IniRead, toggleSkill4WhenInactive, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_4_WHEN_INACTIVE, %DEFAULT_TOGGLE_SKILL_4_WHEN_INACTIVE%
-
-  IniRead, toggleSkill1WhenAvailable, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_1_WHEN_AVAILABLE, %DEFAULT_TOGGLE_SKILL_1_WHEN_AVAILABLE%
-  IniRead, toggleSkill2WhenAvailable, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_2_WHEN_AVAILABLE, %DEFAULT_TOGGLE_SKILL_2_WHEN_AVAILABLE%
-  IniRead, toggleSkill3WhenAvailable, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_3_WHEN_AVAILABLE, %DEFAULT_TOGGLE_SKILL_3_WHEN_AVAILABLE%
-  IniRead, toggleSkill4WhenAvailable, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_4_WHEN_AVAILABLE, %DEFAULT_TOGGLE_SKILL_4_WHEN_AVAILABLE%
-  
-  IniRead, read_max_radius, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, MAX_RADIUS, %DEFAULT_MAX_RADIUS%
-  IniRead, read_toggle_radial_clicks, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, TOGGLE_RADIAL_CLICKS, %DEFAULT_TOGGLE_RADIAL_CLICKS%
   ; Window
-  Gui, Show, w300 h200, Choose Keys
+  Gui, Show, w300 h300, Choose Keys
   column_width := 130
 
   ; ========================================================================
   ; lEFT
   ; ========================================================================
   column1_x := 10
-  y := 10
+  y := 30
   Gui, Add, Text, x%column1_x% y%y% w%column_width% Center, Initial key presses:
   y += 15
-  Gui, Add, Edit, x%column1_x% y%y% w%column_width% h15 vINITIAL_KEYS Center, %initialKeys%
+  Gui, Add, Edit, x%column1_x% y%y% w%column_width% h15 vINITIAL_KEYS Center, % CURR_PROFILE["initialKeys"]
 
   y += 20
   Gui, Add, Text, x%column1_x% y%y% w%column_width% Center, Keys to repeat:
   y += 15
-  Gui, Add, Edit, x%column1_x% y%y% w%column_width% h15 vREPEATED_KEYS Center, %repeatedKeys%
+  Gui, Add, Edit, x%column1_x% y%y% w%column_width% h15 vREPEATED_KEYS Center, % CURR_PROFILE["repeatedKeys"]
 
   ; Skill section
   y += 20
@@ -169,22 +177,22 @@ ReadSettings:
   x := column1_x
   Gui, Add, Text, x%x% y%y% w10 h15, 1
   x += 10
-  Gui, Add, Edit, x%x% y%y% w18 h15 vSKILL_1_KEY, %skill1Key%
+  Gui, Add, Edit, x%x% y%y% w18 h15 vSKILL_1_KEY, % CURR_PROFILE["skill1Key"]
 
   x += 22
   Gui, Add, Text, x%x% y%y% w10 h15, 2
   x += 10
-  Gui, Add, Edit, x%x% y%y% w18 h15 vSKILL_2_KEY, %skill2Key%
+  Gui, Add, Edit, x%x% y%y% w18 h15 vSKILL_2_KEY, % CURR_PROFILE["skill2Key"]
 
   x += 22
   Gui, Add, Text, x%x% y%y% w10 h15, 3
   x += 10
-  Gui, Add, Edit, x%x% y%y% w18 h15 vSKILL_3_KEY, %skill3Key%
+  Gui, Add, Edit, x%x% y%y% w18 h15 vSKILL_3_KEY, % CURR_PROFILE["skill3Key"]
 
   x += 22
   Gui, Add, Text, x%x% y%y% w10 h15, 4
   x += 10
-  Gui, Add, Edit, x%x% y%y% w18 h15 vSKILL_4_KEY, %skill4Key%
+  Gui, Add, Edit, x%x% y%y% w18 h15 vSKILL_4_KEY, % CURR_PROFILE["skill4Key"]
 
   ; Skill toggling section (when inactive)
   y += 20
@@ -194,21 +202,25 @@ ReadSettings:
   x := column1_x
   Gui, Add, Text, x%x% y%y% w10 h15
   x += 10
+  toggleSkill1WhenInactive := CURR_PROFILE["toggleSkill1WhenInactive"]
   Gui, Add, CheckBox, x%x% y%y% h15 w18 Checked%toggleSkill1WhenInactive% vTOGGLE_SKILL_1_WHEN_INACTIVE
 
   x += 22
   Gui, Add, Text, x%x% y%y% w10 h15
   x += 10
+  toggleSkill2WhenInactive := CURR_PROFILE["toggleSkill2WhenInactive"]
   Gui, Add, CheckBox, x%x% y%y% h15 w18 Checked%toggleSkill2WhenInactive% vTOGGLE_SKILL_2_WHEN_INACTIVE
 
   x += 22
   Gui, Add, Text, x%x% y%y% w10 h15
   x += 10
+  toggleSkill3WhenInactive := CURR_PROFILE["toggleSkill3WhenInactive"]
   Gui, Add, CheckBox, x%x% y%y% h15 w18 Checked%toggleSkill3WhenInactive% vTOGGLE_SKILL_3_WHEN_INACTIVE
 
   x += 22
   Gui, Add, Text, x%x% y%y% w10 h15
   x += 10
+  toggleSkill4WhenInactive := CURR_PROFILE["toggleSkill4WhenInactive"]
   Gui, Add, CheckBox, x%x% y%y% h15 w18 Checked%toggleSkill4WhenInactive% vTOGGLE_SKILL_4_WHEN_INACTIVE
 
   ; Skill toggling section (when available)
@@ -219,32 +231,45 @@ ReadSettings:
   x := column1_x
   Gui, Add, Text, x%x% y%y% w10 h15
   x += 10
+  toggleSkill1WhenAvailable := CURR_PROFILE["toggleSkill1WhenAvailable"]
   Gui, Add, CheckBox, x%x% y%y% h15 w18 Checked%toggleSkill1WhenAvailable% vTOGGLE_SKILL_1_WHEN_AVAILABLE
 
   x += 22
   Gui, Add, Text, x%x% y%y% w10 h15
   x += 10
+  toggleSkill2WhenAvailable := CURR_PROFILE["toggleSkill2WhenAvailable"]
   Gui, Add, CheckBox, x%x% y%y% h15 w18 Checked%toggleSkill2WhenAvailable% vTOGGLE_SKILL_2_WHEN_AVAILABLE
 
   x += 22
   Gui, Add, Text, x%x% y%y% w10 h15
   x += 10
+  toggleSkill3WhenAvailable := CURR_PROFILE["toggleSkill3WhenAvailable"]
   Gui, Add, CheckBox, x%x% y%y% h15 w18 Checked%toggleSkill3WhenAvailable% vTOGGLE_SKILL_3_WHEN_AVAILABLE
 
   x += 22
   Gui, Add, Text, x%x% y%y% w10 h15
   x += 10
+  toggleSkill4WhenAvailable := CURR_PROFILE["toggleSkill4WhenAvailable"]
   Gui, Add, CheckBox, x%x% y%y% h15 w18 Checked%toggleSkill4WhenAvailable% vTOGGLE_SKILL_4_WHEN_AVAILABLE
 
   ; ========================================================================
   ; RIGHT
   ; ========================================================================
   column2_x := 160
-  Gui, Add, Text, x%column2_x% y10 w100 Left, Enable radial clicks:
-  Gui, Add, Checkbox, x260 y10 Checked%read_toggle_radial_clicks% vTOGGLE_RADIAL_CLICKS,
 
-  Gui, Add, Text, x%column2_x% y25 w100 Left, Max radius:
-  Gui, Add, Edit, x215 y25 w75 h15 vMAX_RADIUS Center, %read_max_radius%
+  y := 30
+  toggleRadialClicks := CURR_PROFILE["toggleRadialClicks"]
+  x := column2_x
+  Gui, Add, Text, x%x% y%y% w100 Left, Enable radial clicks:
+  x += 100
+  Gui, Add, Checkbox, x%x% y%y% Checked%toggleRadialClicks% vTOGGLE_RADIAL_CLICKS,
+
+  y += 15
+  maxRadius := CURR_PROFILE["maxRadius"]
+  x := column2_x
+  Gui, Add, Text, x%x% y%y% w100 Left, Max radius:
+  x += 55
+  Gui, Add, Edit, x%x% y%y% w75 h15 vMAX_RADIUS Center, %maxRadius%
 
   Gui, Add, Button, x%column2_x% y170 w%column_width% h20 gSaveSettings, Save
 
@@ -254,42 +279,11 @@ ReadSettings:
 ; Save current settings to the DEFAULT_INI_FILENAME.
 SaveSettings:
 {
-  GuiControlGet, initialKeys,, INITIAL_KEYS
-  GuiControlGet, repeatedKeys,, REPEATED_KEYS
-  GuiControlGet, toggleRadialClicks,, TOGGLE_RADIAL_CLICKS
-  GuiControlGet, maxRadius,, MAX_RADIUS
-
-  GuiControlGet, skill1Key,, SKILL_1_KEY
-  GuiControlGet, skill2Key,, SKILL_2_KEY
-  GuiControlGet, skill3Key,, SKILL_3_KEY
-  GuiControlGet, skill4Key,, SKILL_4_KEY
-
-  GuiControlGet, toggleSkill1WhenInactive,, TOGGLE_SKILL_1_WHEN_INACTIVE
-  GuiControlGet, toggleSkill2WhenInactive,, TOGGLE_SKILL_2_WHEN_INACTIVE
-  GuiControlGet, toggleSkill3WhenInactive,, TOGGLE_SKILL_3_WHEN_INACTIVE
-  GuiControlGet, toggleSkill4WhenInactive,, TOGGLE_SKILL_4_WHEN_INACTIVE
-
+  Gosub GetCurrentProfile
   Gui, Submit, NoHide
-  IniWrite, %initialKeys%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, INITIAL_KEYS
-  IniWrite, %repeatedKeys%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, REPEATED_KEYS
-
-  IniWrite, %skill1Key%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, SKILL_1_KEY
-  IniWrite, %skill2Key%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, SKILL_2_KEY
-  IniWrite, %skill3Key%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, SKILL_3_KEY
-  IniWrite, %skill4Key%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, SKILL_4_KEY
-
-  IniWrite, %toggleSkill1WhenInactive%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_1_WHEN_INACTIVE
-  IniWrite, %toggleSkill2WhenInactive%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_2_WHEN_INACTIVE
-  IniWrite, %toggleSkill3WhenInactive%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_3_WHEN_INACTIVE
-  IniWrite, %toggleSkill4WhenInactive%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_4_WHEN_INACTIVE
-
-  IniWrite, %toggleSkill1WhenAvailable%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_1_WHEN_AVAILABLE
-  IniWrite, %toggleSkill2WhenAvailable%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_2_WHEN_AVAILABLE
-  IniWrite, %toggleSkill3WhenAvailable%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_3_WHEN_AVAILABLE
-  IniWrite, %toggleSkill4WhenAvailable%, %DEFAULT_INI_FILENAME%, KEY_SETTINGS, TOGGLE_SKILL_4_WHEN_AVAILABLE
-
-  IniWrite, %maxRadius%, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, MAX_RADIUS
-  IniWrite, %toggleRadialClicks%, %DEFAULT_INI_FILENAME%, CLICK_SETTINGS, TOGGLE_RADIAL_CLICKS
+  for k, v in CURR_PROFILE {
+    IniWrite, %v%, %DEFAULT_INI_FILENAME%, SETTINGS, %k%
+  }
   MsgBox,, Saved, Settings Saved!
   return
 }
