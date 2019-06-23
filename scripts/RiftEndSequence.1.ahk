@@ -71,39 +71,42 @@ Loop, 5 {
 
 ; Click blacksmith from Orek pos
 ClickAt(1640, 130)
-Sleep, 2000
-
+BlacksmithWaitTillPanelActive()
 BlacksmithRepairAndSalvage()
 
 ; Click Kadela from Blacksmith
 ClickAt(980, 840)
-Sleep, 1500
+KadalaWaitTillPanelActive()
 
 SpendBloodShards()
 
 GameMenuOpen()
-Sleep, 100
-
-; Leave game
 GameMenuClick(4)
+
+
 StartScreenWaitActive()
 StartScreenClickStartGame()
 WaitTillInGame()
 
-MapOpenTown(2)
-Sleep, 1500
+if (MapIsActActive(2)) {
+  ; If it's 2, then go to 1
+  MapOpenTown(1)
+  Sleep, 1500
+  TownClickNephalemStone(1)
+} else {
+  ; If it's 1, then go to 2
+  MapOpenTown(2)
+  Sleep, 1500
+  TownClickNephalemStone(2)
+}
 
-TownClickNephalemStone(1)
-Sleep, 2000
-
+RiftWaitTillPanelActive()
 RiftClickNephalemOption()
 
 ; Click accept
 RiftClickAccept()
 ; Wait for it to open
 Sleep, 3500
-; Click portal
-ClickAt(1520, 550)
 
 ExitApp
 

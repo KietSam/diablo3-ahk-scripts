@@ -9,7 +9,7 @@ RiftIsPanelActive() {
       && ColorAtSimilarTo(385, 93, 0xAB2576)
 }
 
-RiftWaitTillActive() {
+RiftWaitTillPanelActive() {
   while !RiftIsPanelActive() {
     Sleep, 50
   }

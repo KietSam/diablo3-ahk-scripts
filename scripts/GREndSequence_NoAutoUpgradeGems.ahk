@@ -139,7 +139,7 @@ HomeSequence() {
   MapOpenTown(2)
   Sleep, 1000
   TownClickNephalemStone(2)
-  RiftWaitTillActive()
+  RiftWaitTillPanelActive()
   RiftClickGreaterOption()
   RiftClickAccept()
 }

@@ -18,6 +18,12 @@ MapOpenPanel() {
   }
 }
 
+MapClosePanel() {
+  if MapIsPanelActive() {
+    Send, {m}
+  }
+}
+
 MapClickMinus() {
   ClickAt(1195, 170)
 }
@@ -51,6 +57,7 @@ MapOpenTown(n) {
 }
 
 MapIsActActive(n) {
+  MapOpenPanel()
   ; Each act has it's own set of 3 points/colors that we check to see
   ; what act we're in.
   points := [[Point(1357, 640), Point(776, 791), Point(1805, 695)]

@@ -3,8 +3,14 @@
 #Include, %A_ScriptDir%\..\modules\Stash.ahk
 #Include, %A_ScriptDir%\..\modules\Utils.ahk
 
-BlacksmithIsPanelOpened() {
+BlacksmithIsPanelActive() {
   return ColorAtSimilarTo(350, 100, 0x54D9F7)
+}
+
+BlacksmithWaitTillPanelActive() {
+  while !BlacksmithIsPanelActive() {
+    Sleep, 50
+  }
 }
 
 BlacksmithIsSalvageTabActive() {
@@ -44,13 +50,13 @@ BlacksmithIsRepairTabActive() {
 }
 
 BlacksmithClickRepairTab() {
-  if BlacksmithIsPanelOpened() {
+  if BlacksmithIsPanelActive() {
     ClickAt(680, 800)
   }
 }
 
 BlacksmithClickRepairButton() {
-  if BlacksmithIsPanelOpened() && BlacksmithIsRepairTabActive() {
+  if BlacksmithIsPanelActive() && BlacksmithIsRepairTabActive() {
     ClickAt(350, 780)
   }
 }
@@ -83,7 +89,7 @@ BlacksmithSalvageWhiteBlueYellow() {
 }
 
 BlacksmithRepairAndSalvage() {
-  if (!BlacksmithIsPanelOpened()) {
+  if (!BlacksmithIsPanelActive()) {
     return
   }
   BlacksmithClickSalvageTabIfNotActive()
@@ -93,7 +99,7 @@ BlacksmithRepairAndSalvage() {
 }
 
 BlacksmithSalvageLegendaries() {
-  if (!BlacksmithIsPanelOpened()) {
+  if (!BlacksmithIsPanelActive()) {
     return
   }
   if (!BlacksmithIsSalvageTabActive()) {

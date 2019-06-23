@@ -22,3 +22,9 @@ KadalaIsPanelActive() {
       && ColorAtSimilarTo(342, 70, 0x17435f)
       && ColorAtSimilarTo(378, 100, 0x2692b0)
 }
+
+KadalaWaitTillPanelActive() {
+  while !KadalaIsPanelActive() {
+    Sleep, 50
+  }
+}

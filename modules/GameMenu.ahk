@@ -23,6 +23,12 @@ GameMenuActive() {
   return active
 }
 
+GameMenuWaitTillActive() {
+  while !GameMenuActive() {
+    Sleep, 50
+  }
+}
+
 GameMenuClick(n) {
   ; n: The left menu item to click. index starts at 1
   ;    (1) Options      
