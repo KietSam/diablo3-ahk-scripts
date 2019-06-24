@@ -9,6 +9,7 @@ MapWaitTillPanelActive() {
   while (!MapIsPanelActive()) {
     Sleep, 50
   }
+  Sleep, 200
 }
 
 MapOpenPanel() {
@@ -73,7 +74,7 @@ MapIsActActive(n) {
   points := points[n]
   colors := colors[n]
   Loop % points.Length() {
-    if (!ColorPointSimilarTo(points[A_Index], colors[A_Index])) {
+    if (!ColorPointSimilarTo(points[A_Index], colors[A_Index], 9, 9, 9)) {
       return false
     }
   }

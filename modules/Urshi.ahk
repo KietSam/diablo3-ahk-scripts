@@ -27,10 +27,6 @@ UrshiIsGem100PercentUpgradeChance() {
 
 UrshiOneUpgradeLeft() {
   return ColorAtSimilarTo(412, 730, 0xFFFFFF)
-  ; one_upgrade_left_color := 0xFFFFFF
-  ; p := Point(412, 730)
-  ; PixelGetColor, curr_color, p[1], p[2]
-  ; return one_upgrade_left_color = curr_color
 }
 
 UrshiClickSlot(x, y) {
@@ -83,3 +79,9 @@ UrshiClickUpgradeIf100PercentUpgradeChance() {
   }
 }
 
+UrshiIsUpgradeUnavailable() {
+  ; Checks if the button is available for clicking,
+  ; if not, it's probably a maxed out gem.
+  return ColorAtSimilarTo(448, 729, 0x131513)
+      && ColorAtSimilarTo(263, 728, 0x131513)
+}

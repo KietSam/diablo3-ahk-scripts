@@ -1,21 +1,11 @@
 #Include, %A_ScriptDir%\..\modules\Inventory.ahk
 #Include, %A_ScriptDir%\..\modules\Utils.ahk
+#Include, %A_ScriptDir%\..\modules\Map.ahk
 
 ; WinActivate, Diablo III ahk_class D3 Main Window Class
 
-
-DEFAULT_INI_FILENAME := "settings.ini"
-
-IniRead, settings, %DEFAULT_INI_FILENAME%, SETTINGS
-
-Print(settings)
-
-Loop, Parse, settings, `n
-{
-  ; Print(A_LoopField)
-  arr := StrSplit(A_LoopField, "=")
-  Print(arr[1] . " " . arr[2])
-}
+; Print(InventoryIsInSlotRegion())
+Print(MapIsActActive(2))
 
 ; for k in settings?:
 ;   Print("k: " . k . ", v: " . v)

@@ -113,7 +113,7 @@ BlacksmithSalvageLegendaries() {
       j := A_Index
       x := j
       y := i
-      if !InventoryIsSingleSlotEmpty(x, y) {
+      if (!InventoryIsSingleSlotEmpty(x, y) && !InventoryIsSingleSlotPrimal(x, y)) {
         BlacksmithClickSalvageButtonIfNotActive()
         InventoryClickSingleSlot(x, y)
         SmartEnter()

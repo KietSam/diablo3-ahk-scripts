@@ -48,6 +48,18 @@ TownClickNephalemStone(n) {
   }
 }
 
+TownClickPortal(n) {
+  ; Clicks the nephalem rift portal starting from the nephalem stone position
+  ; n: act number
+  xs := [1526, 1000, -1, -1, -1]
+  ys := [552, 528, -1, -1, -1]
+  if (xs[n] == -1) {
+    Print("TownClickPortal: Not supported for act " . n)
+  } else {
+    ClickAt(xs[n], ys[n])
+  }
+}
+
 TownClickStash(n) {
   ; Clicks Orek starting from the town portal.
   ; n: act number

@@ -1,3 +1,5 @@
+#Include, %A_ScriptDir%\..\modules\Utils.ahk
+
 ;===============================================================
 ; Game Menu (the menu when you press ESC while in-game)
 ;===============================================================

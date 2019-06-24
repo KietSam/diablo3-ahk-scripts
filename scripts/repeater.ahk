@@ -15,7 +15,6 @@ DEFAULT_INI_FILENAME := "settings.ini"
 CHARACTER_CENTER_X := 1250
 CHARACTER_CENTER_Y := 600
 
-MAX_INTERVAL := 50
 COUNTER := 0
 
 MOUSE_LOCK := False
@@ -46,6 +45,8 @@ GetDefaultProfile() {
   profile["toggleSkill2WhenAvailable"] := 0
   profile["toggleSkill3WhenAvailable"] := 0
   profile["toggleSkill4WhenAvailable"] := 0
+
+  profile["interval"] := 50
   return profile
 }
 
@@ -71,7 +72,6 @@ GetCurrentProfile:
   GuiControlGet, toggleSkill3WhenAvailable,, TOGGLE_SKILL_3_WHEN_AVAILABLE
   GuiControlGet, toggleSkill4WhenAvailable,, TOGGLE_SKILL_4_WHEN_AVAILABLE
 
-  CURR_PROFILE := {}
   CURR_PROFILE["initialKeys"] := initialKeys
   CURR_PROFILE["repeatedKeys"] := repeatedKeys
   CURR_PROFILE["toggleRadialClicks"] := toggleRadialClicks
@@ -319,8 +319,9 @@ cluster_click(x, y) {
 F4::
 AutoSend := !AutoSend
 If AutoSend {
-  Send, %INITIAL_KEYS%
-  SetTimer AutoSend, %MAX_INTERVAL%
+  Send, % CURR_PROFILE["initialKeys"]
+  interval := CURR_PROFILE["interval"]
+  SetTimer AutoSend, %interval%
 } Else {
   SetTimer AutoSend, Off
 }
@@ -330,7 +331,8 @@ m::
 if (AutoSend) {
   SetTimer AutoSend, Off
   keywait, m
-  SetTimer AutoSend, %MAX_INTERVAL%
+  interval := CURR_PROFILE["interval"]
+  SetTimer AutoSend, %interval%
 }
 Send, m
 Return

@@ -27,6 +27,21 @@ InventoryCloseIfActive() {
   }
 }
 
+InventoryIsInSlotRegion() {
+  ; Checks if the mouse is currently in the slot region of the inventory
+  top_left_p := Point(1862, 734)
+  bot_right_p := Point(2552, 1195)
+  mouse_p := GetMousePoint()
+  return IsPointInRegion(mouse_p, top_left_p, bot_right_p)
+}
+
+InventoryMoveMouseOutOfSlotRegion() {
+  if InventoryIsInSlotRegion() {
+    MovePoint(Point(1794, 891))
+    Sleep, 100
+  }
+}
+
 InventoryGetSingleSlotPoint(x, y, xx_shift:=0, yy_shift:=0) {
   xx_delta := 67.3 * WidthRatio()
   yy_delta := 66.7 * HeightRatio()
@@ -72,7 +87,7 @@ InventoryIsSingleSlotAncient(x, y) {
   slot_point1 := InventoryGetSingleSlotPoint(x, y)
   MovePoint(slot_point1)
   Sleep, 100
-  item_strip_point := InventoryGetSingleSlotPoint(x, y, -35)
+  item_strip_point := InventoryGetSingleSlotPoint(x, y, -35, 0)
   return ColorPointSimilarTo(item_strip_point, 0x015596, 6, 6, 10)
 }
 
@@ -80,7 +95,7 @@ InventoryIsDoubleSlotAncient(x, y) {
   slot_point1 := InventoryGetDoubleSlotPoint(x, y)
   MovePoint(slot_point1)
   Sleep, 100
-  item_strip_point := InventoryGetDoubleSlotPoint(x, y, -35)
+  item_strip_point := InventoryGetDoubleSlotPoint(x, y, -35, 0)
   return ColorPointSimilarTo(item_strip_point, 0x015596, 6, 6, 10)
 }
 
@@ -88,7 +103,7 @@ InventoryIsSingleSlotPrimal(x, y) {
   slot_point1 := InventoryGetSingleSlotPoint(x, y)
   MovePoint(slot_point1)
   Sleep, 100
-  item_strip_point := InventoryGetSingleSlotPoint(x, y, -35)
+  item_strip_point := InventoryGetSingleSlotPoint(x, y, -35, 0)
   return ColorPointSimilarTo(item_strip_point, 0x0B0A72, 6, 6, 10)
 }
 
@@ -96,7 +111,7 @@ InventoryIsDoubleSlotPrimal(x, y) {
   slot_point1 := InventoryGetDoubleSlotPoint(x, y)
   MovePoint(slot_point1)
   Sleep, 100
-  item_strip_point := InventoryGetDoubleSlotPoint(x, y, -35)
+  item_strip_point := InventoryGetDoubleSlotPoint(x, y, -35, 0)
   return ColorPointSimilarTo(item_strip_point, 0x0B0A72, 6, 6, 10)
 }
 
@@ -108,8 +123,8 @@ InventoryIsSingleSlotImportant(x, y) {
 
 InventoryIsDoubleSlotImportant(x, y) {
   return InventoryIsDoubleSlotUnidentifiable(x, y) 
-      ; || InventoryIsDoubleSlotAncient(x, y) 
-      ; || InventoryIsDoubleSlotPrimal(x, y)
+      || InventoryIsDoubleSlotAncient(x, y) 
+      || InventoryIsDoubleSlotPrimal(x, y)
 }
 
 InventoryNumAncient() {
@@ -301,7 +316,10 @@ InventoryRightClickAncient() {
 }
 
 InventoryRightClickImportant() {
-  Loop, 6 { ; Top -> Bottom
+  InventoryMoveMouseOutOfSlotRegion()
+  InventoryRightClickUnidentifiable()
+  InventoryMoveMouseOutOfSlotRegion()
+  Loop, 3 { ; Top -> Bottom
     y := A_Index
     Loop, 8 { ; Left -> Right
       x := A_Index
@@ -311,8 +329,9 @@ InventoryRightClickImportant() {
         ; so the popup will disappear.
         Sleep, 50
       }
-      if (!InventoryIsSingleSlotEmpty(x, y) && InventoryIsSingleSlotImportant(x, y)) {
-        InventoryRightClickSingleSlot(x, y)
+      single_slot_y := -1 + 2 * y
+      if (!InventoryIsSingleSlotEmpty(x, single_slot_y) && InventoryIsSingleSlotImportant(x, single_slot_y)) {
+        InventoryRightClickSingleSlot(x, single_slot_y)
         ; Sleep a bit in case the user is inputting into stash, 
         ; so the popup will disappear.
         Sleep, 50

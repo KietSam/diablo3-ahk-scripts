@@ -169,3 +169,10 @@ ArrayJoin(arr, sep:=", ") {
   }
   return res
 }
+
+IsPointInRegion(p, top_left_p, bot_right_p) {
+  return p[1] >= top_left_p[1]
+      && p[1] <= bot_right_p[1]
+      && p[2] >= top_left_p[2]
+      && p[2] <= bot_right_p[2]
+}

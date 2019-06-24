@@ -47,12 +47,12 @@ SpendBloodShards() {
 
       ; kadala -> blacksmith
       ClickAt(1530, 350)
-      Sleep, 1500
+      BlacksmithWaitTillPanelActive()
       BlacksmithSalvageWhiteBlueYellow()
 
       ; blacksmith -> kadala
       ClickAt(980, 840)
-      Sleep, 1500
+      KadalaWaitTillPanelActive()
     }
   }
 }
@@ -67,11 +67,18 @@ UrshiUpgradeSequence() {
     if (!UrshiIsPanelActive()) {
       break
     }
+    go_next_gem := true
     UrshiClickSlot(curr_x, curr_y)
     if (UrshiIsGem100PercentUpgradeChance()) {
       UrshiClickUpgrade()
-      Sleep, 1500
-    } else {
+      Sleep, 2000
+      go_next_gem := false
+      if (UrshiIsUpgradeUnavailable()) {
+        go_next_gem := true
+      }
+    } 
+    
+    if (go_next_gem) {
       if (curr_x == 5 && curr_y == 3) {
         ; Made it through the first page
         ; Reset x position but stay at y position
@@ -94,7 +101,7 @@ UrshiUpgradeSequence() {
 
 HomeSequence() {
   MapOpenTown(3)
-  WaitTillPointIsColor(Point(1036, 223), 0x392828, 20, 20, 20)
+  WaitTillPointIsColor(Point(1036, 223), 0x392828, 20, 20, 15)
   Sleep, 500
   TownClickStash(3)
   StashWaitTillActive()
@@ -113,11 +120,13 @@ HomeSequence() {
     if (tab > 5) {
       break
     }
-    InventoryRightClickUnidentifiable()
+    InventoryRightClickImportant()
   }
 
   MapOpenTown(1)
-  WaitTillPointIsColor(Point(2239, 938), 0xE7D64A, 30, 30, 50)
+  while !(ColorAtSimilarTo(2224, 945, 0xE3D432, 20, 20, 20)) {
+    Sleep, 50
+  }
   TownClickOrek(1)
   Sleep, 2000
   Loop, 5 {
@@ -127,8 +136,7 @@ HomeSequence() {
 
   ; Click blacksmith from Orek pos
   ClickAt(1640, 130)
-  Sleep, 2000
-
+  BlacksmithWaitTillPanelActive()
   BlacksmithRepairAndSalvage()
 
   ; Click Kadela from Blacksmith
@@ -139,8 +147,10 @@ HomeSequence() {
 
   MapOpenTown(2)
   Sleep, 1000
-  TownClickNephalemStone(2)
-  RiftWaitTillPanelActive()
+  while !RiftIsPanelActive() {
+    TownClickNephalemStone(2)
+    Sleep, 2500
+  }
   RiftClickGreaterOption()
   RiftClickAccept()
 }
