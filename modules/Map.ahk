@@ -47,14 +47,22 @@ MapClickTown(n) {
   ClickAt(town_x[n], town_y[n])
 }
 
+MapIsInWorldView() {
+  return ColorAtSimilarTo(1998, 685, 0x3F4248, 9, 9, 9)
+      && ColorAtSimilarTo(767, 160, 0x1B262E, 9, 9, 9)
+}
+
 MapOpenTown(n) {
   MapOpenPanel()
   MapClickMinus()
-  Sleep, 150
+  while !MapIsInWorldView() {
+    Sleep, 5
+  }
   MapClickAct(n)
-  Sleep, 150
+  while !MapIsActActive(n) {
+    Sleep, 5
+  }
   MapClickTown(n)
-  Sleep, 250
 }
 
 MapIsActActive(n) {
@@ -73,12 +81,7 @@ MapIsActActive(n) {
             ,[0xFFFFFF, 0x162C36, 0x112436]]
   points := points[n]
   colors := colors[n]
-  Loop % points.Length() {
-    if (!ColorPointSimilarTo(points[A_Index], colors[A_Index], 9, 9, 9)) {
-      return false
-    }
-  }
-  return true
+  return ColorPointsAreSimilarTo(points, colors, 9, 9, 9)
 }
 
 MapWhatActIsActive() {

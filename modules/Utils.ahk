@@ -63,6 +63,14 @@ WaitTillPointIsColor(p, color, search_width:=4, search_height:=4, variance:=3) {
   Sleep, 100
 }
 
+ColorPointsAreSimilarTo(points, colors, search_width:=4, search_height:=4, variance:=3) {
+  Loop % points.Length() {
+    if (!ColorPointSimilarTo(points[A_Index], colors[A_Index], search_width, search_height, variance)) {
+      return false
+    }
+  }
+  return true
+}
 
 IsEmptySlotColorAt(x, y) {
   p := Point(x, y)

@@ -1,5 +1,28 @@
 #Include, %A_ScriptDir%\..\modules\Utils.ahk
 
+TownIsActive(n) {
+  ; Checks if in town from the town portal position.
+  points := [[Point(579, 397), Point(432, 571), Point(298, 150)]
+            ,[Point(803, 165), Point(949, 103), Point(387, 798)]
+            ,[]
+            ,[]
+            ,[]]
+  colors := [[0xCB8661, 0xD58D66, 0x4C82CF]
+            ,[0xF7A787, 0xF4AF85, 0xF8B484]
+            ,[]
+            ,[]
+            ,[]]
+  points := points[n]
+  colors := colors[n]
+  return ColorPointsAreSimilarTo(points, colors, 10, 10, 20)
+}
+
+TownWaitTillActive(n) {
+  while !TownIsActive(n) {
+    Sleep, 10
+  }
+}
+
 TownClickKadala(n) {
   ; Clicks Kadala starting from the town portal.
   ; n: act number

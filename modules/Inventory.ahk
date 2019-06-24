@@ -216,8 +216,8 @@ InventoryNumEmptySlots() {
         num++
       }
     }
-    return num
   }
+  return num
 }
 
 InventoryClickSingleSlot(x, y) {
