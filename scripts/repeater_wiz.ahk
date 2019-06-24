@@ -158,7 +158,7 @@ AutoSend:
     }
   }
 
-  if (COUNTER > 100) {
+  if (COUNTER > 50) {
     ; reset
     sequence_num := 0
   }

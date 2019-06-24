@@ -18,14 +18,20 @@ SpendBloodShardSequence() {
 }
 
 MapOpenTown(1)
-Sleep, 6000
+InventoryOpenPanel()
+num_empty_slots := InventoryNumEmptySlots()
+InventoryCloseIfActive()
 
-; Click blacksmith from Orek pos
-while !BlacksmithIsPanelActive() {
-  TownClickBlacksmith(1)
-  Sleep, 2000
+TownWaitTillActive(1)
+
+if (num_empty_slots <= 16) {
+  ; Click blacksmith from Orek pos
+  while !BlacksmithIsPanelActive() {
+    TownClickBlacksmith(1)
+    Sleep, 2000
+  }
+  BlacksmithRepairAndSalvage()
 }
-BlacksmithRepairAndSalvage()
 
 GameMenuOpen()
 GameMenuClick(4)
@@ -43,7 +49,7 @@ if (MapIsActActive(2)) {
 }
 
 MapOpenTown(act_to_goto)
-Sleep, 1500
+TownWaitTillActive(act_to_goto)
 while !RiftIsPanelActive() {
   TownClickNephalemStone(act_to_goto)
   Sleep, 2500
@@ -56,7 +62,6 @@ RiftClickNephalemOption()
 RiftClickAccept()
 ; Wait for it to open
 Sleep, 3500
-
 TownClickPortal(act_to_goto)
 
 ExitApp

@@ -6,7 +6,13 @@
 ; WinActivate, Diablo III ahk_class D3 Main Window Class
 
 ; Print(InventoryIsInSlotRegion())
-Print(StartScreenActive())
+; Print(StartScreenActive())
+; Print(StartScreenActive())
+
+InventoryOpenPanel()
+Print(InventoryNumEmptySlots())
+
+; Print(InventoryIsSingleSlotEmpty(1, 3))
 
 ; for k in settings?:
 ;   Print("k: " . k . ", v: " . v)
