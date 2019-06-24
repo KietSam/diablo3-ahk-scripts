@@ -37,7 +37,7 @@ while !RiftIsPanelActive() {
 RiftWaitTillPanelActive()
 
 ; Click accept
-RiftClickNephalemOption()
+RiftClickGreaterOption()
 RiftClickAccept()
 ; Wait for it to open
 Sleep, 3500

@@ -50,11 +50,11 @@ MapClickTown(n) {
 MapOpenTown(n) {
   MapOpenPanel()
   MapClickMinus()
-  Sleep, 50
+  Sleep, 150
   MapClickAct(n)
-  Sleep, 50
+  Sleep, 150
   MapClickTown(n)
-  Sleep, 1000
+  Sleep, 250
 }
 
 MapIsActActive(n) {

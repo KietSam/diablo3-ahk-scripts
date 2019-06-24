@@ -1,11 +1,12 @@
 #Include, %A_ScriptDir%\..\modules\Inventory.ahk
 #Include, %A_ScriptDir%\..\modules\Utils.ahk
 #Include, %A_ScriptDir%\..\modules\Map.ahk
+#Include, %A_ScriptDir%\..\modules\StartScreen.ahk
 
 ; WinActivate, Diablo III ahk_class D3 Main Window Class
 
 ; Print(InventoryIsInSlotRegion())
-Print(MapIsActActive(2))
+Print(StartScreenActive())
 
 ; for k in settings?:
 ;   Print("k: " . k . ", v: " . v)

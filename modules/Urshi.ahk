@@ -79,9 +79,9 @@ UrshiClickUpgradeIf100PercentUpgradeChance() {
   }
 }
 
-UrshiIsUpgradeUnavailable() {
+UrshiIsUpgradeAvailable() {
   ; Checks if the button is available for clicking,
   ; if not, it's probably a maxed out gem.
-  return ColorAtSimilarTo(448, 729, 0x131513)
-      && ColorAtSimilarTo(263, 728, 0x131513)
+  return !(ColorAtSimilarTo(448, 729, 0x131513)
+        && ColorAtSimilarTo(263, 728, 0x131513))
 }

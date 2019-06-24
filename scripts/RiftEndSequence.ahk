@@ -21,8 +21,10 @@ MapOpenTown(1)
 Sleep, 6000
 
 ; Click blacksmith from Orek pos
-TownClickBlacksmith(1)
-BlacksmithWaitTillPanelActive()
+while !BlacksmithIsPanelActive() {
+  TownClickBlacksmith(1)
+  Sleep, 2000
+}
 BlacksmithRepairAndSalvage()
 
 GameMenuOpen()

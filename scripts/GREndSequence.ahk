@@ -2,6 +2,7 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 
 #Include, %A_ScriptDir%\..\modules\Blacksmith.ahk
 #Include, %A_ScriptDir%\..\modules\Kadala.ahk
+#Include, %A_ScriptDir%\..\modules\Orek.ahk
 #Include, %A_ScriptDir%\..\modules\Map.ahk
 #Include, %A_ScriptDir%\..\modules\RiftStone.ahk
 #Include, %A_ScriptDir%\..\modules\Town.ahk
@@ -69,13 +70,10 @@ UrshiUpgradeSequence() {
     }
     go_next_gem := true
     UrshiClickSlot(curr_x, curr_y)
-    if (UrshiIsGem100PercentUpgradeChance()) {
-      UrshiClickUpgrade()
-      Sleep, 2000
+    if (UrshiIsGem100PercentUpgradeChance() && UrshiIsUpgradeAvailable()) {
       go_next_gem := false
-      if (UrshiIsUpgradeUnavailable()) {
-        go_next_gem := true
-      }
+      UrshiClickUpgrade()
+      Sleep, 1900
     } 
     
     if (go_next_gem) {
@@ -101,13 +99,21 @@ UrshiUpgradeSequence() {
 
 HomeSequence() {
   MapOpenTown(3)
-  WaitTillPointIsColor(Point(1036, 223), 0x392828, 20, 20, 15)
+  Sleep, 4000
+  while !(ColorAtSimilarTo(1039, 226, 0x272D3A, 20, 20, 15) 
+      && ColorAtSimilarTo(1295, 143, 0x2D3341, 20, 20, 15)
+      && ColorAtSimilarTo(976, 1090, 0x16110E, 20, 20, 15)) {
+    Sleep, 100
+  }
+
   Sleep, 500
-  TownClickStash(3)
-  StashWaitTillActive()
+  while !StashIsPanelActive() {
+    TownClickStash(3)
+    Sleep, 2500  
+  }
   StashClickChest(1)
 
-  tab := 2
+  tab := 3
   while (InventoryNumUnidentifiable() != 0) {
     StashClickTab(tab)
     while (StashNumEmptySlots() <= 2) {
@@ -127,8 +133,10 @@ HomeSequence() {
   while !(ColorAtSimilarTo(2224, 945, 0xE3D432, 20, 20, 20)) {
     Sleep, 50
   }
-  TownClickOrek(1)
-  Sleep, 2000
+  while !OrekIsPopupActive() {
+    TownClickOrek(1)
+    Sleep, 2000
+  }
   Loop, 5 {
     Send, {Space}
     Sleep, 50
@@ -156,6 +164,7 @@ HomeSequence() {
 }
 
 UrshiUpgradeSequence()
+Sleep, 1000
 HomeSequence()
 
 

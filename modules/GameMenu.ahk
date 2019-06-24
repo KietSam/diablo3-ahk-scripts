@@ -17,7 +17,7 @@ GameMenuActive() {
 
   Loop, 3 {
     p := GameMenuItemPoint(A_Index)
-    active := active && ColorPointSimilarTo(p, active_colors[A_Index])
+    active := active && ColorPointSimilarTo(p, active_colors[A_Index], 6, 6, 9)
     if !active {
       return false
     }
@@ -44,6 +44,6 @@ GameMenuClick(n) {
 GameMenuOpen() {
   while !GameMenuActive() {
     Send, {Esc}
-    Sleep, 150
+    Sleep, 500
   }
 }
