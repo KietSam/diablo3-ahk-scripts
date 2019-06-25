@@ -107,6 +107,7 @@ BlacksmithSalvageLegendaries() {
   }
   ; Top -> Down
   Loop, 6 {
+    InventoryMoveMouseOutOfSlotRegion()
     i := A_Index
     ; Left -> Right
     Loop, 8 {

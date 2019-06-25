@@ -56,13 +56,14 @@ MapOpenTown(n) {
   MapOpenPanel()
   MapClickMinus()
   while !MapIsInWorldView() {
-    Sleep, 5
+    Sleep, 50
   }
   MapClickAct(n)
   while !MapIsActActive(n) {
-    Sleep, 5
+    Sleep, 50
   }
   MapClickTown(n)
+  MapClosePanel()
 }
 
 MapIsActActive(n) {

@@ -14,9 +14,9 @@ BlacksmithSalvageWhiteBlueYellow()
 
 BlacksmithSalvageLegendaries()
 
-BlacksmithClickRepairTab()
+; BlacksmithClickRepairTab()
 
-BlacksmithClickRepairButton()
+; BlacksmithClickRepairButton()
 
 ExitApp
 

@@ -11,6 +11,13 @@
 ;    ...
 ;===============================================================
 
+global:
+EMPTY := 0
+LEGENDARY := 1
+SET := 2
+
+NOT_DOUBLE_SLOT := 4
+
 InventoryIsPanelActive() {
   return ColorAtSimilarTo(2200, 230, 0x496C93)
 }
@@ -73,13 +80,23 @@ InventoryIsDoubleSlotUnidentifiable(x, y) {
   return false
 }
 
-InventoryIsDoubleSlotSetItem(x, y) {
-  slot_point1 := InventoryGetDoubleSlotPoint(x, y, 23, 88)
-  return ColorPointSimilarTo(slot_point1, 0x4DF05A)
+InventoryIsSingleSlotLegendaryItem(x, y) {
+  slot_point1 := InventoryGetSingleSlotPoint(x, y, 23, 21)
+  return ColorPointSimilarTo(slot_point1, 0x0062DF)
 }
 
 InventoryIsSingleSlotSetItem(x, y) {
   slot_point1 := InventoryGetSingleSlotPoint(x, y, 23, 21)
+  return ColorPointSimilarTo(slot_point1, 0x4DF05A)
+}
+
+InventoryIsDoubleSlotLegendaryItem(x, y) {
+  slot_point1 := InventoryGetDoubleSlotPoint(x, y, 23, 21)
+  return ColorPointSimilarTo(slot_point1, 0x0062DF)
+}
+
+InventoryIsDoubleSlotSetItem(x, y) {
+  slot_point1 := InventoryGetDoubleSlotPoint(x, y, 23, 21)
   return ColorPointSimilarTo(slot_point1, 0x4DF05A)
 }
 
@@ -88,7 +105,25 @@ InventoryIsSingleSlotAncient(x, y) {
   MovePoint(slot_point1)
   Sleep, 100
   item_strip_point := InventoryGetSingleSlotPoint(x, y, -35, 0)
-  return ColorPointSimilarTo(item_strip_point, 0x015596, 6, 6, 10)
+  return ColorPointSimilarTo(item_strip_point, 0x015596, 5, 5, 8)
+}
+
+InventoryDoubleSlotType(x, y) {
+  global
+  if !(InventoryIsSingleSlotLegendaryItem(x, -1 + 2 * y) || InventoryIsSingleSlotSetItem(x, -1 + 2 * y)) {
+    if InventoryIsDoubleSlotLegendaryItem(x, y) {
+      return LEGENDARY
+    }
+    if InventoryIsDoubleSlotSetItem(x, y) {
+      return SET
+    }
+  }
+  return NOT_DOUBLE_SLOT
+}
+
+InventoryIsDoubleSlotItem(x, y) {
+  return !(InventoryIsSingleSlotLegendaryItem(x, -1 + 2 * y) || InventoryIsSingleSlotSetItem(x, -1 + 2 * y))
+       && (InventoryIsDoubleSlotLegendaryItem(x, y)          || InventoryIsDoubleSlotSetItem(x, y))
 }
 
 InventoryIsDoubleSlotAncient(x, y) {
@@ -96,7 +131,7 @@ InventoryIsDoubleSlotAncient(x, y) {
   MovePoint(slot_point1)
   Sleep, 100
   item_strip_point := InventoryGetDoubleSlotPoint(x, y, -35, 0)
-  return ColorPointSimilarTo(item_strip_point, 0x015596, 6, 6, 10)
+  return ColorPointSimilarTo(item_strip_point, 0x015596, 5, 5, 8)
 }
 
 InventoryIsSingleSlotPrimal(x, y) {
@@ -104,7 +139,7 @@ InventoryIsSingleSlotPrimal(x, y) {
   MovePoint(slot_point1)
   Sleep, 100
   item_strip_point := InventoryGetSingleSlotPoint(x, y, -35, 0)
-  return ColorPointSimilarTo(item_strip_point, 0x0B0A72, 6, 6, 10)
+  return ColorPointSimilarTo(item_strip_point, 0x0B0A72, 5, 5, 8)
 }
 
 InventoryIsDoubleSlotPrimal(x, y) {
@@ -112,7 +147,7 @@ InventoryIsDoubleSlotPrimal(x, y) {
   MovePoint(slot_point1)
   Sleep, 100
   item_strip_point := InventoryGetDoubleSlotPoint(x, y, -35, 0)
-  return ColorPointSimilarTo(item_strip_point, 0x0B0A72, 6, 6, 10)
+  return ColorPointSimilarTo(item_strip_point, 0x0B0A72, 5, 5, 8)
 }
 
 InventoryIsSingleSlotImportant(x, y) {
@@ -125,6 +160,60 @@ InventoryIsDoubleSlotImportant(x, y) {
   return InventoryIsDoubleSlotUnidentifiable(x, y) 
       || InventoryIsDoubleSlotAncient(x, y) 
       || InventoryIsDoubleSlotPrimal(x, y)
+}
+
+InventoryNumDoubleSlotItems() {
+  num := 0
+  Loop, 3 { ; Top -> Bottom
+    y := A_Index
+    Loop, 8 { ; Left -> Right
+      x := A_Index
+      if (InventoryIsDoubleSlotItem(x, y)) {
+        num++
+      }
+    }
+  }
+  return num
+}
+
+InventoryNumSetItems() {
+  num := 0
+  Loop, 3 { ; Top -> Bottom
+    y := A_Index
+    Loop, 8 { ; Left -> Right
+      x := A_Index
+      if (InventoryIsDoubleSlotSetItem(x, y)) {
+        num++
+      }
+      if InventoryIsSingleSlotSetItem(x, -1 + 2 * y) {
+        num++
+      }
+    }
+  }
+  return num
+}
+
+InventoryNumLegendaryItems() {
+  global
+  num := 0
+  Loop, 3 { ; Top -> Bottom
+    y := A_Index
+    Loop, 8 { ; Left -> Right
+      x := A_Index
+      type := InventoryDoubleSlotType(x, y)
+      if (type == NOT_DOUBLE_SLOT) {
+        if InventoryIsSingleSlotLegendaryItem(x, -1 + 2 * y) {
+          num++
+        }
+        if InventoryIsSingleSlotLegendaryItem(x, 2 * y) {
+          num++
+        }
+      } else if (type == LEGENDARY) {
+        num++
+      }
+    }
+  }
+  return num
 }
 
 InventoryNumAncient() {
@@ -154,23 +243,6 @@ InventoryNumUnidentifiable() {
         num++
       }
       if InventoryIsSingleSlotUnidentifiable(x, y) {
-        num++
-      }
-    }
-  }
-  return num
-}
-
-InventoryNumSetItems() {
-  num := 0
-  Loop, 3 { ; Top -> Bottom
-    y := A_Index
-    Loop, 8 { ; Left -> Right
-      x := A_Index
-      if (InventoryIsDoubleSlotSetItem(x, y)) {
-        num++
-      }
-      if InventoryIsSingleSlotSetItem(x, -1 + 2 * y) {
         num++
       }
     }
@@ -318,23 +390,33 @@ InventoryRightClickAncient() {
 InventoryRightClickImportant() {
   InventoryMoveMouseOutOfSlotRegion()
   InventoryRightClickUnidentifiable()
-  InventoryMoveMouseOutOfSlotRegion()
   Loop, 3 { ; Top -> Bottom
+    InventoryMoveMouseOutOfSlotRegion()
     y := A_Index
     Loop, 8 { ; Left -> Right
       x := A_Index
-      if (y <= 3 && !InventoryIsDoubleSlotEmpty(x, y) && InventoryIsDoubleSlotImportant(x, y)) {
-        InventoryRightClickDoubleSlot(x, y)
-        ; Sleep a bit in case the user is inputting into stash, 
-        ; so the popup will disappear.
-        Sleep, 50
-      }
-      single_slot_y := -1 + 2 * y
-      if (!InventoryIsSingleSlotEmpty(x, single_slot_y) && InventoryIsSingleSlotImportant(x, single_slot_y)) {
-        InventoryRightClickSingleSlot(x, single_slot_y)
-        ; Sleep a bit in case the user is inputting into stash, 
-        ; so the popup will disappear.
-        Sleep, 50
+      if (InventoryIsDoubleSlotItem(x, y)) {
+        if (!InventoryIsDoubleSlotEmpty(x, y) && InventoryIsDoubleSlotImportant(x, y)) {
+          InventoryRightClickDoubleSlot(x, y)
+          ; Sleep a bit in case the user is inputting into stash, 
+          ; so the popup will disappear.
+          Sleep, 50
+        }
+      } else {
+        single_slot1_y := -1 + 2 * y
+        single_slot2_y := 2 * y
+        if (!InventoryIsSingleSlotEmpty(x, single_slot1_y) && InventoryIsSingleSlotImportant(x, single_slot1_y)) {
+          InventoryRightClickSingleSlot(x, single_slot1_y)
+          ; Sleep a bit in case the user is inputting into stash, 
+          ; so the popup will disappear.
+          Sleep, 50
+        }
+        if (!InventoryIsSingleSlotEmpty(x, single_slot2_y) && InventoryIsSingleSlotImportant(x, single_slot2_y)) {
+          InventoryRightClickSingleSlot(x, single_slot2_y)
+          ; Sleep a bit in case the user is inputting into stash, 
+          ; so the popup will disappear.
+          Sleep, 50
+        }
       }
     }
   }

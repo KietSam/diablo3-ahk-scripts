@@ -9,8 +9,15 @@
 ; Print(StartScreenActive())
 ; Print(StartScreenActive())
 
-InventoryOpenPanel()
-Print(InventoryNumEmptySlots())
+; InventoryOpenPanel()
+; Print(InventoryNumEmptySlots())
+
+; Print(InventoryIsSingleSlotLegendaryItem(1, 1))
+; Print(InventoryIsDoubleSlotSetItem(1, 1))
+; Print(InventoryIsDoubleSlotLegendaryItem(1, 1))
+; Print(InventoryDoubleSlotType(1, 1))
+; Print(InventoryNumDoubleSlotItems())
+Print(InventoryNumLegendaryItems())
 
 ; Print(InventoryIsSingleSlotEmpty(1, 3))
 
