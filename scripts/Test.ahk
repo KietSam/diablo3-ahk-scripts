@@ -2,6 +2,7 @@
 #Include, %A_ScriptDir%\..\modules\Utils.ahk
 #Include, %A_ScriptDir%\..\modules\Map.ahk
 #Include, %A_ScriptDir%\..\modules\StartScreen.ahk
+#Include, %A_ScriptDir%\..\modules\Sequences.ahk
 
 ; WinActivate, Diablo III ahk_class D3 Main Window Class
 
@@ -17,7 +18,23 @@
 ; Print(InventoryIsDoubleSlotLegendaryItem(1, 1))
 ; Print(InventoryDoubleSlotType(1, 1))
 ; Print(InventoryNumDoubleSlotItems())
-Print(InventoryNumLegendaryItems())
+; Print(InventoryNumLegendaryItems())
+
+; Print(InventoryIsSingleSlotEmpty(1, 3))
+; Print(InventoryIsSingleSlotEmpty(1, 4))
+
+; Print(InventoryRightClickSingleSlot(1, 4))
+
+; RightClickImportantToStash()
+
+Print(InventoryIsDoubleSlotEmpty(6, 1))
+
+; Print(InventoryIsSingleSlotImportant(1, 3))
+; Print(InventoryIsSingleSlotImportant(1, 4))
+
+; Print(StashNumEmptySlots())
+
+; InventoryRightClickImportant()
 
 ; Print(InventoryIsSingleSlotEmpty(1, 3))
 

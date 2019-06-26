@@ -25,6 +25,6 @@ KadalaIsPanelActive() {
 
 KadalaWaitTillPanelActive() {
   while !KadalaIsPanelActive() {
-    Sleep, 50
+    Sleep, 10
   }
 }

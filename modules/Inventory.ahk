@@ -44,8 +44,8 @@ InventoryIsInSlotRegion() {
 
 InventoryMoveMouseOutOfSlotRegion() {
   if InventoryIsInSlotRegion() {
-    MovePoint(Point(1794, 891))
-    Sleep, 100
+    MovePoint(Point(1891, 684))
+    Sleep, 400
   }
 }
 
@@ -275,7 +275,7 @@ InventoryIsDoubleSlotEmpty(x, y) {
       return false
     }
   }
-  return empty
+  return !InventoryIsDoubleSlotItem(x, y)
 }
 
 InventoryNumEmptySlots() {
@@ -387,9 +387,8 @@ InventoryRightClickAncient() {
   }
 }
 
-InventoryRightClickImportant() {
-  InventoryMoveMouseOutOfSlotRegion()
-  InventoryRightClickUnidentifiable()
+InventoryRightClickImportant(n:=100) {
+  ; n: number of slots to right click
   Loop, 3 { ; Top -> Bottom
     InventoryMoveMouseOutOfSlotRegion()
     y := A_Index
@@ -401,6 +400,7 @@ InventoryRightClickImportant() {
           ; Sleep a bit in case the user is inputting into stash, 
           ; so the popup will disappear.
           Sleep, 50
+          n -= 2
         }
       } else {
         single_slot1_y := -1 + 2 * y
@@ -410,14 +410,23 @@ InventoryRightClickImportant() {
           ; Sleep a bit in case the user is inputting into stash, 
           ; so the popup will disappear.
           Sleep, 50
+          n -= 1
         }
         if (!InventoryIsSingleSlotEmpty(x, single_slot2_y) && InventoryIsSingleSlotImportant(x, single_slot2_y)) {
           InventoryRightClickSingleSlot(x, single_slot2_y)
           ; Sleep a bit in case the user is inputting into stash, 
           ; so the popup will disappear.
           Sleep, 50
+          n -= 1
         }
+      }
+      if (n <= 0) {
+        return
       }
     }
   }
+}
+
+InventoryBloodShardsGreaterThan1K() {
+  return ColorAtSimilarTo(2476, 1167, 0xFFFFFF)
 }

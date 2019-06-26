@@ -108,12 +108,10 @@ BlacksmithSalvageLegendaries() {
   ; Top -> Down
   Loop, 6 {
     InventoryMoveMouseOutOfSlotRegion()
-    i := A_Index
+    y := A_Index
     ; Left -> Right
     Loop, 8 {
-      j := A_Index
-      x := j
-      y := i
+      x := A_Index
       if (!InventoryIsSingleSlotEmpty(x, y) && !InventoryIsSingleSlotPrimal(x, y)) {
         BlacksmithClickSalvageButtonIfNotActive()
         InventoryClickSingleSlot(x, y)

@@ -33,12 +33,15 @@ if (stage == 0) {
   stage++
 } else {
   color := ColorAt(saved_x, saved_y)
-  text1 := "Point(" . saved_x . ", " . saved_y . ")"
-  text2 := "ColorAtSimilarTo(" . saved_x . ", " . saved_y . ", " . color ")"
-  text3 := saved_x . ", " . saved_y . ", " . color
+  lines := []
+  lines.Push("ClickAt(" . saved_x . ", " . saved_y . ")")
+  lines.Push("Point(" . saved_x . ", " . saved_y . ")")
+  lines.Push("ColorAtSimilarTo(" . saved_x . ", " . saved_y . ", " . color ")")
+  lines.Push(saved_x . ", " . saved_y . ", " . color)
+
   Gui, New
   Gui +AlwaysOnTop
-  Gui, Add, edit, h100 w200 , % text1 . "`n" . text2 . "`n" . text3
+  Gui, Add, edit, h100 w500 , % ArrayJoin(lines, "`n")
   Gui, Show
   stage := 0
 }
