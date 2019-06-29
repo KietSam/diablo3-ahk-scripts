@@ -64,10 +64,9 @@ HomeSequence() {
   MapOpenTown(3)
   TownWaitTillActive(3)
 
-  Sleep, 500
   while !StashIsPanelActive() {
     TownClickStash(3)
-    Sleep, 2500  
+    StashWaitTillActive(1500)
   }
   StashClickChest(1)
 
@@ -97,12 +96,10 @@ HomeSequence() {
     KadalaWaitTillPanelActive()
     SpendBloodShards_()
   }
-
-  MapOpenTown(2)
   Sleep, 1000
   while !RiftIsPanelActive() {
-    TownClickNephalemStone(2)
-    Sleep, 2500
+    TownClickNephalemStoneAfterBlacksmith(1)
+    Sleep, 1500
   }
   RiftClickGreaterOption()
   RiftClickAccept()

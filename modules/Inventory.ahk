@@ -45,7 +45,7 @@ InventoryIsInSlotRegion() {
 InventoryMoveMouseOutOfSlotRegion() {
   if InventoryIsInSlotRegion() {
     MovePoint(Point(1891, 684))
-    Sleep, 400
+    Sleep, 300
   }
 }
 
@@ -389,11 +389,11 @@ InventoryRightClickAncient() {
 
 InventoryRightClickImportant(n:=100) {
   ; n: number of slots to right click
-  Loop, 3 { ; Top -> Bottom
-    InventoryMoveMouseOutOfSlotRegion()
-    y := A_Index
-    Loop, 8 { ; Left -> Right
-      x := A_Index
+  InventoryMoveMouseOutOfSlotRegion()
+  Loop, 8 { ; Top -> Bottom
+    x := A_Index
+    Loop, 3 { ; Left -> Right
+      y := A_Index
       if (InventoryIsDoubleSlotItem(x, y)) {
         if (!InventoryIsDoubleSlotEmpty(x, y) && InventoryIsDoubleSlotImportant(x, y)) {
           InventoryRightClickDoubleSlot(x, y)

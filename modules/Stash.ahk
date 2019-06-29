@@ -2,9 +2,15 @@ StashIsPanelActive() {
   return ColorAtSimilarTo(363, 102, 0x1C5C9F) && ColorAtSimilarTo(510, 65, 0x080811)
 }
 
-StashWaitTillActive() {
+StashWaitTillActive(n:=1000000) {
+  ; n: max time to wait
+  time_passed := 0
   while !StashIsPanelActive() {
     Sleep, 50
+    time_passed += 50
+    if (time_passed > n) {
+      return
+    }
   }
 }
 

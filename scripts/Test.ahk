@@ -27,7 +27,9 @@
 
 ; RightClickImportantToStash()
 
-Print(InventoryIsDoubleSlotEmpty(6, 1))
+; Print(InventoryIsDoubleSlotEmpty(6, 1))
+
+Print(StartScreenActive())
 
 ; Print(InventoryIsSingleSlotImportant(1, 3))
 ; Print(InventoryIsSingleSlotImportant(1, 4))

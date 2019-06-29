@@ -10,12 +10,13 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 #Include, %A_ScriptDir%\..\modules\RiftStone.ahk
 #Include, %A_ScriptDir%\..\modules\Sequences.ahk
 
-if !StartScreenActive(){
-  GameMenuOpen()
-  GameMenuClick(4)
-}
+
+GameMenuOpen()
+GameMenuWaitTillActive()
+GameMenuClick(4)
 
 StartScreenWaitActive()
+
 while !IsInGame() {
   StartScreenClickStartGame()
   Sleep, 1000
@@ -39,9 +40,6 @@ RiftWaitTillPanelActive()
 ; Click accept
 RiftClickGreaterOption()
 RiftClickAccept()
-; Wait for it to open
-Sleep, 3500
-TownClickPortal(act_to_goto)
 
 ExitApp
 

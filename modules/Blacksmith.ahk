@@ -120,3 +120,25 @@ BlacksmithSalvageLegendaries() {
     }
   }
 }
+
+BlacksmithSalvageEverything() {
+  if (!BlacksmithIsPanelActive()) {
+    return
+  }
+  if (!BlacksmithIsSalvageTabActive()) {
+    BlacksmithClickSalvageTab()
+  }
+  BlacksmithClickSalvageButtonIfNotActive()
+  ; Top -> Down
+  Loop, 6 {
+    y := A_Index
+    ; Left -> Right
+    Loop, 8 {
+      x := A_Index
+      if (!InventoryIsSingleSlotEmpty(x, y)) {
+        InventoryClickSingleSlot(x, y)
+        SmartEnter()
+      }
+    }
+  }
+}

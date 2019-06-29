@@ -47,6 +47,19 @@ TownClickBlacksmith(n) {
   }
 }
 
+TownClickNephalemStoneAfterBlacksmith(n) {
+  ; Clicks the nephalem stone assuming that the user is already at the blacksmith
+  ; location.
+  ; n: act number
+  xs := [1403, -1, -1, -1, -1]
+  ys := [988, -1, -1, -1, -1]
+  if (xs[n] == -1) {
+    Print("TownClickNephalemStoneAfterBlacksmith: Not supported for act " . n)
+  } else {
+    ClickAt(xs[n], ys[n])
+  }
+}
+
 TownClickOrek(n) {
   ; Clicks Orek starting from the town portal.
   ; n: act number

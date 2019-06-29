@@ -20,15 +20,20 @@ WaitTillInGame() {
   }
 }
 
+IsInScreenRegion(x, y) {
+  curr_p := [x, y]
+  region_top_left_p := Point(0, 0)
+  region_bot_right_p := Point(2560, 1440)
+  return IsPointInRegion(curr_p, region_top_left_p, region_bot_right_p)
+}
+
 IsGoodClickRegion(x, y) {
   ; Checks if the given x and y coordinates are in a good clickable region.
   ; x: x position in terms of user's resolution
   ; y: y position in terms of user's resolution
   curr_p := [x, y]
 
-  region_top_left_p := Point(0, 0)
-  region_bot_right_p := Point(2560, 1440)
-  if (!IsPointInRegion(curr_p, region_top_left_p, region_bot_right_p)) {
+  if (!IsInScreenRegion(x, y)) {
     ; Has to be in the window.
     return false
   }

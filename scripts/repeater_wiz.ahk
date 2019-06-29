@@ -101,71 +101,72 @@ AutoSend:
   if (GetKeyState("Alt", "P") || GetKeyState("t", "P") || GetKeyState("m", "P") || GetKeyState("Alt", "P")) {
     Return
   }
-  Gosub GetCurrentProfile
-
-  skill_keys := [CURR_PROFILE["skill1Key"]
-               , CURR_PROFILE["skill2Key"]
-               , CURR_PROFILE["skill3Key"]
-               , CURR_PROFILE["skill4Key"]]
-  toggle_skills_when_inactive := [CURR_PROFILE["toggleSkill1WhenInactive"]
-                                , CURR_PROFILE["toggleSkill2WhenInactive"]
-                                , CURR_PROFILE["toggleSkill3WhenInactive"]
-                                , CURR_PROFILE["toggleSkill4WhenInactive"]]
-  toggle_skills_when_available := [CURR_PROFILE["toggleSkill1WhenAvailable"]
-                                , CURR_PROFILE["toggleSkill2WhenAvailable"]
-                                , CURR_PROFILE["toggleSkill3WhenAvailable"]
-                                , CURR_PROFILE["toggleSkill4WhenAvailable"]]
 
   MouseGetPos mouse_x, mouse_y
-  char_center_point := Point(CHARACTER_CENTER_X, CHARACTER_CENTER_Y)
-  if (IsGoodClickRegion(mouse_x, mouse_y)) {
-    if (CURR_PROFILE["toggleRadialClicks"]
-     && Distance(mouse_x, mouse_y, char_center_point[1], char_center_point[2]) <= CURR_PROFILE["maxRadius"]) {
-      Send, {Click}
+  if IsInScreenRegion(mouse_x, mouse_y) {
+    Gosub GetCurrentProfile
+    skill_keys := [CURR_PROFILE["skill1Key"]
+                , CURR_PROFILE["skill2Key"]
+                , CURR_PROFILE["skill3Key"]
+                , CURR_PROFILE["skill4Key"]]
+    toggle_skills_when_inactive := [CURR_PROFILE["toggleSkill1WhenInactive"]
+                                  , CURR_PROFILE["toggleSkill2WhenInactive"]
+                                  , CURR_PROFILE["toggleSkill3WhenInactive"]
+                                  , CURR_PROFILE["toggleSkill4WhenInactive"]]
+    toggle_skills_when_available := [CURR_PROFILE["toggleSkill1WhenAvailable"]
+                                  , CURR_PROFILE["toggleSkill2WhenAvailable"]
+                                  , CURR_PROFILE["toggleSkill3WhenAvailable"]
+                                  , CURR_PROFILE["toggleSkill4WhenAvailable"]]
+    char_center_point := Point(CHARACTER_CENTER_X, CHARACTER_CENTER_Y)
+    if (IsGoodClickRegion(mouse_x, mouse_y)) {
+      if (CURR_PROFILE["toggleRadialClicks"]
+      && Distance(mouse_x, mouse_y, char_center_point[1], char_center_point[2]) <= CURR_PROFILE["maxRadius"]) {
+        Send, {Click}
+      }
     }
-  }
 
-  Loop % skill_keys.Length() {
-    i := A_Index
-    key := skill_keys[i]
-    if (toggle_skills_when_inactive[i] && !SkillIsOnCooldown(i)) {
-      Send, %key%
+    Loop % skill_keys.Length() {
+      i := A_Index
+      key := skill_keys[i]
+      if (toggle_skills_when_inactive[i] && !SkillIsOnCooldown(i)) {
+        Send, %key%
+      }
+      if (toggle_skills_when_available[i] && SkillIsAvailable(i)) {
+        Send, %key%
+      }
     }
-    if (toggle_skills_when_available[i] && SkillIsAvailable(i)) {
-      Send, %key%
-    }
-  }
 
-  if (sequence_num == 0) {
-    if (SkillIsAvailable(2)) {
-      Send, % skill_keys[2]
-      sequence_num++
-      COUNTER := 0
+    if (sequence_num == 0) {
+      if (SkillIsAvailable(2)) {
+        Send, % skill_keys[2]
+        sequence_num++
+        COUNTER := 0
+      }
+    } else if (sequence_num == 1) {
+      if (SkillIsActive(2)) {
+        sequence_num++
+      }
+    } else if (sequence_num == 2) {
+      if (!SkillIsActive(2) && SkillIsOnCooldown(2)) {
+        Sleep, 100
+        Send, % skill_keys[4]
+        sequence_num++
+      }
+    } else if (sequence_num == 3) {
+      if (!SkillIsOnCooldown(2)) {
+        sequence_num := 0
+      }
     }
-  } else if (sequence_num == 1) {
-    if (SkillIsActive(2)) {
-      sequence_num++
-    }
-  } else if (sequence_num == 2) {
-    if (!SkillIsActive(2) && SkillIsOnCooldown(2)) {
-      Sleep, 100
-      Send, % skill_keys[4]
-      sequence_num++
-    }
-  } else if (sequence_num == 3) {
-    if (!SkillIsOnCooldown(2)) {
+
+    if (COUNTER > 50) {
+      ; reset
       sequence_num := 0
     }
-  }
 
-  if (COUNTER > 50) {
-    ; reset
-    sequence_num := 0
+    repeatedKeys := CURR_PROFILE["repeatedKeys"]
+    Send, %repeatedKeys%
+    COUNTER := COUNTER + 1
   }
-
-  repeatedKeys := CURR_PROFILE["repeatedKeys"]
-  Send, %repeatedKeys%
-  COUNTER := COUNTER + 1
   Return
 }
 

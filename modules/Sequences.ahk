@@ -65,6 +65,7 @@ RightClickImportantToStash() {
       break
     }
     InventoryRightClickImportant(empty_slots)
+    InventoryMoveMouseOutOfSlotRegion()
   }
 }
 
@@ -87,7 +88,7 @@ UrshiUpgradeSequence() {
       upgrade_clicks++
     }
 
-    if (upgrade_clicks >= 6) {
+    if (upgrade_clicks >= 5) {
       return
     }
     
