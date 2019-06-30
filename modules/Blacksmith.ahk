@@ -130,11 +130,11 @@ BlacksmithSalvageEverything() {
   }
   BlacksmithClickSalvageButtonIfNotActive()
   ; Top -> Down
-  Loop, 6 {
-    y := A_Index
+  Loop, 8 {
+    x := A_Index
     ; Left -> Right
-    Loop, 8 {
-      x := A_Index
+    Loop, 6 {
+      y := A_Index
       if (!InventoryIsSingleSlotEmpty(x, y)) {
         InventoryClickSingleSlot(x, y)
         SmartEnter()

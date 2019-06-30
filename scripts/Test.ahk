@@ -3,6 +3,8 @@
 #Include, %A_ScriptDir%\..\modules\Map.ahk
 #Include, %A_ScriptDir%\..\modules\StartScreen.ahk
 #Include, %A_ScriptDir%\..\modules\Sequences.ahk
+#Include, %A_ScriptDir%\..\modules\Misc.ahk
+#Include, %A_ScriptDir%\..\modules\Town.ahk
 
 ; WinActivate, Diablo III ahk_class D3 Main Window Class
 
@@ -29,7 +31,15 @@
 
 ; Print(InventoryIsDoubleSlotEmpty(6, 1))
 
-Print(StartScreenActive())
+; Print(IsArmorDamaged())
+; Print(TownWaitTillActive(1))
+
+blah(a:=100, b:=0, c:=0) {
+  Print(a + b + c)
+}
+
+blah()
+blah(2)
 
 ; Print(InventoryIsSingleSlotImportant(1, 3))
 ; Print(InventoryIsSingleSlotImportant(1, 4))

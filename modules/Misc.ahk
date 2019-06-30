@@ -1,3 +1,8 @@
+IsArmorDamaged() {
+  return ColorAtSimilarTo(2020, 46, 0x00F0FF)
+      && ColorAtSimilarTo(2020, 81, 0x00E0FF)
+}
+
 IsInGame() {
   active := true
   xs := [545, 545, 620]

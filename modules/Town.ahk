@@ -14,7 +14,7 @@ TownIsActive(n) {
             ,[]]
   points := points[n]
   colors := colors[n]
-  return ColorPointsAreSimilarTo(points, colors, 10, 10, 20)
+  return ColorPointsAreSimilarTo(points, colors, 15, 15, 25)
 }
 
 TownWaitTillActive(n) {
@@ -55,6 +55,19 @@ TownClickNephalemStoneAfterBlacksmith(n) {
   ys := [988, -1, -1, -1, -1]
   if (xs[n] == -1) {
     Print("TownClickNephalemStoneAfterBlacksmith: Not supported for act " . n)
+  } else {
+    ClickAt(xs[n], ys[n])
+  }
+}
+
+TownClickNephalemStoneAfterOrek(n) {
+  ; Clicks the nephalem stone assuming that the user is already at the blacksmith
+  ; location.
+  ; n: act number
+  xs := [1745, -1, -1, -1, -1]
+  ys := [442, -1, -1, -1, -1]
+  if (xs[n] == -1) {
+    Print("TownClickNephalemStoneAfterOrek: Not supported for act " . n)
   } else {
     ClickAt(xs[n], ys[n])
   }

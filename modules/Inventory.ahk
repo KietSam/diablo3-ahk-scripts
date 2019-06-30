@@ -45,7 +45,7 @@ InventoryIsInSlotRegion() {
 InventoryMoveMouseOutOfSlotRegion() {
   if InventoryIsInSlotRegion() {
     MovePoint(Point(1891, 684))
-    Sleep, 300
+    Sleep, 350
   }
 }
 
@@ -64,9 +64,9 @@ InventoryGetDoubleSlotPoint(x, y, xx_shift:=0, yy_shift:=0) {
 
 InventoryIsSingleSlotUnidentifiable(x, y) {
   slot_point1 := InventoryGetSingleSlotPoint(x, y, 1, 14)
-  if ColorPointSimilarTo(slot_point1, 0xFFFFFF, 5, 5, 2) {
+  if ColorPointSimilarTo(slot_point1, 0xFFFFFF, 6, 6, 3) {
     slot_point2 := InventoryGetSingleSlotPoint(x, y, 1, 2)
-    return ColorPointSimilarTo(slot_point2, 0xFFFFFF, 5, 5, 2)
+    return ColorPointSimilarTo(slot_point2, 0xFFFFFF, 6, 6, 3)
   }
   return false
 }
@@ -387,13 +387,19 @@ InventoryRightClickAncient() {
   }
 }
 
-InventoryRightClickImportant(n:=100) {
+InventoryRightClickImportant(n:=100, start_x:=1, start_y:=1, end_x:=8, end_y:=3) {
   ; n: number of slots to right click
   InventoryMoveMouseOutOfSlotRegion()
   Loop, 8 { ; Top -> Bottom
-    x := A_Index
+    x := A_Index + (start_x - 1)
+    if (x > end_x) {
+      break
+    }
     Loop, 3 { ; Left -> Right
-      y := A_Index
+      y := A_Index + (start_y - 1)
+      if (y > end_y) {
+        break
+      }
       if (InventoryIsDoubleSlotItem(x, y)) {
         if (!InventoryIsDoubleSlotEmpty(x, y) && InventoryIsDoubleSlotImportant(x, y)) {
           InventoryRightClickDoubleSlot(x, y)
@@ -421,10 +427,11 @@ InventoryRightClickImportant(n:=100) {
         }
       }
       if (n <= 0) {
-        return
+        return [x, y]
       }
     }
   }
+  return [end_x, end_y]
 }
 
 InventoryBloodShardsGreaterThan1K() {

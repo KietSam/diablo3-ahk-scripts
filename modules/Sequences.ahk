@@ -48,8 +48,12 @@ SpendBloodShards() {
   }
 }
 
-RightClickImportantToStash() {
-  tab := 2
+RightClickImportantToStash(starting_tab:=3) {
+  tab := starting_tab
+  start_x := 1
+  start_y := 1
+  end_x := 8
+  end_y := 3
   while (InventoryNumUnidentifiable() != 0) {
     StashClickTab(tab)
     empty_slots := StashNumEmptySlots()
@@ -64,7 +68,9 @@ RightClickImportantToStash() {
     if (tab > 5) {
       break
     }
-    InventoryRightClickImportant(empty_slots)
+    curr_end := InventoryRightClickImportant(empty_slots, start_x, start_y, end_x, end_y)
+    start_x := curr_end[1]
+    start_y := curr_end[2]
     InventoryMoveMouseOutOfSlotRegion()
   }
 }

@@ -19,6 +19,9 @@ COUNTER := 0
 
 MOUSE_LOCK := False
 
+SKILL_IS_ON_COOLDOWN := [false, false, false, false]
+SKILL_IS_AVAILABLE := [false, false, false, false]
+
 CURR_PROFILE := GetDefaultProfile()
 
 ; Read in data from last saved file
@@ -46,7 +49,7 @@ GetDefaultProfile() {
   profile["toggleSkill3WhenAvailable"] := 0
   profile["toggleSkill4WhenAvailable"] := 0
 
-  profile["interval"] := 50
+  profile["interval"] := 10
   return profile
 }
 
@@ -94,6 +97,34 @@ GetCurrentProfile:
   return
 }
 
+SetSkillIsOnCooldown:
+{
+  toggle_skills_when_inactive := [CURR_PROFILE["toggleSkill1WhenInactive"]
+                                , CURR_PROFILE["toggleSkill2WhenInactive"]
+                                , CURR_PROFILE["toggleSkill3WhenInactive"]
+                                , CURR_PROFILE["toggleSkill4WhenInactive"]]
+  Loop % toggle_skills_when_inactive.Length() {
+    i := A_Index
+    if (toggle_skills_when_inactive[i]) {
+      SKILL_IS_ON_COOLDOWN[i] := SkillIsOnCooldown(i)
+    }
+  }
+}
+
+SetSkillIsAvailable:
+{
+  toggle_skills_when_available := [CURR_PROFILE["toggleSkill1WhenAvailable"]
+                                , CURR_PROFILE["toggleSkill2WhenAvailable"]
+                                , CURR_PROFILE["toggleSkill3WhenAvailable"]
+                                , CURR_PROFILE["toggleSkill4WhenAvailable"]]
+  Loop % toggle_skills_when_available.Length() {
+    i := A_Index
+    if (toggle_skills_when_available[i]) {
+      SKILL_IS_AVAILABLE[i] := SkillIsAvailable(i)
+    }
+  }
+}
+
 AutoSend:
 {
   if (GetKeyState("Alt", "P") || GetKeyState("t", "P") || GetKeyState("m", "P") || GetKeyState("Alt", "P")) {
@@ -102,7 +133,6 @@ AutoSend:
   
   MouseGetPos mouse_x, mouse_y
   if IsInScreenRegion(mouse_x, mouse_y) {
-    Gosub GetCurrentProfile
     skill_keys := [CURR_PROFILE["skill1Key"]
                 , CURR_PROFILE["skill2Key"]
                 , CURR_PROFILE["skill3Key"]
@@ -126,10 +156,10 @@ AutoSend:
     Loop % skill_keys.Length() {
       i := A_Index
       key := skill_keys[i]
-      if (toggle_skills_when_inactive[i] && !SkillIsOnCooldown(i)) {
+      if (toggle_skills_when_inactive[i] && !SKILL_IS_ON_COOLDOWN[i]) {
         Send, %key%
       }
-      if (toggle_skills_when_available[i] && SkillIsAvailable(i)) {
+      if (toggle_skills_when_available[i] && SKILL_IS_AVAILABLE[i]) {
         Send, %key%
       }
     }
@@ -318,12 +348,17 @@ cluster_click(x, y) {
 
 
 F4::
+Gosub GetCurrentProfile
 AutoSend := !AutoSend
 If AutoSend {
   Send, % CURR_PROFILE["initialKeys"]
   interval := CURR_PROFILE["interval"]
+  SetTimer SetSkillIsAvailable, %interval%
+  SetTimer SetSkillIsOnCooldown, %interval%
   SetTimer AutoSend, %interval%
 } Else {
+  SetTimer SetSkillIsAvailable, Off
+  SetTimer SetSkillIsOnCooldown, Off
   SetTimer AutoSend, Off
 }
 Return
