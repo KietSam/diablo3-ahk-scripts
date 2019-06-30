@@ -48,8 +48,8 @@ TownClickBlacksmith(n) {
 }
 
 TownClickNephalemStoneAfterBlacksmith(n) {
-  ; Clicks the nephalem stone assuming that the user is already at the blacksmith
-  ; location.
+  ; Clicks the nephalem stone assuming that the user is already at the 
+  ; blacksmith location.
   ; n: act number
   xs := [1403, -1, -1, -1, -1]
   ys := [988, -1, -1, -1, -1]
@@ -61,7 +61,7 @@ TownClickNephalemStoneAfterBlacksmith(n) {
 }
 
 TownClickNephalemStoneAfterOrek(n) {
-  ; Clicks the nephalem stone assuming that the user is already at the blacksmith
+  ; Clicks the nephalem stone assuming that the user is already at the orek
   ; location.
   ; n: act number
   xs := [1745, -1, -1, -1, -1]
