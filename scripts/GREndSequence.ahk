@@ -88,7 +88,7 @@ HomeSequence() {
     Sleep, 50
   }
 
-  if (is_armor_damaged || num_empty_slots <= 8 || blood_shards_greater_than_1k) {
+  if (is_armor_damaged || num_empty_slots <= 15 || blood_shards_greater_than_1k) {
     ; Click blacksmith from Orek pos
     ClickAt(1640, 130)
     BlacksmithWaitTillPanelActive()

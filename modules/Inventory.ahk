@@ -408,14 +408,19 @@ InventoryRightClickImportant(n:=100, start_x:=1, start_y:=1, end_x:=8, end_y:=3)
       if (n <= 0) {
         return [x, y]
       }
+      single_slot1_y := -1 + 2 * y
+      single_slot2_y := 2 * y
       if (InventoryIsDoubleSlotItem(x, y)) {
         if (!InventoryIsDoubleSlotEmpty(x, y) && InventoryIsDoubleSlotImportant(x, y)) {
           InventoryRightClickDoubleSlot(x, y)
           n -= 2
+          continue
+        }
+        if (!InventoryIsSingleSlotEmpty(x, single_slot2_y) && InventoryIsSingleSlotImportant(x, single_slot2_y)) {
+          InventoryRightClickSingleSlot(x, single_slot2_y)
+          n -= 1
         }
       } else {
-        single_slot1_y := -1 + 2 * y
-        single_slot2_y := 2 * y
         if (!InventoryIsSingleSlotEmpty(x, single_slot1_y) && InventoryIsSingleSlotImportant(x, single_slot1_y)) {
           InventoryRightClickSingleSlot(x, single_slot1_y)
           n -= 1

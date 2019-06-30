@@ -41,7 +41,6 @@
 ; Print(InventoryIsSingleSlotImportant(1, 4))
 RightClickImportantToStash()
 
-her
 ; Print("Done!")
 
 ; blah(a:=100, b:=0, c:=0) {
