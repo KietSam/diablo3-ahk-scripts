@@ -112,7 +112,7 @@ HomeSequence() {
       Sleep, 1500
     }
   } else {
-    Sleep, 3500
+    Sleep, 3250
     while !RiftIsPanelActive() {
       TownClickNephalemStoneAfterOrek(1)
       Sleep, 1500

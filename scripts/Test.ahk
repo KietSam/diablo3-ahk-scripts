@@ -32,14 +32,24 @@
 ; Print(InventoryIsDoubleSlotEmpty(6, 1))
 
 ; Print(IsArmorDamaged())
-; Print(TownWaitTillActive(1))
+; Print(InventoryNumUnidentifiable())
+; Print(InventoryIsSingleSlotUnidentifiable(1, 4))
 
-blah(a:=100, b:=0, c:=0) {
-  Print(a + b + c)
-}
+; Print(InventoryIsSingleSlotEmpty(1, 3))
+; Print(InventoryIsDoubleSlotItem(1, 2))
+; Print(InventoryIsSingleSlotEmpty(1, 4))
+; Print(InventoryIsSingleSlotImportant(1, 4))
+RightClickImportantToStash()
 
-blah()
-blah(2)
+her
+; Print("Done!")
+
+; blah(a:=100, b:=0, c:=0) {
+;   Print(a + b + c)
+; }
+
+; blah()
+; blah(2)
 
 ; Print(InventoryIsSingleSlotImportant(1, 3))
 ; Print(InventoryIsSingleSlotImportant(1, 4))

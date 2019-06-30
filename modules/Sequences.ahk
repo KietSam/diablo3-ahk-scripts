@@ -60,17 +60,12 @@ RightClickImportantToStash(starting_tab:=3) {
     while (empty_slots <= 2) {
       tab++
       if (tab > 5) {
-        break
+        return
       }
       StashClickTab(tab)
       empty_slots := StashNumEmptySlots()
     }
-    if (tab > 5) {
-      break
-    }
     curr_end := InventoryRightClickImportant(empty_slots, start_x, start_y, end_x, end_y)
-    start_x := curr_end[1]
-    start_y := curr_end[2]
     InventoryMoveMouseOutOfSlotRegion()
   }
 }

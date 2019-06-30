@@ -122,8 +122,13 @@ InventoryDoubleSlotType(x, y) {
 }
 
 InventoryIsDoubleSlotItem(x, y) {
-  return !(InventoryIsSingleSlotLegendaryItem(x, -1 + 2 * y) || InventoryIsSingleSlotSetItem(x, -1 + 2 * y))
-       && (InventoryIsDoubleSlotLegendaryItem(x, y)          || InventoryIsDoubleSlotSetItem(x, y))
+  if (InventoryIsSingleSlotEmpty(x, -1 + 2 * y)) {
+    return false
+  } else if (!(InventoryIsSingleSlotLegendaryItem(x, -1 + 2 * y) || InventoryIsSingleSlotSetItem(x, -1 + 2 * y))) {
+    return (InventoryIsDoubleSlotLegendaryItem(x, y) || InventoryIsDoubleSlotSetItem(x, y))
+  } else {
+    return false
+  }
 }
 
 InventoryIsDoubleSlotAncient(x, y) {
@@ -251,8 +256,8 @@ InventoryNumUnidentifiable() {
 }
 
 InventoryIsSingleSlotEmpty(x, y) {
-  x_shifts := [-15, -15, 15]
-  y_shifts := [-15, 15, -15]
+  x_shifts := [0, -15, 15]
+  y_shifts := [-17, 15, -15]
   empty := true
   Loop, 2 {
     slot_point := InventoryGetSingleSlotPoint(x, y, x_shifts[A_Index], y_shifts[A_Index])
@@ -400,12 +405,12 @@ InventoryRightClickImportant(n:=100, start_x:=1, start_y:=1, end_x:=8, end_y:=3)
       if (y > end_y) {
         break
       }
+      if (n <= 0) {
+        return [x, y]
+      }
       if (InventoryIsDoubleSlotItem(x, y)) {
         if (!InventoryIsDoubleSlotEmpty(x, y) && InventoryIsDoubleSlotImportant(x, y)) {
           InventoryRightClickDoubleSlot(x, y)
-          ; Sleep a bit in case the user is inputting into stash, 
-          ; so the popup will disappear.
-          Sleep, 50
           n -= 2
         }
       } else {
@@ -413,21 +418,12 @@ InventoryRightClickImportant(n:=100, start_x:=1, start_y:=1, end_x:=8, end_y:=3)
         single_slot2_y := 2 * y
         if (!InventoryIsSingleSlotEmpty(x, single_slot1_y) && InventoryIsSingleSlotImportant(x, single_slot1_y)) {
           InventoryRightClickSingleSlot(x, single_slot1_y)
-          ; Sleep a bit in case the user is inputting into stash, 
-          ; so the popup will disappear.
-          Sleep, 50
           n -= 1
         }
         if (!InventoryIsSingleSlotEmpty(x, single_slot2_y) && InventoryIsSingleSlotImportant(x, single_slot2_y)) {
           InventoryRightClickSingleSlot(x, single_slot2_y)
-          ; Sleep a bit in case the user is inputting into stash, 
-          ; so the popup will disappear.
-          Sleep, 50
           n -= 1
         }
-      }
-      if (n <= 0) {
-        return [x, y]
       }
     }
   }
