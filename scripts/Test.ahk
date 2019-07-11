@@ -39,7 +39,9 @@
 ; Print(InventoryIsDoubleSlotItem(1, 2))
 ; Print(InventoryIsSingleSlotEmpty(1, 4))
 ; Print(InventoryIsSingleSlotImportant(1, 4))
-RightClickImportantToStash()
+
+Print(InventoryIsSingleSlotEmpty(8, 1))
+; RightClickImportantToStash()
 
 ; Print("Done!")
 

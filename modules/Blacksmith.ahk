@@ -137,6 +137,7 @@ BlacksmithSalvageEverything() {
       if (!InventoryIsSingleSlotEmpty(x, y)) {
         InventoryClickSingleSlot(x, y)
         SmartEnter()
+        Sleep, 40
       }
     }
   }

@@ -13,36 +13,13 @@ WinActivate, Diablo III ahk_class D3 Main Window Class
 
 SpendBloodShards_() {
   Loop, 3 {
-    ; Quiver
-    KadalaClickTab(1)
-    Loop, 3 {
-      KadalaClickSlot(3)
-      Sleep, 50
-    }
 
     KadalaClickTab(2)
-    ; Feet
-    Loop, 3 {
-      KadalaClickSlot(3)  
-      Sleep, 50
-    }
 
-    ; Gloves
-    Loop, 3 {
-      KadalaClickSlot(2)  
-      Sleep, 50
-    }
-
-    ; Belt
-    Loop, 6 {
-      KadalaClickSlot(5)  
-      Sleep, 50
-    }
-
-    ; Gloves
-    Loop, 3 {
-      KadalaClickSlot(5)  
-      Sleep, 50
+    ; Head
+    Loop, 20  {
+      KadalaClickSlot(1)  
+      Sleep, 25
     }
 
     ; kadala -> blacksmith
@@ -59,23 +36,24 @@ SpendBloodShards_() {
 }
 
 HomeSequence() {
-  MapOpenTown(3)
   InventoryOpenPanel()
   is_armor_damaged := IsArmorDamaged()
   num_empty_slots := InventoryNumEmptySlots()
   blood_shards_greater_than_1k := InventoryBloodShardsGreaterThan1K()
   InventoryCloseIfActive()
 
-  TownWaitTillActive(3)
+  if (num_empty_slots <= 26) {
+    MapOpenTown(3)
+    TownWaitTillActive(3)
+    while !StashIsPanelActive() {
+      TownClickStash(3)
+      StashWaitTillActive(1500)
+    }
+    StashClickChest(1)
 
-  while !StashIsPanelActive() {
-    TownClickStash(3)
-    StashWaitTillActive(1500)
+    RightClickImportantToStash()
+    num_empty_slots := InventoryNumEmptySlots()
   }
-  StashClickChest(1)
-
-  RightClickImportantToStash()
-  num_empty_slots := InventoryNumEmptySlots()
 
   MapOpenTown(1)
   TownWaitTillActive(1)
@@ -96,7 +74,7 @@ HomeSequence() {
       BlacksmithClickRepairTab()
       BlacksmithClickRepairButton()
     }
-    if (num_empty_slots <= 8) {
+    if (num_empty_slots <= 16) {
       BlacksmithClickSalvageTabIfNotActive()
       BlacksmithSalvageWhiteBlueYellow()
       BlacksmithSalvageLegendaries()

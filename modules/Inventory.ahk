@@ -73,9 +73,9 @@ InventoryIsSingleSlotUnidentifiable(x, y) {
 
 InventoryIsDoubleSlotUnidentifiable(x, y) {
   slot_point1 := InventoryGetDoubleSlotPoint(x, y, 1, -17)
-  if ColorPointSimilarTo(slot_point1, 0xFFFFFF, 5, 5, 2) {
+  if ColorPointSimilarTo(slot_point1, 0xFFFFFF, 8, 8, 4) {
     slot_point2 := InventoryGetDoubleSlotPoint(x, y, 1, -30)
-    return ColorPointSimilarTo(slot_point2, 0xFFFFFF, 5, 5, 2)
+    return ColorPointSimilarTo(slot_point2, 0xFFFFFF, 8, 8, 4)
   }
   return false
 }
@@ -100,10 +100,12 @@ InventoryIsDoubleSlotSetItem(x, y) {
   return ColorPointSimilarTo(slot_point1, 0x4DF05A)
 }
 
-InventoryIsSingleSlotAncient(x, y) {
+InventoryIsSingleSlotAncient(x, y, move_to_point:=true) {
   slot_point1 := InventoryGetSingleSlotPoint(x, y)
-  MovePoint(slot_point1)
-  Sleep, 100
+  if move_to_point {
+    MovePoint(slot_point1)
+    Sleep, 80
+  }
   item_strip_point := InventoryGetSingleSlotPoint(x, y, -35, 0)
   return ColorPointSimilarTo(item_strip_point, 0x015596, 5, 5, 8)
 }
@@ -131,40 +133,46 @@ InventoryIsDoubleSlotItem(x, y) {
   }
 }
 
-InventoryIsDoubleSlotAncient(x, y) {
+InventoryIsDoubleSlotAncient(x, y, move_to_point:=true) {
   slot_point1 := InventoryGetDoubleSlotPoint(x, y)
-  MovePoint(slot_point1)
-  Sleep, 100
+  if move_to_point {
+    MovePoint(slot_point1)
+    Sleep, 80
+  }
   item_strip_point := InventoryGetDoubleSlotPoint(x, y, -35, 0)
-  return ColorPointSimilarTo(item_strip_point, 0x015596, 5, 5, 8)
+  return ColorPointSimilarTo(item_strip_point, 0x015596, 5, 0, 15)
 }
 
-InventoryIsSingleSlotPrimal(x, y) {
+InventoryIsSingleSlotPrimal(x, y, move_to_point:=true) {
   slot_point1 := InventoryGetSingleSlotPoint(x, y)
-  MovePoint(slot_point1)
-  Sleep, 100
+  if move_to_point {
+    MovePoint(slot_point1)
+    Sleep, 80
+  }
   item_strip_point := InventoryGetSingleSlotPoint(x, y, -35, 0)
-  return ColorPointSimilarTo(item_strip_point, 0x0B0A72, 5, 5, 8)
+  return ColorPointSimilarTo(item_strip_point, 0x0B0A72, 5, 5, 15)
 }
 
-InventoryIsDoubleSlotPrimal(x, y) {
+InventoryIsDoubleSlotPrimal(x, y, move_to_point:=true) {
   slot_point1 := InventoryGetDoubleSlotPoint(x, y)
-  MovePoint(slot_point1)
-  Sleep, 100
+  if move_to_point {
+    MovePoint(slot_point1)
+    Sleep, 80
+  }
   item_strip_point := InventoryGetDoubleSlotPoint(x, y, -35, 0)
-  return ColorPointSimilarTo(item_strip_point, 0x0B0A72, 5, 5, 8)
+  return ColorPointSimilarTo(item_strip_point, 0x0B0A72, 5, 5, 15)
 }
 
 InventoryIsSingleSlotImportant(x, y) {
   return InventoryIsSingleSlotUnidentifiable(x, y) 
       || InventoryIsSingleSlotAncient(x, y) 
-      || InventoryIsSingleSlotPrimal(x, y)
+      || InventoryIsSingleSlotPrimal(x, y, false)
 }
 
 InventoryIsDoubleSlotImportant(x, y) {
   return InventoryIsDoubleSlotUnidentifiable(x, y) 
       || InventoryIsDoubleSlotAncient(x, y) 
-      || InventoryIsDoubleSlotPrimal(x, y)
+      || InventoryIsDoubleSlotPrimal(x, y, false)
 }
 
 InventoryNumDoubleSlotItems() {
@@ -256,10 +264,10 @@ InventoryNumUnidentifiable() {
 }
 
 InventoryIsSingleSlotEmpty(x, y) {
-  x_shifts := [0, -15, 15]
-  y_shifts := [-17, 15, -15]
+  x_shifts := [-20, 2, -15, 15]
+  y_shifts := [-20, -17, 15, -15]
   empty := true
-  Loop, 2 {
+  Loop, 3 {
     slot_point := InventoryGetSingleSlotPoint(x, y, x_shifts[A_Index], y_shifts[A_Index])
     empty := empty && ColorPointSimilarTo(slot_point, 0X080E10, 3, 3, 3)
     if !empty {
@@ -395,6 +403,7 @@ InventoryRightClickAncient() {
 InventoryRightClickImportant(n:=100, start_x:=1, start_y:=1, end_x:=8, end_y:=3) {
   ; n: number of slots to right click
   InventoryMoveMouseOutOfSlotRegion()
+  is_top := true
   Loop, 8 { ; Top -> Bottom
     x := A_Index + (start_x - 1)
     if (x > end_x) {
@@ -402,7 +411,14 @@ InventoryRightClickImportant(n:=100, start_x:=1, start_y:=1, end_x:=8, end_y:=3)
     }
     Loop, 3 { ; Left -> Right
       y := A_Index + (start_y - 1)
-      if (y > end_y) {
+      if (!is_top) {
+        if (x == end_x) {
+          y := end_y - (A_Index - 1)
+        } else {
+          y := 3 - (A_Index - 1)
+        }
+      }
+      if (x == end_x && y > end_y) {
         break
       }
       if (n <= 0) {
@@ -431,6 +447,7 @@ InventoryRightClickImportant(n:=100, start_x:=1, start_y:=1, end_x:=8, end_y:=3)
         }
       }
     }
+    is_top := !is_top
   }
   return [end_x, end_y]
 }

@@ -136,33 +136,6 @@ AutoSend:
       }
     }
 
-    if (sequence_num == 0) {
-      if (SkillIsAvailable(2)) {
-        Send, % skill_keys[2]
-        sequence_num++
-        COUNTER := 0
-      }
-    } else if (sequence_num == 1) {
-      if (SkillIsActive(2)) {
-        sequence_num++
-      }
-    } else if (sequence_num == 2) {
-      if (!SkillIsActive(2) && SkillIsOnCooldown(2)) {
-        Sleep, 100
-        Send, % skill_keys[4]
-        sequence_num++
-      }
-    } else if (sequence_num == 3) {
-      if (!SkillIsOnCooldown(2)) {
-        sequence_num := 0
-      }
-    }
-
-    if (COUNTER > 50) {
-      ; reset
-      sequence_num := 0
-    }
-
     repeatedKeys := CURR_PROFILE["repeatedKeys"]
     Send, %repeatedKeys%
     COUNTER := COUNTER + 1

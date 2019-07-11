@@ -24,6 +24,8 @@ SKILL_IS_AVAILABLE := [false, false, false, false]
 
 CURR_PROFILE := GetDefaultProfile()
 
+sequence_num := 0
+
 ; Read in data from last saved file
 Gosub, ReadSettings
 
@@ -48,6 +50,10 @@ GetDefaultProfile() {
   profile["toggleSkill2WhenAvailable"] := 0
   profile["toggleSkill3WhenAvailable"] := 0
   profile["toggleSkill4WhenAvailable"] := 0
+
+  profile["toggleSpecial"] := 0
+
+  profile["toggleAlwaysOnTop"] := 1
 
   profile["interval"] := 10
   return profile
@@ -75,6 +81,9 @@ GetCurrentProfile:
   GuiControlGet, toggleSkill3WhenAvailable,, TOGGLE_SKILL_3_WHEN_AVAILABLE
   GuiControlGet, toggleSkill4WhenAvailable,, TOGGLE_SKILL_4_WHEN_AVAILABLE
 
+  GuiControlGet, toggleSpecial,, TOGGLE_SPECIAL
+  GuiControlGet, toggleAlwaysOnTop,, TOGGLE_ALWAYS_ON_TOP
+
   CURR_PROFILE["initialKeys"] := initialKeys
   CURR_PROFILE["repeatedKeys"] := repeatedKeys
   CURR_PROFILE["toggleRadialClicks"] := toggleRadialClicks
@@ -94,80 +103,11 @@ GetCurrentProfile:
   CURR_PROFILE["toggleSkill2WhenAvailable"] := toggleSkill2WhenAvailable
   CURR_PROFILE["toggleSkill3WhenAvailable"] := toggleSkill3WhenAvailable
   CURR_PROFILE["toggleSkill4WhenAvailable"] := toggleSkill4WhenAvailable
+
+  CURR_PROFILE["toggleSpecial"] := toggleSpecial
+
+  CURR_PROFILE["toggleAlwaysOnTop"] := toggleAlwaysOnTop
   return
-}
-
-SetSkillIsOnCooldown:
-{
-  toggle_skills_when_inactive := [CURR_PROFILE["toggleSkill1WhenInactive"]
-                                , CURR_PROFILE["toggleSkill2WhenInactive"]
-                                , CURR_PROFILE["toggleSkill3WhenInactive"]
-                                , CURR_PROFILE["toggleSkill4WhenInactive"]]
-  Loop % toggle_skills_when_inactive.Length() {
-    i := A_Index
-    if (toggle_skills_when_inactive[i]) {
-      SKILL_IS_ON_COOLDOWN[i] := SkillIsOnCooldown(i)
-    }
-  }
-}
-
-SetSkillIsAvailable:
-{
-  toggle_skills_when_available := [CURR_PROFILE["toggleSkill1WhenAvailable"]
-                                , CURR_PROFILE["toggleSkill2WhenAvailable"]
-                                , CURR_PROFILE["toggleSkill3WhenAvailable"]
-                                , CURR_PROFILE["toggleSkill4WhenAvailable"]]
-  Loop % toggle_skills_when_available.Length() {
-    i := A_Index
-    if (toggle_skills_when_available[i]) {
-      SKILL_IS_AVAILABLE[i] := SkillIsAvailable(i)
-    }
-  }
-}
-
-AutoSend:
-{
-  if (GetKeyState("Alt", "P") || GetKeyState("t", "P") || GetKeyState("m", "P") || GetKeyState("Alt", "P")) {
-    Return
-  }
-  
-  MouseGetPos mouse_x, mouse_y
-  if IsInScreenRegion(mouse_x, mouse_y) {
-    skill_keys := [CURR_PROFILE["skill1Key"]
-                , CURR_PROFILE["skill2Key"]
-                , CURR_PROFILE["skill3Key"]
-                , CURR_PROFILE["skill4Key"]]
-    toggle_skills_when_inactive := [CURR_PROFILE["toggleSkill1WhenInactive"]
-                                  , CURR_PROFILE["toggleSkill2WhenInactive"]
-                                  , CURR_PROFILE["toggleSkill3WhenInactive"]
-                                  , CURR_PROFILE["toggleSkill4WhenInactive"]]
-    toggle_skills_when_available := [CURR_PROFILE["toggleSkill1WhenAvailable"]
-                                  , CURR_PROFILE["toggleSkill2WhenAvailable"]
-                                  , CURR_PROFILE["toggleSkill3WhenAvailable"]
-                                  , CURR_PROFILE["toggleSkill4WhenAvailable"]]
-    char_center_point := Point(CHARACTER_CENTER_X, CHARACTER_CENTER_Y)
-    if (IsGoodClickRegion(mouse_x, mouse_y)) {
-      if (CURR_PROFILE["toggleRadialClicks"]
-      && Distance(mouse_x, mouse_y, char_center_point[1], char_center_point[2]) <= CURR_PROFILE["maxRadius"]) {
-        Send, {Click}
-      }
-    }
-
-    Loop % skill_keys.Length() {
-      i := A_Index
-      key := skill_keys[i]
-      if (toggle_skills_when_inactive[i] && !SKILL_IS_ON_COOLDOWN[i]) {
-        Send, %key%
-      }
-      if (toggle_skills_when_available[i] && SKILL_IS_AVAILABLE[i]) {
-        Send, %key%
-      }
-    }
-    repeatedKeys := CURR_PROFILE["repeatedKeys"]
-    Send, %repeatedKeys%
-    COUNTER := COUNTER + 1
-  }
-  Return
 }
 
 ; Reads in settings from a setting.ini file.
@@ -289,22 +229,152 @@ ReadSettings:
   column2_x := 160
 
   y := 30
+  toggleAlwaysOnTop := CURR_PROFILE["toggleAlwaysOnTop"]
+  x := column2_x
+  Gui, Add, Text, x%x% y%y% w100 Left, Always on top:
+  x += 100
+  Gui, Add, Checkbox, x%x% y%y% Checked%toggleAlwaysOnTop% vTOGGLE_ALWAYS_ON_TOP gToggleAlwaysOnTop,
+
+  y += 20
   toggleRadialClicks := CURR_PROFILE["toggleRadialClicks"]
   x := column2_x
   Gui, Add, Text, x%x% y%y% w100 Left, Enable radial clicks:
   x += 100
   Gui, Add, Checkbox, x%x% y%y% Checked%toggleRadialClicks% vTOGGLE_RADIAL_CLICKS,
 
-  y += 15
+  y += 20
   maxRadius := CURR_PROFILE["maxRadius"]
   x := column2_x
   Gui, Add, Text, x%x% y%y% w100 Left, Max radius:
   x += 55
   Gui, Add, Edit, x%x% y%y% w75 h15 vMAX_RADIUS Center, %maxRadius%
 
+  Y += 20
+  toggleSpecial := CURR_PROFILE["toggleSpecial"]
+  x := column2_x
+  Gui, Add, Text, x%x% y%y% w100 Left, Toggle special:
+  x += 100
+  Gui, Add, Checkbox, x%x% y%y% Checked%toggleSpecial% vTOGGLE_SPECIAL,
+
   Gui, Add, Button, x%column2_x% y170 w%column_width% h20 gSaveSettings, Save
 
+  Gosub ToggleAlwaysOnTop
+
   return
+}
+
+ToggleAlwaysOnTop:
+{
+  Gosub GetCurrentProfile
+  if (CURR_PROFILE["toggleAlwaysOnTop"]){
+    WinSet, AlwaysOnTop, On
+  } else {
+    WinSet, AlwaysOnTop, Off
+  }
+  return
+}
+
+SetSkillIsOnCooldown:
+{
+  toggle_skills_when_inactive := [CURR_PROFILE["toggleSkill1WhenInactive"]
+                                , CURR_PROFILE["toggleSkill2WhenInactive"]
+                                , CURR_PROFILE["toggleSkill3WhenInactive"]
+                                , CURR_PROFILE["toggleSkill4WhenInactive"]]
+  Loop % toggle_skills_when_inactive.Length() {
+    i := A_Index
+    if (toggle_skills_when_inactive[i]) {
+      SKILL_IS_ON_COOLDOWN[i] := SkillIsOnCooldown(i)
+    }
+  }
+}
+
+SetSkillIsAvailable:
+{
+  toggle_skills_when_available := [CURR_PROFILE["toggleSkill1WhenAvailable"]
+                                , CURR_PROFILE["toggleSkill2WhenAvailable"]
+                                , CURR_PROFILE["toggleSkill3WhenAvailable"]
+                                , CURR_PROFILE["toggleSkill4WhenAvailable"]]
+  Loop % toggle_skills_when_available.Length() {
+    i := A_Index
+    if (toggle_skills_when_available[i]) {
+      SKILL_IS_AVAILABLE[i] := SkillIsAvailable(i)
+    }
+  }
+}
+
+AutoSend:
+{
+  if (GetKeyState("Alt", "P") || GetKeyState("t", "P") || GetKeyState("m", "P") || GetKeyState("Alt", "P")) {
+    Return
+  }
+  
+  MouseGetPos mouse_x, mouse_y
+  if IsInScreenRegion(mouse_x, mouse_y) {
+    skill_keys := [CURR_PROFILE["skill1Key"]
+                , CURR_PROFILE["skill2Key"]
+                , CURR_PROFILE["skill3Key"]
+                , CURR_PROFILE["skill4Key"]]
+    toggle_skills_when_inactive := [CURR_PROFILE["toggleSkill1WhenInactive"]
+                                  , CURR_PROFILE["toggleSkill2WhenInactive"]
+                                  , CURR_PROFILE["toggleSkill3WhenInactive"]
+                                  , CURR_PROFILE["toggleSkill4WhenInactive"]]
+    toggle_skills_when_available := [CURR_PROFILE["toggleSkill1WhenAvailable"]
+                                  , CURR_PROFILE["toggleSkill2WhenAvailable"]
+                                  , CURR_PROFILE["toggleSkill3WhenAvailable"]
+                                  , CURR_PROFILE["toggleSkill4WhenAvailable"]]
+    char_center_point := Point(CHARACTER_CENTER_X, CHARACTER_CENTER_Y)
+    if (IsGoodClickRegion(mouse_x, mouse_y)) {
+      if (CURR_PROFILE["toggleRadialClicks"]
+      && Distance(mouse_x, mouse_y, char_center_point[1], char_center_point[2]) <= CURR_PROFILE["maxRadius"]) {
+        Send, {Click}
+      }
+    }
+
+    Loop % skill_keys.Length() {
+      i := A_Index
+      key := skill_keys[i]
+      if (toggle_skills_when_inactive[i] && !SKILL_IS_ON_COOLDOWN[i]) {
+        Send, %key%
+      }
+      if (toggle_skills_when_available[i] && SKILL_IS_AVAILABLE[i]) {
+        Send, %key%
+      }
+    }
+
+    if (CURR_PROFILE["toggleSpecial"]) {
+      if (sequence_num == 0) {
+        if (SkillIsAvailable(2)) {
+          Send, % skill_keys[2]
+          sequence_num++
+          COUNTER := 0
+        }
+      } else if (sequence_num == 1) {
+        if (SkillIsActive(2)) {
+          sequence_num++
+        }
+      } else if (sequence_num == 2) {
+        if (!SkillIsActive(2) && SkillIsOnCooldown(2)) {
+          Sleep, 100
+          Send, % skill_keys[4]
+          sequence_num++
+        }
+      } else if (sequence_num == 3) {
+        if (!SkillIsOnCooldown(2)) {
+          sequence_num := 0
+        }
+      }
+
+      if (COUNTER > 40) {
+        ; reset
+        sequence_num := 0
+      }
+    }
+
+    repeatedKeys := CURR_PROFILE["repeatedKeys"]
+    Send, %repeatedKeys%
+    COUNTER := COUNTER + 1
+  }
+  Return
 }
 
 ; Save current settings to the DEFAULT_INI_FILENAME.
@@ -348,6 +418,7 @@ cluster_click(x, y) {
 
 
 F4::
+sequence_num := 0
 Gosub GetCurrentProfile
 AutoSend := !AutoSend
 If AutoSend {

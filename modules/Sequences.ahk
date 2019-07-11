@@ -48,7 +48,7 @@ SpendBloodShards() {
   }
 }
 
-RightClickImportantToStash(starting_tab:=3) {
+RightClickImportantToStash(starting_stash:=1, starting_tab:=2) {
   tab := starting_tab
   start_x := 1
   start_y := 1
