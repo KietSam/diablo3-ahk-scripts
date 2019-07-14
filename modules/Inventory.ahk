@@ -81,29 +81,34 @@ InventoryIsDoubleSlotUnidentifiable(x, y) {
 }
 
 InventoryIsSingleSlotLegendaryItem(x, y) {
-  slot_point1 := InventoryGetSingleSlotPoint(x, y, 23, 21)
-  return ColorPointSimilarTo(slot_point1, 0x0062DF)
+  slot_point := InventoryGetSingleSlotPoint(x, y, 23, 21)
+  return ColorPointSimilarTo(slot_point, 0x0062DF)
 }
 
 InventoryIsSingleSlotSetItem(x, y) {
-  slot_point1 := InventoryGetSingleSlotPoint(x, y, 23, 21)
-  return ColorPointSimilarTo(slot_point1, 0x4DF05A)
+  slot_point := InventoryGetSingleSlotPoint(x, y, 23, 21)
+  return ColorPointSimilarTo(slot_point, 0x4DF05A)
+}
+
+InventoryIsDoubleSlotBlue(x, y) {
+  slot_point := InventoryGetDoubleSlotPoint(x, y, 23, 21)
+  return ColorPointSimilarTo(slot_point, 0x473017)
 }
 
 InventoryIsDoubleSlotLegendaryItem(x, y) {
-  slot_point1 := InventoryGetDoubleSlotPoint(x, y, 23, 21)
-  return ColorPointSimilarTo(slot_point1, 0x0062DF)
+  slot_point := InventoryGetDoubleSlotPoint(x, y, 23, 21)
+  return ColorPointSimilarTo(slot_point, 0x0062DF)
 }
 
 InventoryIsDoubleSlotSetItem(x, y) {
-  slot_point1 := InventoryGetDoubleSlotPoint(x, y, 23, 21)
-  return ColorPointSimilarTo(slot_point1, 0x4DF05A)
+  slot_point := InventoryGetDoubleSlotPoint(x, y, 23, 21)
+  return ColorPointSimilarTo(slot_point, 0x4DF05A)
 }
 
 InventoryIsSingleSlotAncient(x, y, move_to_point:=true) {
-  slot_point1 := InventoryGetSingleSlotPoint(x, y)
+  slot_point := InventoryGetSingleSlotPoint(x, y)
   if move_to_point {
-    MovePoint(slot_point1)
+    MovePoint(slot_point)
     Sleep, 80
   }
   item_strip_point := InventoryGetSingleSlotPoint(x, y, -35, 0)
@@ -417,6 +422,11 @@ InventoryRightClickImportant(n:=100, start_x:=1, start_y:=1, end_x:=8, end_y:=3)
         } else {
           y := 3 - (A_Index - 1)
         }
+        single_slot2_y := -1 + 2 * y
+        single_slot1_y := 2 * y
+      } else {
+        single_slot1_y := -1 + 2 * y
+        single_slot2_y := 2 * y
       }
       if (x == end_x && y > end_y) {
         break
@@ -424,8 +434,7 @@ InventoryRightClickImportant(n:=100, start_x:=1, start_y:=1, end_x:=8, end_y:=3)
       if (n <= 0) {
         return [x, y]
       }
-      single_slot1_y := -1 + 2 * y
-      single_slot2_y := 2 * y
+      
       if (InventoryIsDoubleSlotItem(x, y)) {
         if (!InventoryIsDoubleSlotEmpty(x, y) && InventoryIsDoubleSlotImportant(x, y)) {
           InventoryRightClickDoubleSlot(x, y)
@@ -437,6 +446,7 @@ InventoryRightClickImportant(n:=100, start_x:=1, start_y:=1, end_x:=8, end_y:=3)
           n -= 1
         }
       } else {
+
         if (!InventoryIsSingleSlotEmpty(x, single_slot1_y) && InventoryIsSingleSlotImportant(x, single_slot1_y)) {
           InventoryRightClickSingleSlot(x, single_slot1_y)
           n -= 1

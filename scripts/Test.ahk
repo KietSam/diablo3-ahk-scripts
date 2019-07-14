@@ -40,7 +40,7 @@
 ; Print(InventoryIsSingleSlotEmpty(1, 4))
 ; Print(InventoryIsSingleSlotImportant(1, 4))
 
-Print(InventoryIsSingleSlotEmpty(8, 1))
+; Print(InventoryIsDoubleSlotBlue(1, 1))
 ; RightClickImportantToStash()
 
 ; Print("Done!")
@@ -66,16 +66,13 @@ Print(InventoryIsSingleSlotEmpty(8, 1))
 
 
 
-; Loop, 1 { ; Top -> Bottom
-;   y := A_Index
-;   Loop, 1 { ; Left -> Right
-;     x := A_Index
-;     ; InventoryIsSingleSlotAncient(x, y)
-;     Print("x: " . x . ", y: " . y . ", is_ancient_item: " . InventoryIsSingleSlotAncient(x, y))
-;     ; StashClickSlot(x, y)
-;     ; StashIsSlotEmpty(x, y)
-;   }
-; }
+Loop, 3 { ; Top -> Bottom
+  y := A_Index
+  Loop, 8 { ; Left -> Right
+    x := A_Index
+    Print("x: " . x . ", y: " . y . ", var: " . InventoryIsDoubleSlotBlue(x, y))
+  }
+}
 
 ; Print(InventoryNumSetItems())
 

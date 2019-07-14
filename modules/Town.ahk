@@ -14,7 +14,7 @@ TownIsActive(n) {
             ,[]]
   points := points[n]
   colors := colors[n]
-  return ColorPointsAreSimilarTo(points, colors, 15, 15, 25)
+  return ColorPointsAreSimilarTo(points, colors, 15, 15, 30)
 }
 
 TownWaitTillActive(n) {
