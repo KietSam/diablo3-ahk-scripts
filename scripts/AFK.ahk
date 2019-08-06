@@ -31,14 +31,22 @@ While, True {
   ;   toggle := true
   ; }
   ; ClickPoint(point)
-  Send, {Enter}
-  Sleep, 500
-  Send, {Space}
-  Sleep, 500
-  Send, {Enter}
-  Sleep, 500
-  Send, {Esc}
-  Sleep, 30000
+  ; Send, {Enter}
+  ; Sleep, 100
+  ; Send, {Space}
+  ; Sleep, 100
+  ; Send, {Enter}
+  ; Sleep, 100
+  ; Send, {Esc}
+  Click, WheelDown
+  Sleep, 100
+  Click, WheelDown
+  Sleep, 100
+  Click, WheelUp
+  Sleep, 100
+  Click, WheelUp
+  Sleep, 100
+  Sleep, 120000
 }
 
 
