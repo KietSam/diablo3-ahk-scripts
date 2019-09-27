@@ -70,7 +70,8 @@ Loop, 3 { ; Top -> Bottom
   y := A_Index
   Loop, 8 { ; Left -> Right
     x := A_Index
-    Print("x: " . x . ", y: " . y . ", var: " . InventoryIsDoubleSlotBlue(x, y))
+    ; Print("x: " . x . ", y: " . y . ", var: " . InventoryIsDoubleSlotBlue(x, y))
+    Print("x: " . x . ", y: " . y)
   }
 }
 

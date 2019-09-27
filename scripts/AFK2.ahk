@@ -1,24 +1,21 @@
+first_run := true
+
 AutoSend:
-Click, WheelDown
-Sleep, 100
-Click, WheelDown
-Sleep, 100
-Click, WheelUp
-Sleep, 100
-Click, WheelUp
+if (!first_Run) {
+  Click, WheelDown
+  Sleep, 100
+  Click, WheelUp
+}
+first_run := false
 Return
 
-F2::
+F3::
 AutoSend := !AutoSend
 If AutoSend {
   Click, WheelDown
   Sleep, 100
-  Click, WheelDown
-  Sleep, 100
   Click, WheelUp
-  Sleep, 100
-  Click, WheelUp
-  SetTimer AutoSend, 30000
+  SetTimer AutoSend, 90000
 } Else {
   SetTimer AutoSend, Off
 }

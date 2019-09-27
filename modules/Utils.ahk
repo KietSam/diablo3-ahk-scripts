@@ -118,6 +118,26 @@ MovePoint(p) {
   Click, %x%, %y%, 0
 }
 
+ScrollUpPoint(p) {
+  MovePoint(p)
+  Click, WheelUp
+}
+
+ScrollUpAt(x, y) {
+  p := Point(x, y)
+  ScrollUpPoint(p)
+}
+
+ScrollDownPoint(p) {
+  MovePoint(p)
+  Click, WheelDown
+}
+
+ScrollDownAt(x, y) {
+  p := Point(x, y)
+  ScrollDownPoint(p)
+}
+
 MoveAt(x, y) {
   p := Point(x, y)
   MovePoint(p)
@@ -133,6 +153,8 @@ RightClickAt(x, y) {
   RightClickPoint(p)
 }
 
+
+
 ColorAt(x, y) {
   p := Point(x, y)
   return ColorPoint(p)
@@ -143,6 +165,13 @@ ColorPoint(p) {
   y := p[2]
   PixelGetColor, curr_color, %x%, %y%
   return curr_color
+}
+
+PrintColorPoint(p) {
+  x := p[1]
+  y := p[2]
+  color := ColorPoint(p)
+  Print("x: " . x . ", y: " . y . ", color: " . color)
 }
 
 GetMousePoint() {
@@ -183,4 +212,9 @@ IsPointInRegion(p, top_left_p, bot_right_p) {
       && p[1] <= bot_right_p[1]
       && p[2] >= top_left_p[2]
       && p[2] <= bot_right_p[2]
+}
+
+Error(msg) {
+  Print(msg)
+  ExitApp
 }
